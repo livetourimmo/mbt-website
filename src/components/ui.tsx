@@ -40,11 +40,3 @@ export function CTAButton({
     </Link>
   );
 }
-
-export function Eyebrow({ children }: { children: ReactNode }) {
-  return (
-    <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-      {children}
-    </p>
-  );
-}
