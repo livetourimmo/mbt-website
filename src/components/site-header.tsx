@@ -59,7 +59,7 @@ export default function SiteHeader({ segment: initialSegment }: { segment: Segme
           </Link>
           <Link
             href="/kennenlerngespraech"
-            className="rounded-full border border-hairline px-4 py-2 text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent hover:shadow-md"
+            className="rounded-full border border-hairline px-4 py-2 text-ink transition-all duration-200 ease-out hover:-translate-y-1.5 hover:border-accent hover:text-accent hover:shadow-lg"
           >
             Kennenlerngespräch
           </Link>
