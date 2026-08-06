@@ -5,18 +5,24 @@ export default function HeroFull({
   headline,
   lede,
   media,
+  tone = "ink",
 }: {
   kicker?: string;
   headline: string;
   lede?: string;
   media: ReactNode;
+  tone?: "ink" | "accent";
 }) {
   return (
     <section className="relative h-[88vh] min-h-[560px] w-full overflow-hidden">
       {media}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent"
+        className={`absolute inset-0 bg-gradient-to-t to-transparent ${
+          tone === "accent"
+            ? "from-accent/55 via-accent/15"
+            : "from-consulting-accent/55 via-consulting-accent/15"
+        }`}
       />
       <div className="absolute inset-x-0 bottom-0 px-6 pb-12 md:px-10 md:pb-16">
         <div className="animate-rise mx-auto max-w-7xl">

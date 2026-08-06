@@ -6,6 +6,7 @@
   --color-ink-soft: #5b6480;
   --color-accent: #5c3369;
   --color-accent-dark: #331641;
+  --color-consulting-accent: #2f4b99;
   --color-consulting-tint: #dce1f4;
   --color-coaching-tint: #f0e3ed;
   --color-neutral-tint: #eef1fa;
@@ -18,6 +19,7 @@
   --color-ink-soft: var(--color-ink-soft);
   --color-accent: var(--color-accent);
   --color-accent-dark: var(--color-accent-dark);
+  --color-consulting-accent: var(--color-consulting-accent);
   --color-consulting-tint: var(--color-consulting-tint);
   --color-coaching-tint: var(--color-coaching-tint);
   --color-neutral-tint: var(--color-neutral-tint);

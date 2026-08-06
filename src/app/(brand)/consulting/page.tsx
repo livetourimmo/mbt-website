@@ -20,6 +20,7 @@ export default function ConsultingPage() {
         kicker="Consulting für Unternehmensführungen"
         headline="Wie wird ein Unternehmen zukunftsfähig?"
         lede="Unternehmen sind Orte, in denen Menschen mit Begeisterung wirken und abends erfüllt nach Hause gehen."
+        tone="ink"
         media={
           <Image
             src="/images/bank-ankunft.png"

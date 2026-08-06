@@ -10,11 +10,13 @@ export default function CtaButton({
   href,
   children,
   variant = "solid",
+  tone = "ink",
   className = "",
 }: {
   href: string;
   children: ReactNode;
   variant?: "solid" | "outline";
+  tone?: "ink" | "accent";
   className?: string;
 }) {
   const [hover, setHover] = useState(false);
@@ -22,7 +24,11 @@ export default function CtaButton({
   const style =
     variant === "solid"
       ? {
-          background: hover ? "var(--color-accent-dark)" : "var(--color-ink)",
+          background: hover
+            ? "var(--color-accent-dark)"
+            : tone === "accent"
+              ? "var(--color-accent)"
+              : "var(--color-ink)",
           color: "var(--color-paper)",
           transform: hover ? "translateY(-2px)" : "translateY(0)",
           boxShadow: hover

@@ -20,6 +20,7 @@ export default function CoachingPage() {
         kicker="Coaching für Führungspersönlichkeiten"
         headline="Wer will ich als Führungsperson eigentlich sein?"
         lede="Unternehmen sind Orte, in denen Menschen mit Begeisterung wirken und abends erfüllt nach Hause gehen."
+        tone="accent"
         media={
           <Image
             src="/images/bank-ankunft.png"
@@ -66,7 +67,7 @@ export default function CoachingPage() {
       </SectionImage>
 
       {/* Informationszeitalter */}
-      <SectionText heading="Informationszeitalter" tint="var(--color-neutral-tint)">
+      <SectionText heading="Informationszeitalter" tint="var(--color-coaching-tint)">
         <p className="text-[19px] leading-snug text-ink">
           Wir leben in einer neuen Zeit mit alten Führungsbildern.
         </p>
@@ -174,7 +175,7 @@ export default function CoachingPage() {
           Ich begleite dich dahin, die Führungsperson zu sein, die du sein
           willst: klar von innen, wirksam im Alltag.
         </p>
-        <CtaButton href="/kennenlerngespraech" className="mt-2">
+        <CtaButton href="/kennenlerngespraech" tone="accent" className="mt-2">
           Kennenlerngespräch vereinbaren
         </CtaButton>
       </SectionImage>
