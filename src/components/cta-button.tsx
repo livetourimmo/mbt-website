@@ -24,18 +24,18 @@ export default function CtaButton({
       ? {
           background: hover ? "var(--color-accent-dark)" : "var(--color-ink)",
           color: "var(--color-paper)",
-          transform: hover ? "translateY(-6px)" : "translateY(0)",
+          transform: hover ? "translateY(-2px)" : "translateY(0)",
           boxShadow: hover
-            ? "0 20px 25px -5px rgba(31,44,87,0.25), 0 8px 10px -6px rgba(31,44,87,0.2)"
+            ? "0 8px 12px -4px rgba(31,44,87,0.18)"
             : "0 0 0 0 rgba(0,0,0,0)",
           transition: TRANSITION,
         }
       : {
           borderColor: hover ? "var(--color-accent)" : "var(--color-hairline)",
           color: hover ? "var(--color-accent)" : "var(--color-ink)",
-          transform: hover ? "translateY(-6px)" : "translateY(0)",
+          transform: hover ? "translateY(-2px)" : "translateY(0)",
           boxShadow: hover
-            ? "0 10px 15px -3px rgba(31,44,87,0.15), 0 4px 6px -4px rgba(31,44,87,0.15)"
+            ? "0 6px 10px -4px rgba(31,44,87,0.12)"
             : "0 0 0 0 rgba(0,0,0,0)",
           transition: TRANSITION,
         };
