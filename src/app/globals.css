@@ -25,7 +25,6 @@
 
   --font-display: var(--font-sora);
   --font-body: var(--font-work-sans);
-  --font-serif: var(--font-newsreader);
 }
 
 body {
@@ -46,6 +45,57 @@ body {
 
 .animate-rise {
   animation: rise-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Film-Intro: Gehbewegung → Hinsetzen → Zoom ins Buch */
+@keyframes film-walk {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateX(0%);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06) translateX(-1.5%);
+  }
+  78% {
+    opacity: 0;
+    transform: scale(1.08) translateX(-1.5%);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.08) translateX(-1.5%);
+  }
+}
+
+@keyframes film-sit {
+  0% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  55% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes film-whiteout {
+  0% {
+    opacity: 0;
+  }
+  72% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
