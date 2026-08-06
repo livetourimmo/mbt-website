@@ -175,7 +175,7 @@ export default function CoachingPage() {
         </p>
         <Link
           href="/kennenlerngespraech"
-          className="mt-2 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper hover:bg-accent-dark"
+          className="mt-2 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-dark hover:shadow-lg"
         >
           Kennenlerngespräch vereinbaren
         </Link>

@@ -22,7 +22,7 @@ export default async function KennenlerngespraechPage() {
       </p>
       <a
         href={`mailto:${meta.email}`}
-        className="mt-8 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper hover:bg-accent-dark"
+        className="mt-8 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-dark hover:shadow-lg"
       >
         {meta.email}
       </a>

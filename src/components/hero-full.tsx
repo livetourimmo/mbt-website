@@ -19,7 +19,7 @@ export default function HeroFull({
         className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent"
       />
       <div className="absolute inset-x-0 bottom-0 px-6 pb-12 md:px-10 md:pb-16">
-        <div className="mx-auto max-w-7xl">
+        <div className="animate-rise mx-auto max-w-7xl">
           {kicker && (
             <p className="text-[15px] text-paper/80">{kicker}</p>
           )}

@@ -113,7 +113,10 @@ export default async function LebendigeFuehrungPage() {
 
           <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
             {bedingungen.map((b) => (
-              <div key={b.titel} className="border-t-2 border-accent pt-6">
+              <div
+                key={b.titel}
+                className="border-t-2 border-accent pt-6 transition-transform duration-300 ease-out hover:-translate-y-1"
+              >
                 <h3 className="font-display text-[1.25rem] font-semibold text-ink">
                   {b.titel}
                 </h3>
@@ -223,7 +226,7 @@ export default async function LebendigeFuehrungPage() {
           <p className="mt-3 text-[17px] text-ink-soft">Dann lass uns reden.</p>
           <Link
             href="/kennenlerngespraech"
-            className="mt-6 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper hover:bg-accent-dark"
+            className="mt-6 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-dark hover:shadow-lg"
           >
             Kennenlerngespräch vereinbaren
           </Link>

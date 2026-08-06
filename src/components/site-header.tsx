@@ -21,9 +21,12 @@ export default function SiteHeader({ segment: initialSegment }: { segment: Segme
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 md:flex-row md:items-center md:justify-between md:px-10">
         <Link
           href="/"
-          className="flex items-center gap-3 font-display text-[15px] font-semibold tracking-tight text-ink"
+          className="group flex items-center gap-3 font-display text-[15px] font-semibold tracking-tight text-ink"
         >
-          <LogoMark size={30} />
+          <LogoMark
+            size={30}
+            className="transition-transform duration-500 ease-out group-hover:rotate-45"
+          />
           {meta.brand}
         </Link>
 
@@ -33,24 +36,30 @@ export default function SiteHeader({ segment: initialSegment }: { segment: Segme
               key={door.key}
               href={`/${door.key}`}
               aria-current={segment === door.key ? "page" : undefined}
-              className={
+              className={`relative py-1 transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-px after:bg-accent after:transition-all after:duration-300 ${
                 segment === door.key
-                  ? "text-ink"
-                  : "hover:text-ink"
-              }
+                  ? "text-ink after:w-full"
+                  : "hover:text-ink after:w-0 hover:after:w-full"
+              }`}
             >
               {door.label}
             </Link>
           ))}
-          <Link href="/lebendige-fuehrung" className="hover:text-ink">
+          <Link
+            href="/lebendige-fuehrung"
+            className="relative py-1 transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-all after:duration-300 hover:text-ink hover:after:w-full"
+          >
             Lebendige Führung
           </Link>
-          <Link href="/ueber-mich" className="hover:text-ink">
+          <Link
+            href="/ueber-mich"
+            className="relative py-1 transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-all after:duration-300 hover:text-ink hover:after:w-full"
+          >
             Über mich
           </Link>
           <Link
             href="/kennenlerngespraech"
-            className="rounded-full border border-hairline px-4 py-2 text-ink hover:border-accent hover:text-accent"
+            className="rounded-full border border-hairline px-4 py-2 text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent hover:shadow-md"
           >
             Kennenlerngespräch
           </Link>
