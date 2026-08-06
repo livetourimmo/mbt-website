@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SEGMENT_META } from "@/lib/segment";
 import { getSegment } from "@/lib/get-segment.server";
+import CtaButton from "@/components/cta-button";
 
 export const metadata: Metadata = {
   title: "Kennenlerngespräch",
@@ -20,12 +21,9 @@ export default async function KennenlerngespraechPage() {
         Schreib mir eine kurze Nachricht — ich melde mich, um einen Termin für
         ein unverbindliches Gespräch zu finden.
       </p>
-      <a
-        href={`mailto:${meta.email}`}
-        className="mt-8 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper transition-all duration-200 ease-out hover:-translate-y-1.5 hover:bg-accent-dark hover:shadow-xl"
-      >
+      <CtaButton href={`mailto:${meta.email}`} className="mt-8">
         {meta.email}
-      </a>
+      </CtaButton>
     </section>
   );
 }

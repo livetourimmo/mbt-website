@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import SectionText from "@/components/section-text";
 import SectionImage from "@/components/section-image";
 import HeroFull from "@/components/hero-full";
+import CtaButton from "@/components/cta-button";
 
 export const metadata: Metadata = {
   title: "Coaching für Führungspersönlichkeiten",
@@ -173,12 +174,9 @@ export default function CoachingPage() {
           Ich begleite dich dahin, die Führungsperson zu sein, die du sein
           willst: klar von innen, wirksam im Alltag.
         </p>
-        <Link
-          href="/kennenlerngespraech"
-          className="mt-2 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper transition-all duration-200 ease-out hover:-translate-y-1.5 hover:bg-accent-dark hover:shadow-xl"
-        >
+        <CtaButton href="/kennenlerngespraech" className="mt-2">
           Kennenlerngespräch vereinbaren
-        </Link>
+        </CtaButton>
       </SectionImage>
     </>
   );

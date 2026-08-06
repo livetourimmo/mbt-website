@@ -1,10 +1,10 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { getSegment } from "@/lib/get-segment.server";
 import SectionText from "@/components/section-text";
 import SectionImage from "@/components/section-image";
 import MediaPlaceholder from "@/components/media-placeholder";
 import RhythmWheel from "@/components/rhythm-wheel";
+import CtaButton from "@/components/cta-button";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -224,12 +224,9 @@ export default async function LebendigeFuehrungPage() {
             {einladung}
           </h2>
           <p className="mt-3 text-[17px] text-ink-soft">Dann lass uns reden.</p>
-          <Link
-            href="/kennenlerngespraech"
-            className="mt-6 inline-block rounded-full bg-ink px-8 py-3 text-[15px] font-medium text-paper transition-all duration-200 ease-out hover:-translate-y-1.5 hover:bg-accent-dark hover:shadow-xl"
-          >
+          <CtaButton href="/kennenlerngespraech" className="mt-6">
             Kennenlerngespräch vereinbaren
-          </Link>
+          </CtaButton>
         </div>
       </section>
     </>

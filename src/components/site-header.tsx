@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { Segment } from "@/lib/segment";
 import { SEGMENT_META, resolveSegmentFromPath } from "@/lib/segment";
 import LogoMark from "@/components/logo-mark";
+import CtaButton from "@/components/cta-button";
 
 export default function SiteHeader({ segment: initialSegment }: { segment: Segment }) {
   const pathname = usePathname();
@@ -57,12 +58,9 @@ export default function SiteHeader({ segment: initialSegment }: { segment: Segme
           >
             Über mich
           </Link>
-          <Link
-            href="/kennenlerngespraech"
-            className="rounded-full border border-hairline px-4 py-2 text-ink transition-all duration-200 ease-out hover:-translate-y-1.5 hover:border-accent hover:text-accent hover:shadow-lg"
-          >
+          <CtaButton href="/kennenlerngespraech" variant="outline">
             Kennenlerngespräch
-          </Link>
+          </CtaButton>
         </nav>
       </div>
     </header>
