@@ -18,7 +18,7 @@ export default function SiteHeader({ segment: initialSegment }: { segment: Segme
   ];
 
   return (
-    <header className="border-b border-hairline">
+    <header className="sticky top-0 z-50 border-b border-hairline bg-paper/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 md:flex-row md:items-center md:justify-between md:px-10">
         <Link
           href="/"
