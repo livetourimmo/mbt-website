@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { getSegment } from "@/lib/get-segment.server";
 import SectionText from "@/components/section-text";
-import SectionImage from "@/components/section-image";
 import MediaPlaceholder from "@/components/media-placeholder";
-import RhythmWheel from "@/components/rhythm-wheel";
 import CtaButton from "@/components/cta-button";
+import ScrollScrub from "@/components/scroll-scrub";
+import OrganismMorph from "@/components/organism-morph";
+import GrowthMedia from "@/components/growth-media";
+import RhythmMedia from "@/components/rhythm-media";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -38,6 +40,29 @@ const bedingungen = [
       "Der Gärtner beobachtet, giesst, wo es trocken ist, und lässt das Übrige geschehen. Aus dem Gewachsenen entstehen neue Samen.",
     fuehrung:
       "In der Führung ist die Pflege das aufmerksame Begleiten: hinschauen, was entsteht, aus der Wirkung lernen, daraus den nächsten Schritt wählen. Jede Erfahrung vertieft die Orientierung. So schliesst sich der Kreis: Aus der Pflege entsteht das Saatgut des nächsten Schritts.",
+  },
+];
+
+const rhythmus = [
+  {
+    titel: "Ausprobieren",
+    text: "Ein Schritt wird gewagt, ohne dass die Wirkung schon feststeht. Aus der Bereitschaft, etwas auszuprobieren, entsteht die erste Erfahrung.",
+  },
+  {
+    titel: "Resonanz erleben",
+    text: "Das Handeln trifft auf die Wirklichkeit. Reaktionen, Ergebnisse und Rückmeldungen zeigen, was die Entscheidung tatsächlich bewirkt hat.",
+  },
+  {
+    titel: "Innehalten",
+    text: "Bevor sofort weitergemacht wird, entsteht ein bewusster Moment des Anhaltens. Erst im Innehalten wird sichtbar, was wirklich geschehen ist.",
+  },
+  {
+    titel: "Reflektieren",
+    text: "Die gemachte Erfahrung wird betrachtet und eingeordnet: Was hat getragen, was hat gefehlt? Aus dieser Klarheit wächst Verständnis.",
+  },
+  {
+    titel: "Entscheiden",
+    text: "Aus dem Verstandenen wird der nächste Schritt gewählt — bewusster als zuvor. Damit schliesst sich der Kreis, und ein neues Ausprobieren beginnt.",
   },
 ];
 
@@ -98,9 +123,9 @@ export default async function LebendigeFuehrungPage() {
         </p>
       </SectionText>
 
-      {/* Drei Bedingungen */}
+      {/* Drei Bedingungen — beim Scrollen gepinnt & durchgescrubbt */}
       <section className="border-t border-hairline bg-neutral-tint">
-        <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-7xl px-6 pt-20 md:px-10 md:pt-28">
           <div className="grid gap-6 md:grid-cols-12 md:gap-10">
             <h2 className="font-display text-[1.6rem] leading-[1.15] font-semibold text-ink md:col-span-4 md:text-[2rem]">
               Drei Bedingungen, unter denen Verantwortung wachsen kann
@@ -110,27 +135,22 @@ export default async function LebendigeFuehrungPage() {
               wirken, wo Menschen in Verantwortung hineinwachsen.
             </p>
           </div>
+        </div>
 
-          <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
-            {bedingungen.map((b) => (
-              <div
-                key={b.titel}
-                className="border-t-2 border-accent pt-6 transition-transform duration-300 ease-out hover:-translate-y-1"
-              >
-                <h3 className="font-display text-[1.25rem] font-semibold text-ink">
-                  {b.titel}
-                </h3>
-                <p className="mt-4 text-[15px] leading-relaxed text-ink-soft italic">
-                  {b.bild}
-                </p>
-                <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
-                  {b.fuehrung}
-                </p>
-              </div>
-            ))}
-          </div>
+        <ScrollScrub
+          stages={bedingungen.map((b) => ({
+            key: b.titel,
+            title: b.titel,
+            paragraphs: [
+              { text: b.bild, emphasis: true },
+              { text: b.fuehrung },
+            ],
+          }))}
+          media={<GrowthMedia labels={bedingungen.map((b) => b.titel)} />}
+        />
 
-          <p className="mt-16 max-w-3xl font-display text-[19px] font-medium text-ink">
+        <div className="mx-auto max-w-7xl px-6 pb-20 md:px-10 md:pb-28">
+          <p className="max-w-3xl font-display text-[19px] font-medium text-ink">
             So wächst die Fähigkeit eines Menschen, eigene Entscheidungen im
             Sinne des Ganzen zu treffen. Und mit ihm entwickelt sich die
             Lernfähigkeit des Unternehmens.
@@ -138,24 +158,15 @@ export default async function LebendigeFuehrungPage() {
         </div>
       </section>
 
-      {/* Animations-Platzhalter */}
+      {/* Vom Organigramm zur lebendigen Struktur — scroll-gekoppelte Morph-Animation */}
       <section className="border-t border-hairline">
         <div className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-          <MediaPlaceholder
-            kind="animation"
-            label="Animation folgt: Aus einem Organigramm wird eine lebendige, pulsierende Struktur"
-            aspect="aspect-video"
-          />
+          <OrganismMorph className="w-full" />
         </div>
       </section>
 
       {/* Wie lebendige Führung wachsen kann */}
-      <SectionImage
-        heading="Wie lebendige Führung wachsen kann"
-        imageSide="left"
-        tint="var(--color-neutral-tint)"
-        media={<RhythmWheel className="max-w-md p-4 md:p-8" />}
-      >
+      <SectionText heading="Wie lebendige Führung wachsen kann" tint="var(--color-neutral-tint)">
         <p>
           In der Natur beginnt Wachstum im Kleinen. Eine einzelne Zelle
           trägt bereits die Fähigkeit in sich, sich zu entwickeln. Sie
@@ -165,23 +176,44 @@ export default async function LebendigeFuehrungPage() {
         <p>
           Auch im Unternehmen beginnt Entwicklung an einem konkreten Ort.
           Ein Mensch oder ein Team erhält die Möglichkeit, ein Anliegen nach
-          eigenen Vorstellungen und im Sinne des Ganzen umzusetzen.
+          eigenen Vorstellungen und im Sinne des Ganzen umzusetzen. Im
+          eigenen Handeln entsteht Erfahrung — und daraus ein
+          wiederkehrender Rhythmus:
         </p>
-        <p>
-          Im eigenen Handeln entsteht Erfahrung. Menschen erleben, was ihre
-          Entscheidung bewirkt, wo sie trägt und wo etwas fehlt. Wird diese
-          Erfahrung gemeinsam betrachtet, entwickelt sich daraus die
-          Fähigkeit, den nächsten Schritt bewusster zu wählen: ausprobieren,
-          Resonanz erleben, innehalten, reflektieren, entscheiden — und
-          wieder von vorn.
-        </p>
-        <p>
-          Was sich dabei bewährt, wird weiterentwickelt. Was noch nicht
-          trägt, wird angepasst. Mit jedem Durchgang wächst die
-          Entscheidungsfähigkeit der Menschen und die Lernfähigkeit des
-          Unternehmens.
-        </p>
-      </SectionImage>
+      </SectionText>
+
+      {/* Die fünf Bewegungen des Rhythmus — beim Scrollen gepinnt & durchgescrubbt */}
+      <section className="border-t border-hairline bg-neutral-tint">
+        <div className="mx-auto max-w-7xl px-6 pt-20 md:px-10 md:pt-28">
+          <div className="grid gap-6 md:grid-cols-12 md:gap-10">
+            <h2 className="font-display text-[1.6rem] leading-[1.15] font-semibold text-ink md:col-span-4 md:text-[2rem]">
+              Die fünf Bewegungen des Rhythmus
+            </h2>
+            <p className="max-w-2xl text-[17px] leading-relaxed text-ink-soft md:col-span-7 md:col-start-6">
+              Ausprobieren, Resonanz erleben, Innehalten, Reflektieren,
+              Entscheiden — und wieder von vorn.
+            </p>
+          </div>
+        </div>
+
+        <ScrollScrub
+          stages={rhythmus.map((r) => ({
+            key: r.titel,
+            title: r.titel,
+            paragraphs: [{ text: r.text }],
+          }))}
+          media={<RhythmMedia />}
+        />
+
+        <div className="mx-auto max-w-7xl px-6 pb-20 md:px-10 md:pb-28">
+          <p className="max-w-3xl text-[17px] leading-relaxed text-ink-soft">
+            Was sich dabei bewährt, wird weiterentwickelt. Was noch nicht
+            trägt, wird angepasst. Mit jedem Durchgang wächst die
+            Entscheidungsfähigkeit der Menschen und die Lernfähigkeit des
+            Unternehmens.
+          </p>
+        </div>
+      </section>
 
       {/* Entwicklung aufmerksam begleiten */}
       <SectionText heading="Entwicklung aufmerksam begleiten">

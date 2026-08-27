@@ -45,8 +45,10 @@ function arcPath(
 
 export default function RhythmWheel({
   className = "",
+  activeIndex,
 }: {
   className?: string;
+  activeIndex?: number;
 }) {
   const cx = 190;
   const cy = 190;
@@ -82,8 +84,20 @@ export default function RhythmWheel({
           const labelPos = polar(cx, cy, rLabel + (seg.radiusOffset ?? 0), mid);
           const firstDy = -((seg.lines.length - 1) * 0.6);
 
+          const isActive = activeIndex === i;
+          const isDimmed = activeIndex !== undefined && !isActive;
+
           return (
-            <g key={seg.lines.join(" ")}>
+            <g
+              key={seg.lines.join(" ")}
+              style={{
+                opacity: isDimmed ? 0.32 : 1,
+                filter: isActive
+                  ? "drop-shadow(0 0 10px rgba(255,255,255,0.5))"
+                  : undefined,
+                transition: "opacity 0.4s ease, filter 0.4s ease",
+              }}
+            >
               <path
                 d={arcPath(cx, cy, rOuter, rInner, start, end)}
                 fill={seg.color}
