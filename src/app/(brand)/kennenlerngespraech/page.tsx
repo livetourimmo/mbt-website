@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { SEGMENT_META } from "@/lib/segment";
 import { getSegment } from "@/lib/get-segment.server";
-import CtaButton from "@/components/cta-button";
+import ContactForm from "@/components/contact-form";
 
 export const metadata: Metadata = {
   title: "Kennenlerngespräch",
@@ -10,10 +9,9 @@ export const metadata: Metadata = {
 
 export default async function KennenlerngespraechPage() {
   const segment = await getSegment();
-  const meta = SEGMENT_META[segment];
 
   return (
-    <section className="mx-auto max-w-2xl px-6 py-24 text-center md:px-10 md:py-32">
+    <section className="mx-auto max-w-lg px-6 py-24 text-center md:px-10 md:py-32">
       <h1 className="font-display text-[2rem] font-semibold text-ink md:text-[2.5rem]">
         Kennenlerngespräch
       </h1>
@@ -21,9 +19,11 @@ export default async function KennenlerngespraechPage() {
         Schreib mir eine kurze Nachricht — ich melde mich, um einen Termin für
         ein unverbindliches Gespräch zu finden.
       </p>
-      <CtaButton href={`mailto:${meta.email}`} className="mt-8">
-        {meta.email}
-      </CtaButton>
+      <ContactForm
+        segment={segment}
+        tone={segment === "coaching" ? "accent" : "ink"}
+        className="mt-8 text-left"
+      />
     </section>
   );
 }

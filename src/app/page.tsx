@@ -33,8 +33,8 @@ export default function Home() {
   return (
     <div className="relative flex h-screen min-h-[640px] w-full flex-col overflow-hidden bg-ink md:flex-row">
       <Image
-        src="/images/bank-sitzend.png"
-        alt="Markus Tappolet sitzt auf einer Bank unter einem Baum."
+        src="/images/startseite.png"
+        alt="Markus Tappolet sitzt zweimal auf derselben Bank unter einem Baum — links im Anzug für Consulting, rechts leger für Coaching."
         fill
         priority
         sizes="100vw"

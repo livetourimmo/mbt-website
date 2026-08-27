@@ -224,7 +224,11 @@ export default async function LebendigeFuehrungPage() {
             {einladung}
           </h2>
           <p className="mt-3 text-[17px] text-ink-soft">Dann lass uns reden.</p>
-          <CtaButton href="/kennenlerngespraech" className="mt-6">
+          <CtaButton
+            href="/kennenlerngespraech"
+            tone={segment === "coaching" ? "accent" : "ink"}
+            className="mt-6"
+          >
             Kennenlerngespräch vereinbaren
           </CtaButton>
         </div>

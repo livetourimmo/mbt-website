@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import SectionText from "@/components/section-text";
 import SectionImage from "@/components/section-image";
 import HeroFull from "@/components/hero-full";
-import CtaButton from "@/components/cta-button";
+import OfferSection from "@/components/offer-section";
+import ContactForm from "@/components/contact-form";
+import ScrollGif from "@/components/scroll-gif";
 
 export const metadata: Metadata = {
   title: "Consulting für Unternehmensführungen",
@@ -67,7 +68,17 @@ export default function ConsultingPage() {
       </SectionImage>
 
       {/* Alte Strukturen */}
-      <SectionText heading="Alte Strukturen" tint="var(--color-neutral-tint)">
+      <SectionImage
+        heading="Alte Strukturen"
+        imageSide="right"
+        tint="var(--color-neutral-tint)"
+        media={
+          <ScrollGif
+            src="/gifs/informationskette.gif"
+            alt="Eine hierarchische Befehlskette bricht auseinander, während Informationen in alle Richtungen fluten."
+          />
+        }
+      >
         <p className="text-[19px] leading-snug text-ink">
           Befehlsketten halten der Dynamik nicht mehr stand.
         </p>
@@ -88,10 +99,19 @@ export default function ConsultingPage() {
           Funktioniert dieses System auch in einer komplexen, gleichzeitigen
           und volatilen Welt?
         </p>
-      </SectionText>
+      </SectionImage>
 
       {/* Ein anderes Denken */}
-      <SectionText heading="Ein anderes Denken">
+      <SectionImage
+        heading="Ein anderes Denken"
+        imageSide="left"
+        media={
+          <ScrollGif
+            src="/gifs/ein-anderes-denken-consulting.gif"
+            alt="Ein Mensch verlässt eine mechanische, zahnradgetriebene Welt und tritt in ein Licht voller neuer Möglichkeiten."
+          />
+        }
+      >
         <p className="text-[19px] leading-snug text-ink">
           Probleme, die aus einer alten Logik entstanden sind, lassen sich
           nicht mit derselben Logik lösen.
@@ -110,7 +130,7 @@ export default function ConsultingPage() {
           Erst wenn man die Perspektive verändert, wird eine neue Lösung
           sichtbar.
         </p>
-      </SectionText>
+      </SectionImage>
 
       {/* Neue Orientierung — bridge to Lebendige Führung */}
       <SectionImage
@@ -118,12 +138,9 @@ export default function ConsultingPage() {
         imageSide="right"
         tint="var(--color-consulting-tint)"
         media={
-          <Image
-            src="/images/saatgut-haende.png"
+          <ScrollGif
+            src="/gifs/lebendige-fuehrung-consulting-coaching.gif"
             alt="Zwei Hände halten Erde mit einem jungen Setzling, im Hintergrund ein grosser Baum."
-            width={1672}
-            height={941}
-            className="h-full w-full object-cover"
           />
         }
       >
@@ -147,6 +164,9 @@ export default function ConsultingPage() {
           übernehmen und sich entwickeln können.
         </p>
       </SectionImage>
+
+      {/* Angebot — zwei Musterangebote */}
+      <OfferSection />
 
       {/* Der klare Blick + Kennenlerngespräch */}
       <SectionImage
@@ -175,9 +195,7 @@ export default function ConsultingPage() {
           an dem Menschen mit Begeisterung wirken und abends erfüllt nach
           Hause gehen.
         </p>
-        <CtaButton href="/kennenlerngespraech" className="mt-2">
-          Kennenlerngespräch vereinbaren
-        </CtaButton>
+        <ContactForm segment="consulting" className="mt-2 max-w-sm" />
       </SectionImage>
     </>
   );

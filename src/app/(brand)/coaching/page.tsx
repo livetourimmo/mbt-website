@@ -4,7 +4,9 @@ import type { Metadata } from "next";
 import SectionText from "@/components/section-text";
 import SectionImage from "@/components/section-image";
 import HeroFull from "@/components/hero-full";
-import CtaButton from "@/components/cta-button";
+import OfferSection from "@/components/offer-section";
+import ContactForm from "@/components/contact-form";
+import ScrollGif from "@/components/scroll-gif";
 
 export const metadata: Metadata = {
   title: "Coaching für Führungspersönlichkeiten",
@@ -67,7 +69,17 @@ export default function CoachingPage() {
       </SectionImage>
 
       {/* Informationszeitalter */}
-      <SectionText heading="Informationszeitalter" tint="var(--color-coaching-tint)">
+      <SectionImage
+        heading="Informationszeitalter"
+        imageSide="right"
+        tint="var(--color-coaching-tint)"
+        media={
+          <ScrollGif
+            src="/gifs/informationszeitalter-coaching.gif"
+            alt="Wissen strömt aus einer alten Bibliothek heraus und verbindet Menschen, die gemeinsam Informationen austauschen."
+          />
+        }
+      >
         <p className="text-[19px] leading-snug text-ink">
           Wir leben in einer neuen Zeit mit alten Führungsbildern.
         </p>
@@ -89,7 +101,7 @@ export default function CoachingPage() {
           Was braucht ein Mensch, der selbst denkt und urteilt, um gerne zu
           folgen?
         </p>
-      </SectionText>
+      </SectionImage>
 
       {/* Ein anderes Denken */}
       <SectionText heading="Ein anderes Denken">
@@ -119,12 +131,9 @@ export default function CoachingPage() {
         imageSide="right"
         tint="var(--color-coaching-tint)"
         media={
-          <Image
-            src="/images/saatgut-haende.png"
+          <ScrollGif
+            src="/gifs/lebendige-fuehrung-consulting-coaching.gif"
             alt="Zwei Hände halten Erde mit einem jungen Setzling, im Hintergrund ein grosser Baum."
-            width={1672}
-            height={941}
-            className="h-full w-full object-cover"
           />
         }
       >
@@ -147,6 +156,9 @@ export default function CoachingPage() {
           Wirksamkeit im Alltag.
         </p>
       </SectionImage>
+
+      {/* Angebot — zwei Musterangebote */}
+      <OfferSection tint="var(--color-coaching-tint)" />
 
       {/* Der klare Blick + Kennenlerngespräch */}
       <SectionImage
@@ -175,9 +187,7 @@ export default function CoachingPage() {
           Ich begleite dich dahin, die Führungsperson zu sein, die du sein
           willst: klar von innen, wirksam im Alltag.
         </p>
-        <CtaButton href="/kennenlerngespraech" tone="accent" className="mt-2">
-          Kennenlerngespräch vereinbaren
-        </CtaButton>
+        <ContactForm segment="coaching" tone="accent" className="mt-2 max-w-sm" />
       </SectionImage>
     </>
   );
