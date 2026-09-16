@@ -19,7 +19,7 @@ export default function SectionText({
         <h2 className="font-display text-[1.6rem] leading-[1.15] font-semibold text-ink md:col-span-4 md:text-[2rem]">
           {heading}
         </h2>
-        <div className="max-w-2xl space-y-5 text-[17px] leading-relaxed text-ink-soft md:col-span-7 md:col-start-6">
+        <div className="max-w-3xl space-y-5 text-[17px] leading-relaxed text-ink-soft md:col-span-7 md:col-start-6">
           {children}
         </div>
       </Reveal>

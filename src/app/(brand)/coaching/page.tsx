@@ -4,9 +4,33 @@ import type { Metadata } from "next";
 import SectionText from "@/components/section-text";
 import SectionImage from "@/components/section-image";
 import HeroFull from "@/components/hero-full";
-import OfferSection from "@/components/offer-section";
+import OfferSection, { type Angebot } from "@/components/offer-section";
 import ContactForm from "@/components/contact-form";
 import ScrollGif from "@/components/scroll-gif";
+
+const coachingAngebote: readonly Angebot[] = [
+  {
+    titel: "Die eigene Führung gestalten",
+    beschreibung:
+      "Für Führungspersönlichkeiten, die ihre Rolle bewusster gestalten und ihre Wirkung im Führungsalltag weiterentwickeln möchten.",
+    details: ["Persönlich und vertraulich", "Regelmässige Reflexion der eigenen Führung"],
+  },
+  {
+    titel: "Klarheit in Führungssituationen",
+    beschreibung:
+      "Für Führungspersönlichkeiten, die in einer anspruchsvollen Situation Klarheit gewinnen und daraus einen tragfähigen nächsten Schritt entwickeln möchten.",
+    details: [
+      "Persönlich und vertraulich",
+      "Einzelgespräch oder Begleitung über mehrere Termine",
+    ],
+  },
+  {
+    titel: "Verantwortung im Team stärken",
+    beschreibung:
+      "Für Führungspersönlichkeiten, die in ihrem Bereich mehr Eigenständigkeit und eine wirksame Zusammenarbeit ermöglichen möchten.",
+    details: ["Gemeinsam mit dem eigenen Team", "Drei halbtägige Module"],
+  },
+];
 
 export const metadata: Metadata = {
   title: "Coaching für Führungspersönlichkeiten",
@@ -157,8 +181,8 @@ export default function CoachingPage() {
         </p>
       </SectionImage>
 
-      {/* Angebot — zwei Musterangebote */}
-      <OfferSection tint="var(--color-coaching-tint)" />
+      {/* Angebot */}
+      <OfferSection angebote={coachingAngebote} tint="var(--color-coaching-tint)" />
 
       {/* Der klare Blick + Kennenlerngespräch */}
       <SectionImage

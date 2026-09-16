@@ -64,21 +64,33 @@ export default function ContactForm({
 
   return (
     <form onSubmit={handleSubmit} className={`space-y-3 ${className}`}>
+      <label htmlFor="contact-name" className="sr-only">
+        Dein Name
+      </label>
       <input
+        id="contact-name"
         name="name"
         type="text"
         required
         placeholder="Dein Name"
         className={`w-full rounded-lg border border-hairline bg-paper px-4 py-2.5 text-[15px] text-ink outline-none transition-colors focus:ring-2 ${ring}`}
       />
+      <label htmlFor="contact-email" className="sr-only">
+        Deine E-Mail-Adresse
+      </label>
       <input
+        id="contact-email"
         name="email"
         type="email"
         required
         placeholder="Deine E-Mail-Adresse"
         className={`w-full rounded-lg border border-hairline bg-paper px-4 py-2.5 text-[15px] text-ink outline-none transition-colors focus:ring-2 ${ring}`}
       />
+      <label htmlFor="contact-message" className="sr-only">
+        Deine Nachricht
+      </label>
       <textarea
+        id="contact-message"
         name="message"
         required
         rows={3}

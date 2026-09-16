@@ -73,6 +73,17 @@ export default function ScrollScrub({
     return () => window.removeEventListener("scroll", onScroll);
   }, [scrubOn, stages.length]);
 
+  function jumpToStage(index: number) {
+    const el = spacerRef.current;
+    if (!el) return;
+    const total = el.getBoundingClientRect().height - window.innerHeight;
+    if (total <= 0) return;
+    const targetProgress = (index + 0.5) / stages.length;
+    const targetY =
+      window.scrollY + el.getBoundingClientRect().top + targetProgress * total;
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+  }
+
   useEffect(() => {
     if (scrubOn) return;
     const observer = new IntersectionObserver(
@@ -104,6 +115,29 @@ export default function ScrollScrub({
           </div>
 
           <div className="md:relative md:col-span-5 md:min-h-[22rem]">
+            {scrubOn && (
+              <div
+                role="tablist"
+                aria-label="Fortschritt"
+                className="absolute top-1/2 -left-6 hidden -translate-y-1/2 flex-col gap-3 md:flex"
+              >
+                {stages.map((stage, i) => (
+                  <button
+                    key={stage.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={i === activeIndex}
+                    aria-label={`Zu „${stage.title}“ springen`}
+                    onClick={() => jumpToStage(i)}
+                    className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                      i === activeIndex
+                        ? "bg-accent"
+                        : "bg-hairline hover:bg-accent/50"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
             {stages.map((stage, i) => (
               <div
                 key={stage.key}

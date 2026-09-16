@@ -1,21 +1,18 @@
 import Reveal from "@/components/reveal";
 
-const angebote = [
-  {
-    titel: "Identitätsworkshop",
-    beschreibung:
-      "Für Geschäftsleitungen und Teams, die ihre gemeinsame Orientierung schärfen wollen: Wofür stehen wir, und wie wird das im Alltag spürbar?",
-    details: ["1–2 Tage, vor Ort oder extern", "Für Geschäftsleitungen und Teams"],
-  },
-  {
-    titel: "Führungskräfteschulung",
-    beschreibung:
-      "Für Führungspersonen, die ihr eigenes Führungsbild vertiefen und im Alltag wirksamer werden wollen — modular aufgebaut und praxisnah begleitet.",
-    details: ["Modular, 3× halbtags", "Einzeln oder in Gruppen"],
-  },
-] as const;
+export type Angebot = {
+  titel: string;
+  beschreibung: string;
+  details: readonly string[];
+};
 
-export default function OfferSection({ tint }: { tint?: string }) {
+export default function OfferSection({
+  angebote,
+  tint,
+}: {
+  angebote: readonly Angebot[];
+  tint?: string;
+}) {
   return (
     <section
       className="border-t border-hairline"
@@ -26,31 +23,31 @@ export default function OfferSection({ tint }: { tint?: string }) {
           Angebot
         </h2>
         <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
-          Zwei Beispiele, wie eine Zusammenarbeit konkret aussehen kann.
+          Drei Beispiele, wie eine Zusammenarbeit konkret aussehen kann.
         </p>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
+        <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {angebote.map((a) => (
             <div
               key={a.titel}
-              className="rounded-2xl border border-hairline bg-paper p-8 transition-transform duration-300 ease-out hover:-translate-y-1"
+              className="flex h-full flex-col rounded-2xl border border-hairline bg-paper p-8 transition-transform duration-300 ease-out hover:-translate-y-1"
             >
-              <h3 className="font-display text-[1.25rem] font-semibold text-ink">
+              <h3 className="font-display min-h-[3.75rem] text-[1.25rem] font-semibold text-ink">
                 {a.titel}
               </h3>
-              <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
+              <p className="mt-4 min-h-[6.5rem] text-[15px] leading-relaxed text-ink-soft">
                 {a.beschreibung}
               </p>
               <ul className="mt-6 space-y-2 border-t border-hairline pt-5">
                 {a.details.map((d) => (
                   <li
                     key={d}
-                    className="flex items-center gap-2 text-[14px] text-ink-soft"
+                    className="flex items-start gap-2 text-[14px] leading-relaxed text-ink-soft"
                   >
                     <span aria-hidden className="text-accent">
                       —
                     </span>
-                    {d}
+                    <span>{d}</span>
                   </li>
                 ))}
               </ul>

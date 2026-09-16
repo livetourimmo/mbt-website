@@ -3,9 +3,39 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import SectionImage from "@/components/section-image";
 import HeroFull from "@/components/hero-full";
-import OfferSection from "@/components/offer-section";
+import OfferSection, { type Angebot } from "@/components/offer-section";
 import ContactForm from "@/components/contact-form";
 import ScrollGif from "@/components/scroll-gif";
+
+const consultingAngebote: readonly Angebot[] = [
+  {
+    titel: "Unternehmensidentität entwickeln",
+    beschreibung:
+      "Wenn Menschen wissen, wofür ihr Unternehmen steht und wohin es sich entwickeln will, können sie selbstständiger entscheiden und Verantwortung übernehmen.",
+    details: [
+      "Einstieg mit einem Workshop",
+      "Schrittweise im Unternehmensalltag vertiefen",
+    ],
+  },
+  {
+    titel: "Persönliche Begleitung",
+    beschreibung:
+      "Für CEOs, die ihr Unternehmen weiterentwickeln und dabei Klarheit und Überblick bewahren möchten.",
+    details: [
+      "Regelmässiger Austausch auf Augenhöhe",
+      "An aktuellen Unternehmensfragen ausgerichtet",
+    ],
+  },
+  {
+    titel: "Führungskräfteentwicklung",
+    beschreibung:
+      "Für Unternehmen, die ihre Führungskräfte gezielt weiterentwickeln und Verantwortung breiter im Unternehmen verankern möchten.",
+    details: [
+      "Praxisnahe Workshops",
+      "Modular und der Unternehmensidentität ausgerichtet",
+    ],
+  },
+];
 
 export const metadata: Metadata = {
   title: "Consulting für Unternehmensführungen",
@@ -165,8 +195,8 @@ export default function ConsultingPage() {
         </p>
       </SectionImage>
 
-      {/* Angebot — zwei Musterangebote */}
-      <OfferSection />
+      {/* Angebot */}
+      <OfferSection angebote={consultingAngebote} />
 
       {/* Der klare Blick + Kennenlerngespräch */}
       <SectionImage
