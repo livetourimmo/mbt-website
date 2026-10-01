@@ -12,6 +12,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  // Fotos mit höherer Qualität ausliefern als der Standard (75), sonst
+  // entstehen in Himmel und Laub sichtbare Kompressionsspuren.
+  images: { qualities: [85] },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

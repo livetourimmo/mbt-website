@@ -46,10 +46,19 @@ function arcPath(
 export default function RhythmWheel({
   className = "",
   activeIndex,
+  progress,
+  onSelect,
 }: {
   className?: string;
   activeIndex?: number;
+  /** 0–1: füllt einen feinen Ring um das Rad (Fortschritt beim Scrollen) */
+  progress?: number;
+  /** Klick auf ein Segment springt zu diesem Schritt */
+  onSelect?: (index: number) => void;
 }) {
+  const rRing = 178;
+  const ringLength = 2 * Math.PI * rRing;
+  const active = activeIndex !== undefined ? RHYTHM[activeIndex] : undefined;
   const cx = 190;
   const cy = 190;
   const rOuter = 160;
@@ -97,10 +106,26 @@ export default function RhythmWheel({
           return (
             <g
               key={seg.lines.join(" ")}
+              role={onSelect ? "button" : undefined}
+              tabIndex={onSelect ? 0 : undefined}
+              aria-label={onSelect ? `Zu „${seg.lines.join(" ")}“ springen` : undefined}
+              aria-pressed={onSelect ? isActive : undefined}
+              onClick={onSelect ? () => onSelect(i) : undefined}
+              onKeyDown={
+                onSelect
+                  ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onSelect(i);
+                      }
+                    }
+                  : undefined
+              }
+              className={onSelect ? "cursor-pointer outline-none focus-visible:opacity-80" : undefined}
               style={{
                 transform: isActive ? "scale(1.04)" : "scale(1)",
                 transformOrigin: `${cx}px ${cy}px`,
-                transition: "transform 0.5s cubic-bezier(0.22,1,0.36,1)",
+                transition: "transform 0.6s cubic-bezier(0.22,1,0.36,1)",
               }}
             >
               <path
@@ -136,28 +161,82 @@ export default function RhythmWheel({
         })}
       </g>
 
-      <text
-        x={cx}
-        y={cy - 8}
-        textAnchor="middle"
-        fill="var(--color-ink)"
-        fontFamily="var(--font-display)"
-        fontSize="15"
-        fontWeight={600}
-      >
-        Der
-      </text>
-      <text
-        x={cx}
-        y={cy + 14}
-        textAnchor="middle"
-        fill="var(--color-ink)"
-        fontFamily="var(--font-display)"
-        fontSize="15"
-        fontWeight={600}
-      >
-        Rhythmus
-      </text>
+      {/* Fortschrittsring: füllt sich beim Scrollen im Uhrzeigersinn, ab 12 Uhr */}
+      {progress !== undefined && (
+        <g aria-hidden>
+          <circle cx={cx} cy={cy} r={rRing} fill="none" stroke="var(--color-hairline)" strokeWidth={2} />
+          <circle
+            cx={cx}
+            cy={cy}
+            r={rRing}
+            fill="none"
+            stroke="var(--color-accent)"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeDasharray={ringLength}
+            strokeDashoffset={ringLength * (1 - progress)}
+            transform={`rotate(-90 ${cx} ${cy})`}
+            style={{ transition: "stroke-dashoffset 0.15s linear" }}
+          />
+        </g>
+      )}
+
+      {/* Mitte: aktueller Schritt, sonst «Der Rhythmus» */}
+      {active && activeIndex !== undefined ? (
+        <g key={activeIndex} className="rhythm-center" aria-hidden>
+          <text
+            x={cx}
+            y={cy - (active.lines.length > 1 ? 24 : 14)}
+            textAnchor="middle"
+            fill="var(--color-accent)"
+            fontFamily="var(--font-display)"
+            fontSize="13"
+            fontWeight={600}
+          >
+            {String(activeIndex + 1).padStart(2, "0")}
+          </text>
+          <text
+            x={cx}
+            y={cy + (active.lines.length > 1 ? 0 : 10)}
+            textAnchor="middle"
+            fill="var(--color-ink)"
+            fontFamily="var(--font-display)"
+            fontSize="16"
+            fontWeight={600}
+          >
+            {active.lines.map((line, li) => (
+              <tspan key={line} x={cx} dy={li === 0 ? 0 : "1.25em"}>
+                {line}
+              </tspan>
+            ))}
+          </text>
+        </g>
+      ) : (
+        <>
+          <text
+            x={cx}
+            y={cy - 8}
+            textAnchor="middle"
+            fill="var(--color-ink)"
+            fontFamily="var(--font-display)"
+            fontSize="15"
+            fontWeight={600}
+          >
+            Der
+          </text>
+          <text
+            x={cx}
+            y={cy + 14}
+            textAnchor="middle"
+            fill="var(--color-ink)"
+            fontFamily="var(--font-display)"
+            fontSize="15"
+            fontWeight={600}
+          >
+            Rhythmus
+          </text>
+        </>
+      )}
     </svg>
   );
 }

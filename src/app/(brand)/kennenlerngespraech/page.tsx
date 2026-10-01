@@ -30,11 +30,11 @@ export default async function KennenlerngespraechPage() {
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-12 md:gap-10 md:px-10 md:py-24 lg:py-28">
         <div className="img-reveal relative aspect-[4/5] overflow-hidden rounded-3xl md:aspect-auto md:col-span-5">
           <Image
-            src="/images/markus-portrait.jpg"
+            src="/images/portrait-polo.jpg"
             alt="Porträt von Markus Tappolet"
             fill
             sizes="(min-width: 768px) 40vw, 100vw"
-            className="object-cover object-top"
+            className="object-cover object-[50%_25%]"
           />
         </div>
 

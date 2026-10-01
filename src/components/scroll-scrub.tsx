@@ -15,7 +15,12 @@ export type ScrubStage = {
   paragraphs: { text: string; emphasis?: boolean }[];
 };
 
-type ScrubState = { activeIndex: number; progress: number };
+type ScrubState = {
+  activeIndex: number;
+  progress: number;
+  /** Springt zu einem Schritt (nur im Scrub-Modus, sonst undefined) */
+  jumpTo?: (index: number) => void;
+};
 
 const ScrubContext = createContext<ScrubState>({ activeIndex: 0, progress: 0 });
 
@@ -106,38 +111,17 @@ export default function ScrollScrub({
       style={scrubOn ? { height: `${(stages.length + 1) * 100}vh` } : undefined}
       className="relative"
     >
-      <div className={scrubOn ? "sticky top-20 py-8 md:top-24" : "py-12 md:py-16"}>
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-12 md:items-center md:gap-10 md:px-10">
+      <div className={scrubOn ? "sticky top-0 flex h-screen items-center py-8" : "py-12 md:py-16"}>
+        <div className="mx-auto grid w-full max-w-7xl gap-10 px-6 md:grid-cols-12 md:items-center md:gap-10 md:px-10">
           <div className="md:col-span-7">
-            <ScrubContext.Provider value={{ activeIndex, progress }}>
+            <ScrubContext.Provider
+              value={{ activeIndex, progress, jumpTo: scrubOn ? jumpToStage : undefined }}
+            >
               {media}
             </ScrubContext.Provider>
           </div>
 
           <div className="md:relative md:col-span-5 md:min-h-[22rem]">
-            {scrubOn && (
-              <div
-                role="tablist"
-                aria-label="Fortschritt"
-                className="absolute top-1/2 -left-6 hidden -translate-y-1/2 flex-col gap-3 md:flex"
-              >
-                {stages.map((stage, i) => (
-                  <button
-                    key={stage.key}
-                    type="button"
-                    role="tab"
-                    aria-selected={i === activeIndex}
-                    aria-label={`Zu „${stage.title}“ springen`}
-                    onClick={() => jumpToStage(i)}
-                    className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                      i === activeIndex
-                        ? "bg-accent"
-                        : "bg-hairline hover:bg-accent/50"
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
             {stages.map((stage, i) => (
               <div
                 key={stage.key}
@@ -147,21 +131,25 @@ export default function ScrollScrub({
                 data-index={i}
                 className={
                   scrubOn
-                    ? `border-t-2 border-accent pt-6 transition-opacity duration-500 md:absolute md:inset-0 ${
+                    ? `border-t-2 border-accent pt-6 transition-[opacity,translate] ease-out md:absolute md:inset-x-0 md:top-1/2 ${
                         i === activeIndex
-                          ? "opacity-100"
-                          : "pointer-events-none opacity-0"
+                          ? "opacity-100 delay-200 duration-700 md:-translate-y-1/2"
+                          : "pointer-events-none opacity-0 duration-200 md:translate-y-[calc(-50%+12px)]"
                       }`
                     : "mb-10 border-t-2 border-accent pt-6 last:mb-0"
                 }
               >
-                <h3 className="font-display text-[1.25rem] font-semibold text-ink">
+                <p className="font-display text-[14px] font-semibold tracking-wide text-accent">
+                  {String(i + 1).padStart(2, "0")}
+                  <span className="text-ink-soft/60"> / {String(stages.length).padStart(2, "0")}</span>
+                </p>
+                <h3 className="mt-2 font-display text-[1.5rem] font-semibold text-ink md:text-[1.75rem]">
                   {stage.title}
                 </h3>
                 {stage.paragraphs.map((p, pi) => (
                   <p
                     key={pi}
-                    className={`mt-4 text-[15px] leading-relaxed text-ink-soft ${
+                    className={`mt-4 text-[16px] leading-relaxed text-ink-soft ${
                       p.emphasis ? "italic" : ""
                     }`}
                   >

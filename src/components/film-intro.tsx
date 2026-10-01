@@ -21,7 +21,7 @@ export default function FilmIntro({ onDone }: { onDone: () => void }) {
   return (
     <div className="relative h-[70vh] max-h-[640px] min-h-[420px] overflow-hidden bg-paper">
       <Image
-        src="/images/bank-ankunft.png"
+        src="/images/consulting-hero.jpg"
         alt=""
         aria-hidden
         fill
@@ -30,7 +30,7 @@ export default function FilmIntro({ onDone }: { onDone: () => void }) {
         className="object-cover [animation:film-walk_7s_ease-in-out_forwards]"
       />
       <Image
-        src="/images/bank-sitzend.png"
+        src="/images/bank-anzug.jpg"
         alt=""
         aria-hidden
         fill

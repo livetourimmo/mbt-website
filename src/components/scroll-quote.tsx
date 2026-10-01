@@ -24,7 +24,7 @@ export default function ScrollQuote({
       mm.add(MOTION_OK, () => {
         gsap.fromTo(
           ".q-word",
-          { opacity: 0.18 },
+          { opacity: 0.5 },
           {
             opacity: 1,
             stagger: 0.08,

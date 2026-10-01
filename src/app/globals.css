@@ -37,7 +37,7 @@ body {
 @keyframes rise-in {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -59,11 +59,14 @@ body {
   }
 }
 
+/* Bilder blenden weich ein und setzen sich mit einem kaum merklichen Zoom */
 @keyframes hero-breathe {
   from {
-    transform: scale(1.18);
+    opacity: 0;
+    transform: scale(1.04);
   }
   to {
+    opacity: 1;
     transform: scale(1);
   }
 }
@@ -71,7 +74,7 @@ body {
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -82,26 +85,17 @@ body {
 @keyframes glow-drift {
   0%,
   100% {
-    transform: translate3d(-10%, 0, 0) scale(1);
+    transform: translate3d(-3%, 0, 0) scale(1);
     opacity: 0.55;
   }
   50% {
-    transform: translate3d(12%, -6%, 0) scale(1.15);
+    transform: translate3d(4%, -2%, 0) scale(1.04);
     opacity: 0.85;
   }
 }
 
-@keyframes cue-run {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(200%);
-  }
-}
-
 .hero-media {
-  animation: hero-breathe 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: hero-breathe 1.8s ease-out both;
 }
 
 .hero-kicker {
@@ -109,8 +103,8 @@ body {
 }
 
 .hero-title .word-inner {
-  animation: word-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(var(--i, 0) * 70ms + 350ms + var(--door-delay, 0ms));
+  animation: word-rise 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 55ms + 350ms + var(--door-delay, 0ms));
 }
 
 .hero-lede {
@@ -124,12 +118,12 @@ body {
     transform: scale(1) translate3d(0, 0, 0);
   }
   to {
-    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
+    transform: scale(1.04) translate3d(-1%, -0.5%, 0);
   }
 }
 
 .kenburns {
-  animation: kenburns 26s ease-in-out 2.6s infinite alternate;
+  animation: kenburns 40s ease-in-out 1.8s infinite alternate;
 }
 
 @keyframes seam-grow {
@@ -145,13 +139,6 @@ body {
   animation: seam-grow 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.2s both;
 }
 
-.hero-cue {
-  animation: fade-up 0.8s ease-out 1.4s both;
-}
-
-.scroll-cue-line {
-  animation: cue-run 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
 
 /* depth-1: Lichtschimmer, der langsam über das Hero-Bild wandert */
 .hero-glow {
@@ -161,34 +148,12 @@ body {
     transparent 70%
   );
   mix-blend-mode: soft-light;
-  animation: glow-drift 14s ease-in-out infinite;
+  animation: glow-drift 30s ease-in-out infinite;
 }
 
-/* Porträts öffnen sich beim Laden wie ein Vorhang von unten */
-@keyframes img-reveal {
-  from {
-    clip-path: inset(100% 0 0 0 round 24px);
-  }
-  to {
-    clip-path: inset(0 0 0 0 round 24px);
-  }
-}
-
-@keyframes img-settle {
-  from {
-    transform: scale(1.2);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
+/* Porträts blenden beim Laden weich ein */
 .img-reveal {
-  animation: img-reveal 1.6s cubic-bezier(0.77, 0, 0.18, 1) 0.15s both;
-}
-
-.img-reveal > * {
-  animation: img-settle 2.2s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+  animation: hero-breathe 1.6s ease-out 0.15s both;
 }
 
 /* Spotlight auf Karten: folgt dem Mauszeiger (--mx/--my per JS) */
@@ -216,11 +181,6 @@ body {
   opacity: 1;
 }
 
-/* Lesefortschritt oben im Header */
-.scroll-progress {
-  transform-origin: 0 50%;
-  transform: scaleX(var(--progress, 0));
-}
 
 /* Film-Intro: Gehbewegung → Hinsetzen → Zoom ins Buch */
 @keyframes film-walk {
@@ -308,4 +268,43 @@ body {
   .seam-grow {
     animation-name: seam-grow-x;
   }
+}
+
+/* Pop-up «Mehr erfahren» bei den Angeboten */
+.offer-dialog::backdrop {
+  background: rgba(31, 28, 46, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+.offer-dialog[open] {
+  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.offer-dialog[open]::backdrop {
+  animation: fade-in 0.4s ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Seite dahinter scrollt nicht mit, solange ein Pop-up offen ist */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/* Rhythmus-Rad: aktueller Schritt in der Mitte blendet beim Wechsel weich ein */
+.rhythm-center {
+  animation: fade-in 0.6s ease-out both;
+}
+
+/* Silbentrennung in Überschriften nur für wirklich lange Wörter
+   (z. B. «Entscheidungsfähigkeit» auf dem Handy), nie für kurze */
+.hyphens-auto {
+  hyphenate-limit-chars: 14 6 6;
 }

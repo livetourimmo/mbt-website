@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { getSegment } from "@/lib/get-segment.server";
 import SectionText from "@/components/section-text";
-import MediaPlaceholder from "@/components/media-placeholder";
+import FilmClip from "@/components/film-clip";
 import CtaButton from "@/components/cta-button";
 import ScrollScrub from "@/components/scroll-scrub";
 import OrganismMorph from "@/components/organism-morph";
 import GrowthMedia from "@/components/growth-media";
 import RhythmMedia from "@/components/rhythm-media";
 import ScrollQuote from "@/components/scroll-quote";
-import SplitWords from "@/components/split-words";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -77,23 +76,18 @@ export default async function LebendigeFuehrungPage() {
 
   return (
     <div className="register-organic">
-      {/* Video-Platzhalter — vollbild, Seitenanfang */}
-      <section className="relative flex h-[88vh] min-h-[560px] w-full flex-col items-center justify-center gap-8 border-b border-hairline bg-neutral-tint px-6 text-center">
-        <div>
-          <p className="hero-kicker text-[17px] text-ink-soft">Lebendige Führung</p>
-          <h1 className="hero-title mt-3 font-display text-[2.5rem] leading-[1.05] font-semibold tracking-tight text-ink md:text-[4rem]">
-            <SplitWords text="Verantwortung wirkungsvoll übergeben" />
-          </h1>
-        </div>
-        <MediaPlaceholder
-          kind="video"
-          label="Video folgt: Einstiegsfilm"
-          aspect="aspect-video"
-          className="hero-lede w-full max-w-3xl overflow-hidden rounded-3xl"
+      {/* Einstiegsfilm: endet im Buch, danach geht es direkt zum ersten Abschnitt */}
+      <section className="relative w-full">
+        <h1 className="sr-only">Lebendige Führung: Verantwortung wirkungsvoll übergeben</h1>
+        <FilmClip
+          name="film-anfang"
+          label="Markus Tappolet geht über eine Wiese, setzt sich unter einen Baum und öffnet ein Buch."
+          scrollToId="einordnung"
         />
       </section>
 
       {/* Einordnung */}
+      <div id="einordnung" />
       <SectionText heading="Wo übertragen wir Verantwortung?">
         <p>
           Wo übertragen wir Verantwortung in guter Absicht und gehen davon
@@ -148,7 +142,7 @@ export default async function LebendigeFuehrungPage() {
               { text: b.fuehrung },
             ],
           }))}
-          media={<GrowthMedia labels={bedingungen.map((b) => b.titel)} />}
+          media={<GrowthMedia />}
         />
 
         <div className="mx-auto max-w-7xl px-6 pb-20 md:px-10 md:pb-28">
@@ -245,15 +239,14 @@ export default async function LebendigeFuehrungPage() {
         </ScrollQuote>
       </SectionText>
 
-      {/* Video-Platzhalter — vollbild, Seitenschluss + Einladung */}
-      <section className="relative flex h-[88vh] min-h-[560px] w-full flex-col items-center justify-center gap-8 border-t border-hairline bg-neutral-tint px-6 text-center">
-        <MediaPlaceholder
-          kind="video"
-          label="Video folgt: Schlussfilm"
-          aspect="aspect-video"
-          className="w-full max-w-3xl"
+      {/* Schlussfilm + Einladung */}
+      <section className="relative w-full border-t border-hairline bg-neutral-tint text-center">
+        <FilmClip
+          name="film-ende"
+          label="Markus Tappolet liest unter dem Baum, steht auf und blickt mit dem Buch unter dem Arm über die Landschaft."
+          className="w-full"
         />
-        <div>
+        <div className="px-6 py-20 md:py-28">
           <h2 className="font-display text-[1.75rem] font-semibold text-ink md:text-[2rem]">
             {einladung}
           </h2>

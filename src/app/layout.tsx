@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "de_CH",
     siteName: "Markus Tappolet — Lebendige Führung",
-    images: [{ url: "/images/startseite.png", alt: "Markus Tappolet auf einer Bank unter einem Baum" }],
+    images: [{ url: "/images/startseite.jpg", alt: "Markus Tappolet auf einer Bank unter einem Baum" }],
   },
   title: {
     default: "Markus Tappolet — Lebendige Führung",

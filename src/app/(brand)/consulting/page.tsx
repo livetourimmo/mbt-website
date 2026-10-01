@@ -19,6 +19,18 @@ const consultingAngebote: readonly Angebot[] = [
       "Einstieg mit einem Workshop",
       "Schrittweise im Unternehmensalltag vertiefen",
     ],
+    mehr: {
+      text: [
+        "Eine gelebte Identität gibt Orientierung, wo Vorgaben an ihre Grenzen kommen. Gemeinsam mit der Geschäftsleitung klären wir, wofür euer Unternehmen steht, welche Werte im Alltag tatsächlich tragen und wohin es sich entwickeln will.",
+        "Daraus entsteht kein Leitbild für die Wand, sondern eine innere Orientierung, an der sich Menschen im täglichen Handeln ausrichten können. So werden Entscheidungen leichter und Verantwortung wird breiter übernommen.",
+      ],
+      ablauf: [
+        "Vorgespräch: Ausgangslage, Anliegen und Rahmen klären",
+        "Workshop mit der Geschäftsleitung: Identität, Werte und Richtung herausarbeiten",
+        "Übersetzung in den Alltag: Wo zeigt sich die Identität in Entscheidungen und Abläufen?",
+        "Begleitung über mehrere Monate, um das Erarbeitete schrittweise zu vertiefen",
+      ],
+    },
   },
   {
     titel: "Persönliche Begleitung",
@@ -28,6 +40,18 @@ const consultingAngebote: readonly Angebot[] = [
       "Regelmässiger Austausch auf Augenhöhe",
       "An aktuellen Unternehmensfragen ausgerichtet",
     ],
+    mehr: {
+      text: [
+        "Als CEO trägst du die Verantwortung für das Ganze und bist dabei oft allein mit den grossen Fragen. In der persönlichen Begleitung schaffen wir einen Raum, in dem du offen denken, Entscheidungen durchspielen und Abstand vom Tagesgeschäft gewinnen kannst.",
+        "Ich bringe meine Erfahrung aus Entwicklung, Projektleitung und Innovationsmanagement ein, stelle Fragen und verbinde Perspektiven. Die Antworten entwickeln wir aus deiner Situation und dem, was in deinem Unternehmen bereits vorhanden ist.",
+      ],
+      ablauf: [
+        "Kennenlerngespräch: Passt die Zusammenarbeit?",
+        "Regelmässige Gespräche, zum Beispiel einmal im Monat",
+        "Kurzfristige Unterstützung bei anstehenden Entscheidungen",
+        "Gemeinsamer Rückblick: Was hat sich bewegt, was steht als Nächstes an?",
+      ],
+    },
   },
   {
     titel: "Führungskräfteentwicklung",
@@ -37,6 +61,18 @@ const consultingAngebote: readonly Angebot[] = [
       "Praxisnahe Workshops",
       "Modular und der Unternehmensidentität ausgerichtet",
     ],
+    mehr: {
+      text: [
+        "Führungskräfte prägen, ob Verantwortung im Unternehmen wachsen kann. In praxisnahen Workshops reflektieren sie ihre eigene Führung, erkennen vertraute Muster und erproben neue Wege, Orientierung zu geben und Entscheidungsräume zu öffnen.",
+        "Die Module richten sich an der Identität eures Unternehmens aus und greifen konkrete Situationen aus dem Alltag der Teilnehmenden auf. Zwischen den Modulen wird das Gelernte direkt angewendet.",
+      ],
+      ablauf: [
+        "Abstimmung mit der Geschäftsleitung: Ziele, Teilnehmende und Schwerpunkte",
+        "Mehrere halbtägige Module, verteilt über einige Monate",
+        "Umsetzung im Alltag zwischen den Modulen",
+        "Abschluss mit Rückblick und Ausblick auf die weitere Entwicklung",
+      ],
+    },
   },
 ];
 
@@ -58,12 +94,12 @@ export default function ConsultingPage() {
         tone="ink"
         media={
           <Image
-            src="/images/bank-ankunft.png"
-            alt="Markus Tappolet geht unter einem Baum auf eine Bank zu, im Hintergrund ein See."
+            src="/images/consulting-hero.jpg"
+            alt="Markus Tappolet steht im Anzug unter einem grossen Baum und blickt über die Landschaft zu den Bergen."
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[16%_50%]"
+            className="object-cover object-[74%_12%]"
           />
         }
       />
@@ -214,10 +250,10 @@ export default function ConsultingPage() {
         imageSide="left"
         media={
           <Image
-            src="/images/markus-portrait.jpg"
-            alt="Porträt von Markus Tappolet"
-            width={640}
-            height={960}
+            src="/images/portrait-anzug-baum.jpg"
+            alt="Porträt von Markus Tappolet im Anzug vor einem Baumstamm."
+            width={2000}
+            height={1333}
             className="h-full w-full object-cover"
           />
         }

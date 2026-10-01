@@ -26,12 +26,12 @@ export default function HeroFull({
         // Der Auftritt läuft per CSS (globals.css, .hero-*), damit nichts aufblitzt.
         // Scroll: Bild wandert langsamer (Tiefe), Text hebt sich ab und verblasst
         gsap.to(".hero-parallax", {
-          yPercent: 18,
+          yPercent: 10,
           ease: "none",
           scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
         });
         gsap.to(".hero-content", {
-          yPercent: -30,
+          yPercent: -18,
           autoAlpha: 0,
           ease: "none",
           scrollTrigger: { trigger: root.current, start: "top top", end: "70% top", scrub: true },
@@ -58,9 +58,14 @@ export default function HeroFull({
         }`}
       />
       <div aria-hidden className="hero-glow pointer-events-none absolute inset-0" />
+      {/* Dezenter Verlauf hinter dem Text (links), damit er auch über hellem Laub lesbar bleibt */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/35 via-ink/10 to-transparent md:via-transparent"
+      />
 
       {/* depth-4: Text */}
-      <div className="hero-content absolute inset-x-0 bottom-0 px-6 pb-16 md:px-10 md:pb-20">
+      <div className="hero-content absolute inset-x-0 bottom-0 px-6 pb-16 [text-shadow:0_1px_14px_rgba(15,20,40,0.35)] md:px-10 md:pb-20">
         <div className="mx-auto max-w-7xl">
           {kicker && (
             <p className="hero-kicker inline-flex items-center gap-3 text-[15px] text-paper/85">
@@ -77,17 +82,6 @@ export default function HeroFull({
             </p>
           )}
         </div>
-      </div>
-
-      {/* Scroll-Hinweis */}
-      <div
-        aria-hidden
-        className="hero-cue absolute right-6 bottom-8 hidden flex-col items-center gap-3 text-[11px] tracking-[0.2em] text-paper/70 uppercase md:right-10 md:flex"
-      >
-        <span className="[writing-mode:vertical-rl]">Scrollen</span>
-        <span className="relative h-14 w-px overflow-hidden bg-paper/25">
-          <span className="scroll-cue-line absolute inset-x-0 top-0 h-1/2 bg-paper" />
-        </span>
       </div>
     </section>
   );

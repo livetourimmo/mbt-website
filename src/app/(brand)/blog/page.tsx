@@ -32,7 +32,7 @@ export default function BlogPage() {
             {blogPosts.map((post, i) => (
               <Reveal key={post.slug} delay={(i % 3) * 90}>
                 <Link href={`/blog/${post.slug}`} className="group block h-full">
-                  <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-hairline bg-paper transition-[transform,box-shadow] duration-500 ease-out group-hover:-translate-y-2 group-hover:shadow-[0_24px_48px_-24px_rgba(31,44,87,0.28)]">
+                  <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-hairline bg-paper transition-[transform,box-shadow] duration-500 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_24px_48px_-24px_rgba(31,44,87,0.28)]">
                     <MediaPlaceholder
                       kind="image"
                       label="Bild folgt"

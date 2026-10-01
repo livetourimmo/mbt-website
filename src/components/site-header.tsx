@@ -40,18 +40,15 @@ export default function SiteHeader({ segment: initialSegment }: { segment: Segme
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
-  // Header blendet beim Runterscrollen aus, beim Hochscrollen wieder ein;
-  // der Fortschrittsbalken zeigt, wie weit die Seite gelesen ist.
+  // Header blendet beim Runterscrollen aus, beim Hochscrollen wieder ein.
   useEffect(() => {
     let lastY = window.scrollY;
     let ticking = false;
 
     const update = () => {
       const y = window.scrollY;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      headerRef.current?.style.setProperty("--progress", String(max > 0 ? y / max : 0));
       setCompact(y > 40);
-      setHidden(y > 240 && y > lastY + 4 ? true : y < lastY - 4 ? false : (h) => h);
+      setHidden(y > 240 && y > lastY + 12 ? true : y < lastY - 40 ? false : (h) => h);
       lastY = y;
       ticking = false;
     };
@@ -86,7 +83,7 @@ export default function SiteHeader({ segment: initialSegment }: { segment: Segme
         >
           <LogoMark
             size={30}
-            className="transition-transform duration-700 ease-out group-hover:rotate-[135deg]"
+            className="transition-transform duration-1000 ease-out group-hover:rotate-[45deg]"
           />
           {meta.brand}
         </Link>
@@ -169,10 +166,6 @@ export default function SiteHeader({ segment: initialSegment }: { segment: Segme
           </div>
         </nav>
       </div>
-      <span
-        aria-hidden
-        className="scroll-progress absolute inset-x-0 bottom-[-1px] h-[2px] bg-gradient-to-r from-consulting-accent via-accent to-accent"
-      />
     </header>
   );
 }

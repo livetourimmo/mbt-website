@@ -19,7 +19,7 @@ const doors = [
     cta: "Zum Consulting",
     from: "31, 44, 87",
     delay: "0ms",
-    mobileFocus: "object-[0%_35%]",
+    mobileFocus: "object-[22%_40%]",
   },
   {
     key: "coaching",
@@ -29,7 +29,7 @@ const doors = [
     cta: "Zum Coaching",
     from: "92, 51, 105",
     delay: "180ms",
-    mobileFocus: "object-[100%_35%]",
+    mobileFocus: "object-[78%_40%]",
   },
 ] as const;
 
@@ -40,8 +40,8 @@ export default function Home() {
       <div className="hero-media absolute inset-0 hidden md:block">
         <div className="kenburns absolute inset-0">
           <Image
-            src="/images/startseite.png"
-            alt="Markus Tappolet sitzt zweimal auf derselben Bank unter einem Baum — links im Anzug für Consulting, rechts leger für Coaching."
+            src="/images/startseite.jpg"
+            alt="Markus Tappolet sitzt zweimal auf derselben Bank unter einem Baum: links im Anzug für Consulting, rechts im Polo-Shirt für Coaching."
             fill
             priority
             sizes="100vw"
@@ -61,7 +61,7 @@ export default function Home() {
           {/* Handy: jede Tür zeigt ihre Hälfte des Bildes (Anzug bzw. Polo) */}
           <div className="hero-media absolute inset-0 md:hidden">
             <Image
-              src="/images/startseite.png"
+              src="/images/startseite.jpg"
               alt=""
               fill
               priority
@@ -83,7 +83,7 @@ export default function Home() {
           />
 
           <div
-            className="relative z-10 px-8 pb-16 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-3 md:max-w-md md:px-14 md:pb-20"
+            className="relative z-10 px-8 pb-16 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-2 md:max-w-lg md:px-14 md:pb-20"
             style={{ "--door-delay": door.delay } as React.CSSProperties}
           >
             <h1 className="hero-title door-delay font-display text-[2.75rem] leading-[0.95] font-semibold tracking-tight text-paper md:text-[4rem]">

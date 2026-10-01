@@ -23,7 +23,7 @@ export default function Testimonial({
       mm.add(MOTION_OK, () => {
         gsap
           .timeline({
-            defaults: { ease: "power4.out" },
+            defaults: { ease: "power3.out" },
             scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
           })
           .from(".tm-card", { y: 50, autoAlpha: 0, duration: 1.1 })

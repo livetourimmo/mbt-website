@@ -43,7 +43,7 @@ export default function UeberMichPage() {
         </div>
         <div className="img-reveal relative aspect-[4/5] overflow-hidden rounded-3xl md:col-span-7">
           <Image
-            src="/images/markus-portrait.jpg"
+            src="/images/portrait-anzug.jpg"
             alt="Porträt von Markus Tappolet"
             fill
             sizes="(min-width: 768px) 58vw, 100vw"
@@ -81,10 +81,33 @@ export default function UeberMichPage() {
         </ScrollQuote>
       </SectionText>
 
+      {/* Bildband: Weite als Atempause zwischen den Textabschnitten */}
+      <section className="px-6 pb-20 md:px-10 md:pb-28">
+        <Reveal className="relative mx-auto aspect-[4/3] max-w-7xl overflow-hidden rounded-3xl md:aspect-[21/9]">
+          <Image
+            src="/images/landschaft-anzug.jpg"
+            alt="Markus Tappolet steht unter einem grossen Baum und blickt über Wiesen zu den Bergen."
+            fill
+            sizes="(min-width: 1280px) 1280px, 100vw"
+            className="object-cover object-[70%_40%]"
+          />
+        </Reveal>
+      </section>
+
       {/* Aus verschiedenen Perspektiven entstand ein Ganzes */}
-      <SectionText
+      <SectionImage
         heading="Aus verschiedenen Perspektiven entstand ein Ganzes"
+        imageSide="left"
         tint="var(--color-neutral-tint)"
+        media={
+          <Image
+            src="/images/portrait-polo-hand.jpg"
+            alt="Markus Tappolet legt die Hand an einen Baumstamm und blickt nachdenklich in die Ferne."
+            width={2000}
+            height={1333}
+            className="h-full w-full object-cover"
+          />
+        }
       >
         <p>
           Das Innovationsmanagement öffnete mir den Blick auf Organisationen
@@ -114,7 +137,7 @@ export default function UeberMichPage() {
         <ScrollQuote>
           Daraus ist mein Verständnis von Lebendiger Führung entstanden.
         </ScrollQuote>
-      </SectionText>
+      </SectionImage>
 
       {/* Zusammenarbeit beginnt für mich mit Hochachtung */}
       <SectionText heading="Zusammenarbeit beginnt für mich mit Hochachtung">
@@ -197,10 +220,10 @@ export default function UeberMichPage() {
         imageSide="right"
         media={
           <Image
-            src="/images/bank-sitzend.png"
+            src="/images/bank-anzug.jpg"
             alt="Markus Tappolet sitzt auf einer Bank unter einem grossen Baum."
-            width={1240}
-            height={772}
+            width={2000}
+            height={1333}
             className="h-full w-full object-cover"
           />
         }

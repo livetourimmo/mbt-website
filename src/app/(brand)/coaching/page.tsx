@@ -16,6 +16,18 @@ const coachingAngebote: readonly Angebot[] = [
     beschreibung:
       "Für Führungspersönlichkeiten, die ihre Rolle bewusster gestalten und ihre Wirkung im Führungsalltag weiterentwickeln möchten.",
     details: ["Persönlich und vertraulich", "Regelmässige Reflexion der eigenen Führung"],
+    mehr: {
+      text: [
+        "Wer will ich als Führungsperson eigentlich sein? Im Coaching gehen wir dieser Frage nach: Welche inneren Bilder prägen deine Führung, welche Muster wirken, und wie möchtest du künftig führen?",
+        "Aus innerer Klarheit entsteht äussere Wirksamkeit. Schritt für Schritt entwickelst du ein eigenes Führungsbild und erprobst es im Alltag, begleitet durch regelmässige Reflexion.",
+      ],
+      ablauf: [
+        "Kennenlerngespräch: Anliegen klären und schauen, ob wir zueinander passen",
+        "Coaching-Gespräche im Abstand von zwei bis vier Wochen",
+        "Zwischen den Gesprächen: Erfahrungen im Führungsalltag sammeln",
+        "Abschlussgespräch: Was ist gewachsen, was nimmst du mit?",
+      ],
+    },
   },
   {
     titel: "Klarheit in Führungssituationen",
@@ -25,12 +37,35 @@ const coachingAngebote: readonly Angebot[] = [
       "Persönlich und vertraulich",
       "Einzelgespräch oder Begleitung über mehrere Termine",
     ],
+    mehr: {
+      text: [
+        "Manchmal steht eine Entscheidung an, die mehr berührt, als zunächst sichtbar ist: ein Konflikt im Team, eine schwierige Personalfrage, eine neue Rolle. Im Gespräch ordnen wir die Situation, betrachten sie aus verschiedenen Perspektiven und machen sichtbar, was dich wirklich bewegt.",
+        "Daraus entsteht ein nächster Schritt, der zu dir und zu deiner Situation passt. Bei Bedarf begleite ich dich auch bei der Umsetzung.",
+      ],
+      ablauf: [
+        "Kurzes Vorgespräch zur Situation",
+        "Ein ausführliches Gespräch, in dem wir Klarheit schaffen",
+        "Auf Wunsch: Begleitung über weitere Termine, bis der Weg trägt",
+      ],
+    },
   },
   {
     titel: "Verantwortung im Team stärken",
     beschreibung:
       "Für Führungspersönlichkeiten, die in ihrem Bereich mehr Eigenständigkeit und eine wirksame Zusammenarbeit ermöglichen möchten.",
     details: ["Gemeinsam mit dem eigenen Team", "Drei halbtägige Module"],
+    mehr: {
+      text: [
+        "Verantwortung wächst, wo Menschen Orientierung haben, echte Entscheidungsräume erhalten und aus der Wirkung ihres Handelns lernen können. Gemeinsam mit deinem Team gestalten wir diese Bedingungen in deinem Bereich.",
+        "In drei halbtägigen Modulen klärt ihr, wofür euer Team steht, wo Entscheidungen künftig liegen und wie ihr aus euren Erfahrungen gemeinsam lernt.",
+      ],
+      ablauf: [
+        "Vorgespräch mit dir: Ausgangslage und Ziele",
+        "Modul 1: Gemeinsame Orientierung, wofür steht unser Team?",
+        "Modul 2: Entscheidungsräume, wer entscheidet was?",
+        "Modul 3: Aus Erfahrungen lernen und den nächsten Schritt festlegen",
+      ],
+    },
   },
 ];
 
@@ -51,17 +86,14 @@ export default function CoachingPage() {
         lede="Mit innerer Klarheit äussere Wirksamkeit entfalten."
         tone="accent"
         media={
-          // Ausschnitt aus dem Startseitenbild: Markus im Polo (Coaching-Seite des Bildes)
-          <div className="absolute inset-y-0 right-0 w-full md:w-[198%]">
-            <Image
-              src="/images/startseite.png"
-              alt="Markus Tappolet sitzt im Polo-Shirt entspannt auf einer Bank unter einem Baum."
-              fill
-              priority
-              sizes="(min-width: 768px) 198vw, 100vw"
-              className="object-cover object-[71%_50%] md:object-[100%_15%]"
-            />
-          </div>
+          <Image
+            src="/images/coaching-hero.jpg"
+            alt="Markus Tappolet steht im Polo-Shirt unter einem grossen Baum, dahinter Wiesen und Berge."
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[76%_8%]"
+          />
         }
       />
 
@@ -187,7 +219,7 @@ export default function CoachingPage() {
       </SectionImage>
 
       {/* Angebot */}
-      <OfferSection angebote={coachingAngebote} tint="var(--color-coaching-tint)" />
+      <OfferSection angebote={coachingAngebote} tint="var(--color-coaching-tint)" tone="accent" />
 
       {/* Der klare Blick + Kennenlerngespräch */}
       <SectionImage
@@ -195,10 +227,10 @@ export default function CoachingPage() {
         imageSide="left"
         media={
           <Image
-            src="/images/markus-portrait.jpg"
-            alt="Porträt von Markus Tappolet"
-            width={640}
-            height={960}
+            src="/images/portrait-polo-baum.jpg"
+            alt="Markus Tappolet im Polo-Shirt vor einem Baumstamm, den Blick in die Ferne gerichtet."
+            width={2000}
+            height={1333}
             className="h-full w-full object-cover"
           />
         }

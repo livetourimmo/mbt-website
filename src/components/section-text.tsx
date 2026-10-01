@@ -21,12 +21,12 @@ export default function SectionText({
       mm.add(MOTION_OK, () => {
         gsap
           .timeline({
-            defaults: { ease: "power4.out" },
+            defaults: { ease: "power3.out" },
             scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
           })
           .from(".st-line", { scaleX: 0, duration: 1.2, ease: "expo.inOut" }, 0)
-          .from(".st-title .word-inner", { yPercent: 110, duration: 1, stagger: 0.06 }, 0.15)
-          .from(".st-body > *", { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.1 }, 0.4);
+          .from(".st-title .word-inner", { yPercent: 110, duration: 1, stagger: 0.045 }, 0.15)
+          .from(".st-body > *", { y: 16, autoAlpha: 0, duration: 0.9, stagger: 0.1 }, 0.4);
       });
     },
     { scope: root }

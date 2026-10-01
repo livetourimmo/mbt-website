@@ -30,7 +30,7 @@ export async function generateMetadata({
       title: post.title,
       description: post.excerpt,
       authors: ["Markus Tappolet"],
-      images: [{ url: "/images/startseite.png" }],
+      images: [{ url: "/images/startseite.jpg" }],
     },
   };
 }

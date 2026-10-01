@@ -17,7 +17,7 @@ export default function BigQuote({ text, tone = "ink" }: { text: string; tone?: 
       mm.add(MOTION_OK, () => {
         gsap.fromTo(
           ".bq-word",
-          { opacity: 0.15 },
+          { opacity: 0.45 },
           {
             opacity: 1,
             stagger: 0.1,
@@ -26,10 +26,10 @@ export default function BigQuote({ text, tone = "ink" }: { text: string; tone?: 
           }
         );
         gsap.from(".bq-mark", {
-          scale: 0.4,
+          scale: 0.8,
           autoAlpha: 0,
           duration: 1,
-          ease: "back.out(2)",
+          ease: "power2.out",
           scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
         });
       });
