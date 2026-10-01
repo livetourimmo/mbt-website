@@ -1,4 +1,8 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useRef, type ReactNode } from "react";
+import { gsap, useGSAP, MOTION_OK } from "@/lib/gsap";
+import SplitWords from "@/components/split-words";
 
 export default function HeroFull({
   kicker,
@@ -13,31 +17,77 @@ export default function HeroFull({
   media: ReactNode;
   tone?: "ink" | "accent";
 }) {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        // Der Auftritt läuft per CSS (globals.css, .hero-*), damit nichts aufblitzt.
+        // Scroll: Bild wandert langsamer (Tiefe), Text hebt sich ab und verblasst
+        gsap.to(".hero-parallax", {
+          yPercent: 18,
+          ease: "none",
+          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
+        });
+        gsap.to(".hero-content", {
+          yPercent: -30,
+          autoAlpha: 0,
+          ease: "none",
+          scrollTrigger: { trigger: root.current, start: "top top", end: "70% top", scrub: true },
+        });
+      });
+    },
+    { scope: root }
+  );
+
   return (
-    <section className="relative h-[88vh] min-h-[560px] w-full overflow-hidden">
-      {media}
+    <section ref={root} className="relative h-[92vh] min-h-[560px] w-full overflow-hidden bg-ink">
+      {/* depth-0: Bild mit Parallax */}
+      <div className="hero-parallax absolute inset-0 will-change-transform">
+        <div className="hero-media absolute inset-0">{media}</div>
+      </div>
+
+      {/* depth-1: Farbverlauf + langsam wandernder Lichtschimmer */}
       <div
         aria-hidden
         className={`absolute inset-0 bg-gradient-to-t to-transparent ${
           tone === "accent"
-            ? "from-accent/55 via-accent/15"
-            : "from-consulting-accent/55 via-consulting-accent/15"
+            ? "from-accent/70 via-accent/20"
+            : "from-consulting-accent/70 via-consulting-accent/20"
         }`}
       />
-      <div className="absolute inset-x-0 bottom-0 px-6 pb-12 md:px-10 md:pb-16">
-        <div className="animate-rise mx-auto max-w-7xl">
+      <div aria-hidden className="hero-glow pointer-events-none absolute inset-0" />
+
+      {/* depth-4: Text */}
+      <div className="hero-content absolute inset-x-0 bottom-0 px-6 pb-16 md:px-10 md:pb-20">
+        <div className="mx-auto max-w-7xl">
           {kicker && (
-            <p className="text-[15px] text-paper/80">{kicker}</p>
+            <p className="hero-kicker inline-flex items-center gap-3 text-[15px] text-paper/85">
+              <span aria-hidden className="h-px w-8 bg-paper/60" />
+              {kicker}
+            </p>
           )}
-          <h1 className="mt-3 max-w-2xl font-display text-[2.25rem] leading-[1.1] font-semibold text-paper md:text-[3.25rem]">
-            {headline}
+          <h1 className="hero-title mt-4 max-w-3xl font-display text-[2.5rem] leading-[1.05] font-semibold tracking-tight text-paper md:text-[4rem]">
+            <SplitWords text={headline} />
           </h1>
           {lede && (
-            <p className="mt-5 max-w-md text-[17px] leading-relaxed text-paper/90">
+            <p className="hero-lede mt-6 max-w-md text-[17px] leading-relaxed text-paper/90">
               {lede}
             </p>
           )}
         </div>
+      </div>
+
+      {/* Scroll-Hinweis */}
+      <div
+        aria-hidden
+        className="hero-cue absolute right-6 bottom-8 hidden flex-col items-center gap-3 text-[11px] tracking-[0.2em] text-paper/70 uppercase md:right-10 md:flex"
+      >
+        <span className="[writing-mode:vertical-rl]">Scrollen</span>
+        <span className="relative h-14 w-px overflow-hidden bg-paper/25">
+          <span className="scroll-cue-line absolute inset-x-0 top-0 h-1/2 bg-paper" />
+        </span>
       </div>
     </section>
   );

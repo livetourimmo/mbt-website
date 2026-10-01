@@ -1,5 +1,8 @@
-import type { ReactNode } from "react";
-import Reveal from "@/components/reveal";
+"use client";
+
+import { useRef, type ReactNode } from "react";
+import { gsap, useGSAP, MOTION_OK } from "@/lib/gsap";
+import SplitWords from "@/components/split-words";
 
 export default function SectionText({
   heading,
@@ -10,19 +13,42 @@ export default function SectionText({
   tint?: string;
   children: ReactNode;
 }) {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        gsap
+          .timeline({
+            defaults: { ease: "power4.out" },
+            scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
+          })
+          .from(".st-line", { scaleX: 0, duration: 1.2, ease: "expo.inOut" }, 0)
+          .from(".st-title .word-inner", { yPercent: 110, duration: 1, stagger: 0.06 }, 0.15)
+          .from(".st-body > *", { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.1 }, 0.4);
+      });
+    },
+    { scope: root }
+  );
+
   return (
     <section
-      className="border-t border-hairline"
+      ref={root}
+      className="relative overflow-hidden border-t border-hairline"
       style={tint ? { background: tint } : undefined}
     >
-      <Reveal className="mx-auto grid max-w-7xl gap-6 px-6 py-20 md:grid-cols-12 md:gap-10 md:px-10 md:py-28">
-        <h2 className="font-display text-[1.6rem] leading-[1.15] font-semibold text-ink md:col-span-4 md:text-[2rem]">
-          {heading}
-        </h2>
-        <div className="max-w-3xl space-y-5 text-[17px] leading-relaxed text-ink-soft md:col-span-7 md:col-start-6">
+      <div className="relative mx-auto grid max-w-7xl gap-6 px-6 py-20 md:grid-cols-12 md:gap-10 md:px-10 md:py-32">
+        <div className="md:col-span-4">
+          <span aria-hidden className="st-line mb-6 block h-[2px] w-12 origin-left bg-accent" />
+          <h2 className="st-title font-display text-[1.75rem] leading-[1.12] font-semibold tracking-tight text-ink md:text-[2.4rem]">
+            <SplitWords text={heading} />
+          </h2>
+        </div>
+        <div className="st-body max-w-3xl space-y-5 text-[17px] leading-relaxed text-ink-soft md:col-span-7 md:col-start-6">
           {children}
         </div>
-      </Reveal>
+      </div>
     </section>
   );
 }

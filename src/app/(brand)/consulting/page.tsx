@@ -6,6 +6,9 @@ import HeroFull from "@/components/hero-full";
 import OfferSection, { type Angebot } from "@/components/offer-section";
 import ContactForm from "@/components/contact-form";
 import ScrollGif from "@/components/scroll-gif";
+import ScrollQuote from "@/components/scroll-quote";
+import BigQuote from "@/components/big-quote";
+import Testimonial from "@/components/testimonial";
 
 const consultingAngebote: readonly Angebot[] = [
   {
@@ -41,6 +44,7 @@ export const metadata: Metadata = {
   title: "Consulting für Unternehmensführungen",
   description:
     "Wie wird ein Unternehmen zukunftsfähig? Ich begleite CEOs und Geschäftsleitungen dabei, Räume zu schaffen, in denen Menschen Verantwortung übernehmen.",
+  alternates: { canonical: "/" },
 };
 
 export default function ConsultingPage() {
@@ -59,7 +63,7 @@ export default function ConsultingPage() {
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            className="object-cover object-[16%_50%]"
           />
         }
       />
@@ -91,10 +95,10 @@ export default function ConsultingPage() {
           Führungskräften ein paradoxes Gefühl: Es geschieht viel, aber es
           kommt wenig in Bewegung.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Die entscheidende Frage ist, warum so viel Aufwand so wenig
           Bewegung erzeugt.
-        </p>
+        </ScrollQuote>
       </SectionImage>
 
       {/* Alte Strukturen */}
@@ -125,10 +129,10 @@ export default function ConsultingPage() {
           stabile Befehlsketten nach aussen getragen worden. Jeder wusste,
           was zu tun ist, ohne sich grosse Gedanken darüber zu machen.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Funktioniert dieses System auch in einer komplexen, gleichzeitigen
           und volatilen Welt?
-        </p>
+        </ScrollQuote>
       </SectionImage>
 
       {/* Ein anderes Denken */}
@@ -156,11 +160,10 @@ export default function ConsultingPage() {
           Menschen Zusammenhänge erkennen, Verantwortung übernehmen und
           näher am Geschehen entscheiden können.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
-          Erst wenn man die Perspektive verändert, wird eine neue Lösung
-          sichtbar.
-        </p>
       </SectionImage>
+
+      {/* Rhythmusbruch: Kernsatz vollbreit */}
+      <BigQuote text="Erst wenn man die Perspektive verändert, wird eine neue Lösung sichtbar." />
 
       {/* Neue Orientierung — bridge to Lebendige Führung */}
       <SectionImage
@@ -197,6 +200,13 @@ export default function ConsultingPage() {
 
       {/* Angebot */}
       <OfferSection angebote={consultingAngebote} />
+
+      {/* Kundenstimme */}
+      <Testimonial
+        quote="Markus kommt nicht mit vorgefertigten Antworten oder stülpt seine Lösungen über. Durch seine gezielten Fragen und seine wertschätzende Art hilft er mir, eigene Lösungen zu entwickeln und die richtigen Schlüsse für mich und mein Umfeld zu ziehen."
+        name="Michael Kummer"
+        role="Geschäftsführer Wibilea AG"
+      />
 
       {/* Der klare Blick + Kennenlerngespräch */}
       <SectionImage

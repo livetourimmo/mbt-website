@@ -3,10 +3,12 @@ import type { Metadata } from "next";
 import { getSegment } from "@/lib/get-segment.server";
 import { SEGMENT_META } from "@/lib/segment";
 import ContactForm from "@/components/contact-form";
+import SplitWords from "@/components/split-words";
 
 export const metadata: Metadata = {
   title: "Kennenlerngespräch",
   description: "Vereinbare ein unverbindliches Kennenlerngespräch.",
+  alternates: { canonical: "/kennenlerngespraech" },
 };
 
 const vorteile = [
@@ -26,7 +28,7 @@ export default async function KennenlerngespraechPage() {
       style={{ background: meta.tint }}
     >
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-12 md:gap-10 md:px-10 md:py-24 lg:py-28">
-        <div className="relative aspect-[4/5] overflow-hidden md:aspect-auto md:col-span-5">
+        <div className="img-reveal relative aspect-[4/5] overflow-hidden rounded-3xl md:aspect-auto md:col-span-5">
           <Image
             src="/images/markus-portrait.jpg"
             alt="Porträt von Markus Tappolet"
@@ -37,16 +39,16 @@ export default async function KennenlerngespraechPage() {
         </div>
 
         <div className="md:col-span-7">
-          <p className="text-[15px] text-ink-soft">Kennenlerngespräch</p>
-          <h1 className="mt-3 font-display text-[2rem] leading-[1.1] font-semibold text-ink md:text-[2.5rem]">
-            Lass uns herausfinden, ob wir zueinander passen.
+          <p className="hero-kicker text-[15px] text-ink-soft">Kennenlerngespräch</p>
+          <h1 className="hero-title mt-3 font-display text-[2.25rem] leading-[1.08] font-semibold tracking-tight text-ink md:text-[3rem]">
+            <SplitWords text="Lass uns herausfinden, ob wir zueinander passen." />
           </h1>
-          <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-ink-soft">
+          <p className="hero-lede mt-5 max-w-lg text-[17px] leading-relaxed text-ink-soft">
             Schreib mir eine kurze Nachricht — ich melde mich, um gemeinsam
             mit dir einen Termin für ein unverbindliches Gespräch zu finden.
           </p>
 
-          <ul className="mt-6 space-y-2">
+          <ul className="hero-lede mt-6 space-y-2">
             {vorteile.map((v) => (
               <li
                 key={v}
@@ -60,7 +62,7 @@ export default async function KennenlerngespraechPage() {
             ))}
           </ul>
 
-          <div className="mt-8 rounded-2xl border border-hairline bg-paper p-6 md:p-8">
+          <div className="hero-lede mt-8 rounded-3xl border border-hairline bg-paper p-6 shadow-[0_24px_60px_-32px_rgba(31,44,87,0.3)] md:p-8">
             <ContactForm segment={segment} tone={tone} />
             <p className="mt-4 text-[13px] text-ink-soft">
               Ich melde mich innerhalb von 2 Werktagen bei dir, um einen

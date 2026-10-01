@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import SectionText from "@/components/section-text";
 import SectionImage from "@/components/section-image";
 import Reveal from "@/components/reveal";
+import ScrollQuote from "@/components/scroll-quote";
+import SplitWords from "@/components/split-words";
 
 export const metadata: Metadata = {
   title: "Über mich",
@@ -19,12 +21,11 @@ export default function UeberMichPage() {
       {/* Einstieg */}
       <section className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-12 md:items-center md:gap-8 md:px-10 md:py-24">
         <div className="md:col-span-5">
-          <p className="text-[17px] text-ink-soft">Über mich</p>
-          <h1 className="mt-4 font-display text-[2rem] leading-[1.15] font-semibold text-ink md:text-[2.5rem]">
-            Die Fragen, die Unternehmen heute beschäftigen, begleiten mich
-            seit vielen Jahren.
+          <p className="hero-kicker text-[17px] text-ink-soft">Über mich</p>
+          <h1 className="hero-title mt-4 font-display text-[2.1rem] leading-[1.12] font-semibold tracking-tight text-ink md:text-[2.75rem]">
+            <SplitWords text="Die Fragen, die Unternehmen heute beschäftigen, begleiten mich seit vielen Jahren." />
           </h1>
-          <div className="mt-6 max-w-lg space-y-4 text-[17px] leading-relaxed text-ink-soft">
+          <div className="hero-lede mt-6 max-w-lg space-y-4 text-[17px] leading-relaxed text-ink-soft">
             <p>
               Wie übernehmen Menschen Verantwortung? Was lässt sie über sich
               hinauswachsen? Weshalb entfalten gute Ideen manchmal eine
@@ -40,7 +41,7 @@ export default function UeberMichPage() {
             </p>
           </div>
         </div>
-        <div className="relative aspect-[4/5] overflow-hidden md:col-span-7">
+        <div className="img-reveal relative aspect-[4/5] overflow-hidden rounded-3xl md:col-span-7">
           <Image
             src="/images/markus-portrait.jpg"
             alt="Porträt von Markus Tappolet"
@@ -73,11 +74,11 @@ export default function UeberMichPage() {
           wanderten nach oben. Vorgaben nahmen zu und die Verbindung zur
           Umsetzung wurde schwächer.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Mit der Zeit wurde mir klar: Methoden allein verändern noch kein
           Unternehmen. Entscheidend sind die Bedingungen, unter denen
           Menschen handeln.
-        </p>
+        </ScrollQuote>
       </SectionText>
 
       {/* Aus verschiedenen Perspektiven entstand ein Ganzes */}
@@ -110,9 +111,9 @@ export default function UeberMichPage() {
           gibt, Vertrauen wachsen lässt und Räume gestaltet, in denen
           Menschen ihre eigene Wirksamkeit erfahren.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Daraus ist mein Verständnis von Lebendiger Führung entstanden.
-        </p>
+        </ScrollQuote>
       </SectionText>
 
       {/* Zusammenarbeit beginnt für mich mit Hochachtung */}
@@ -173,9 +174,9 @@ export default function UeberMichPage() {
               Entwicklung bewährt sich in der täglichen Zusammenarbeit, in
               wirksameren Strukturen und schliesslich auch im Ergebnis.
             </p>
-            <p className="font-display text-[19px] font-medium text-ink">
+            <ScrollQuote>
               So wird aus einer guten Absicht eine tragfähige Wirklichkeit.
-            </p>
+            </ScrollQuote>
             <blockquote className="mt-2 border-l-2 border-accent pl-5 text-[16px] leading-relaxed text-ink italic">
               «Markus kommt nicht mit vorgefertigten Antworten oder stülpt
               seine Lösungen über. Durch seine gezielten Fragen und seine

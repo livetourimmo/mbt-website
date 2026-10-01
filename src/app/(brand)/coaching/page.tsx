@@ -7,6 +7,8 @@ import HeroFull from "@/components/hero-full";
 import OfferSection, { type Angebot } from "@/components/offer-section";
 import ContactForm from "@/components/contact-form";
 import ScrollGif from "@/components/scroll-gif";
+import ScrollQuote from "@/components/scroll-quote";
+import BigQuote from "@/components/big-quote";
 
 const coachingAngebote: readonly Angebot[] = [
   {
@@ -34,6 +36,7 @@ const coachingAngebote: readonly Angebot[] = [
 
 export const metadata: Metadata = {
   title: "Coaching für Führungspersönlichkeiten",
+  alternates: { canonical: "https://mbt-coaching.ch/" },
   description:
     "Wer will ich als Führungsperson eigentlich sein? Ich begleite Führungspersönlichkeiten dabei, ihr eigenes Führungsbild zu klären.",
 };
@@ -45,17 +48,20 @@ export default function CoachingPage() {
       <HeroFull
         kicker="Coaching für Führungspersönlichkeiten"
         headline="Wer will ich als Führungsperson eigentlich sein?"
-        lede="Unternehmen sind Orte, in denen Menschen mit Begeisterung wirken und abends erfüllt nach Hause gehen."
+        lede="Mit innerer Klarheit äussere Wirksamkeit entfalten."
         tone="accent"
         media={
-          <Image
-            src="/images/bank-ankunft.png"
-            alt="Markus Tappolet geht unter einem Baum auf eine Bank zu, im Hintergrund ein See."
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+          // Ausschnitt aus dem Startseitenbild: Markus im Polo (Coaching-Seite des Bildes)
+          <div className="absolute inset-y-0 right-0 w-full md:w-[198%]">
+            <Image
+              src="/images/startseite.png"
+              alt="Markus Tappolet sitzt im Polo-Shirt entspannt auf einer Bank unter einem Baum."
+              fill
+              priority
+              sizes="(min-width: 768px) 198vw, 100vw"
+              className="object-cover object-[71%_50%] md:object-[100%_15%]"
+            />
+          </div>
         }
       />
 
@@ -85,11 +91,11 @@ export default function CoachingPage() {
           nächste Termin wartet bereits. Und am nächsten Morgen beginnt der
           Takt von Neuem.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Mitarbeitende erwarten Orientierung. Vorgesetzte erwarten
           Ergebnisse. Gleichzeitig fehlen bei wichtigen Fragen die Zeit, der
           Spielraum oder ein Gegenüber für einen offenen Austausch.
-        </p>
+        </ScrollQuote>
       </SectionImage>
 
       {/* Informationszeitalter */}
@@ -121,10 +127,10 @@ export default function CoachingPage() {
           Menschen, die uns heute folgen, bilden sich ihr eigenes Urteil und
           suchen im Arbeiten Sinn, Mitgestaltung und Entwicklung.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Was braucht ein Mensch, der selbst denkt und urteilt, um gerne zu
           folgen?
-        </p>
+        </ScrollQuote>
       </SectionImage>
 
       {/* Ein anderes Denken */}
@@ -143,11 +149,10 @@ export default function CoachingPage() {
           folgt dem inneren Bild, das wir von Führung in uns tragen. Wer
           dieses Bild klärt, verändert die eigene Führung von innen heraus.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
-          Erst wenn man die Perspektive verändert, wird eine neue Lösung
-          sichtbar.
-        </p>
       </SectionText>
+
+      {/* Rhythmusbruch: Kernsatz vollbreit */}
+      <BigQuote text="Erst wenn man die Perspektive verändert, wird eine neue Lösung sichtbar." tone="accent" />
 
       {/* Neue Orientierung — bridge to Lebendige Führung */}
       <SectionImage
@@ -207,10 +212,10 @@ export default function CoachingPage() {
           klarer, was deine Führung trägt, was dir Kraft gibt und wo dein
           nächster Entwicklungsschritt liegt.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Ich begleite dich dahin, die Führungsperson zu sein, die du sein
           willst: klar von innen, wirksam im Alltag.
-        </p>
+        </ScrollQuote>
         <ContactForm segment="coaching" tone="accent" className="mt-2 max-w-sm" />
       </SectionImage>
     </>

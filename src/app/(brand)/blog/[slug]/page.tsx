@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import MediaPlaceholder from "@/components/media-placeholder";
 import { blogPosts, getPostBySlug } from "@/lib/blog-posts";
+import SplitWords from "@/components/split-words";
+import JsonLd from "@/components/json-ld";
+import { MAIN_URL, PERSON_ID, orgId } from "@/lib/site";
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -20,6 +23,15 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      type: "article",
+      locale: "de_CH",
+      title: post.title,
+      description: post.excerpt,
+      authors: ["Markus Tappolet"],
+      images: [{ url: "/images/startseite.png" }],
+    },
   };
 }
 
@@ -35,8 +47,22 @@ export default async function BlogPostPage({
   const index = blogPosts.findIndex((p) => p.slug === slug);
   const related = blogPosts.filter((_, i) => i !== index).slice(0, 3);
 
+  // Kein datePublished: Die Beiträge haben bisher kein Jahr ("17. März").
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    url: `${MAIN_URL}/blog/${post.slug}`,
+    mainEntityOfPage: `${MAIN_URL}/blog/${post.slug}`,
+    inLanguage: "de-CH",
+    author: { "@id": PERSON_ID, "@type": "Person", name: "Markus Tappolet" },
+    publisher: { "@id": orgId("consulting") },
+  };
+
   return (
     <>
+      <JsonLd data={articleSchema} />
       <section className="border-b border-hairline bg-neutral-tint px-6 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-3xl">
           <Link
@@ -46,15 +72,12 @@ export default async function BlogPostPage({
             ← Zum Blog
           </Link>
           <div className="mt-6 flex items-center gap-2 text-[13px] text-ink-soft">
-            <span className="rounded-full bg-paper px-3 py-1 font-medium text-ink">
-              Blog
-            </span>
             <span>{post.date}</span>
             <span aria-hidden>·</span>
             <span>{post.readingTime}</span>
           </div>
-          <h1 className="mt-4 font-display text-[2rem] leading-[1.1] font-semibold text-ink md:text-[2.75rem]">
-            {post.title}
+          <h1 className="hero-title mt-4 font-display text-[2.25rem] leading-[1.08] font-semibold tracking-tight text-ink md:text-[3.25rem]">
+            <SplitWords text={post.title} />
           </h1>
         </div>
       </section>

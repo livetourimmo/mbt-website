@@ -32,7 +32,7 @@ export default function ScrollGif({
   }, []);
 
   return (
-    <div ref={ref} className={`h-full w-full bg-neutral-tint ${className}`}>
+    <div ref={ref} className={`aspect-video w-full bg-neutral-tint ${className}`}>
       {visible && (
         // eslint-disable-next-line @next/next/no-img-element -- GIFs must not go through next/image's static optimization, or the animation breaks.
         <img src={src} alt={alt} className="h-full w-full object-cover" />

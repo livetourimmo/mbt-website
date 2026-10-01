@@ -4,6 +4,7 @@ import { getSegment } from "@/lib/get-segment.server";
 
 export const metadata: Metadata = {
   title: "Impressum",
+  alternates: { canonical: "/impressum" },
 };
 
 export default async function ImpressumPage() {

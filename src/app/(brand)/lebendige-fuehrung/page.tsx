@@ -7,6 +7,8 @@ import ScrollScrub from "@/components/scroll-scrub";
 import OrganismMorph from "@/components/organism-morph";
 import GrowthMedia from "@/components/growth-media";
 import RhythmMedia from "@/components/rhythm-media";
+import ScrollQuote from "@/components/scroll-quote";
+import SplitWords from "@/components/split-words";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -74,20 +76,20 @@ export default async function LebendigeFuehrungPage() {
       : "Möchtest du erfahren, wie das in deinem Unternehmen aussehen kann?";
 
   return (
-    <>
+    <div className="register-organic">
       {/* Video-Platzhalter — vollbild, Seitenanfang */}
       <section className="relative flex h-[88vh] min-h-[560px] w-full flex-col items-center justify-center gap-8 border-b border-hairline bg-neutral-tint px-6 text-center">
         <div>
-          <p className="text-[17px] text-ink-soft">Lebendige Führung</p>
-          <h1 className="mt-3 font-display text-[2.25rem] leading-[1.1] font-semibold text-ink md:text-[3.25rem]">
-            Verantwortung wirkungsvoll übergeben
+          <p className="hero-kicker text-[17px] text-ink-soft">Lebendige Führung</p>
+          <h1 className="hero-title mt-3 font-display text-[2.5rem] leading-[1.05] font-semibold tracking-tight text-ink md:text-[4rem]">
+            <SplitWords text="Verantwortung wirkungsvoll übergeben" />
           </h1>
         </div>
         <MediaPlaceholder
           kind="video"
           label="Video folgt: Einstiegsfilm"
           aspect="aspect-video"
-          className="w-full max-w-3xl"
+          className="hero-lede w-full max-w-3xl overflow-hidden rounded-3xl"
         />
       </section>
 
@@ -102,10 +104,10 @@ export default async function LebendigeFuehrungPage() {
           Menschen, statt das zugrunde liegende Führungsmuster zu
           hinterfragen.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Was braucht ein Mensch, damit er Verantwortung übernimmt und im
           Sinne des Ganzen eigene Entscheidungen treffen kann?
-        </p>
+        </ScrollQuote>
         <p>
           Lebendige Führung geht davon aus, dass ein Mensch in Verantwortung
           hineinwachsen darf. Die Fähigkeit dazu trägt er bereits in sich.
@@ -236,11 +238,11 @@ export default async function LebendigeFuehrungPage() {
           Nicht als Leitbild für die Wand, sondern als innere Orientierung
           für das tägliche Handeln.
         </p>
-        <p className="font-display text-[19px] font-medium text-ink">
+        <ScrollQuote>
           Lebendige Führung entsteht, wo Menschen innerhalb einer
           gemeinsamen Orientierung handeln, Wirkung erleben und bewusst
           daraus lernen.
-        </p>
+        </ScrollQuote>
       </SectionText>
 
       {/* Video-Platzhalter — vollbild, Seitenschluss + Einladung */}
@@ -265,6 +267,6 @@ export default async function LebendigeFuehrungPage() {
           </CtaButton>
         </div>
       </section>
-    </>
+    </div>
   );
 }

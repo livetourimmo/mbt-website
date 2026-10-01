@@ -22,6 +22,9 @@ export default function ContactForm({
       ? "focus:border-accent focus:ring-accent/20"
       : "focus:border-ink focus:ring-ink/10";
 
+  const labelClass = "mb-1.5 block text-[13px] font-medium text-ink-soft";
+  const fieldClass = `w-full rounded-lg border border-hairline bg-paper px-4 py-2.5 text-[15px] text-ink outline-none transition-colors focus:ring-2 ${ring}`;
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("sending");
@@ -63,40 +66,48 @@ export default function ContactForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className={`space-y-3 ${className}`}>
-      <label htmlFor="contact-name" className="sr-only">
-        Dein Name
-      </label>
-      <input
-        id="contact-name"
-        name="name"
-        type="text"
-        required
-        placeholder="Dein Name"
-        className={`w-full rounded-lg border border-hairline bg-paper px-4 py-2.5 text-[15px] text-ink outline-none transition-colors focus:ring-2 ${ring}`}
-      />
-      <label htmlFor="contact-email" className="sr-only">
-        Deine E-Mail-Adresse
-      </label>
-      <input
-        id="contact-email"
-        name="email"
-        type="email"
-        required
-        placeholder="Deine E-Mail-Adresse"
-        className={`w-full rounded-lg border border-hairline bg-paper px-4 py-2.5 text-[15px] text-ink outline-none transition-colors focus:ring-2 ${ring}`}
-      />
-      <label htmlFor="contact-message" className="sr-only">
-        Deine Nachricht
-      </label>
-      <textarea
-        id="contact-message"
-        name="message"
-        required
-        rows={3}
-        placeholder="Kurz, worum es geht …"
-        className={`w-full resize-none rounded-lg border border-hairline bg-paper px-4 py-2.5 text-[15px] text-ink outline-none transition-colors focus:ring-2 ${ring}`}
-      />
+    <form onSubmit={handleSubmit} className={`space-y-4 ${className}`}>
+      <div>
+        <label htmlFor="contact-name" className={labelClass}>
+          Name
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          type="text"
+          required
+          autoComplete="name"
+          placeholder="Vorname Nachname"
+          className={fieldClass}
+        />
+      </div>
+      <div>
+        <label htmlFor="contact-email" className={labelClass}>
+          E-Mail
+        </label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          placeholder="name@firma.ch"
+          className={fieldClass}
+        />
+      </div>
+      <div>
+        <label htmlFor="contact-message" className={labelClass}>
+          Worum geht es?
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          required
+          rows={3}
+          placeholder="Kurz, worum es geht …"
+          className={`resize-none ${fieldClass}`}
+        />
+      </div>
       <button
         type="submit"
         disabled={status === "sending"}

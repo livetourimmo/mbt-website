@@ -3,9 +3,11 @@ import type { Metadata } from "next";
 import Reveal from "@/components/reveal";
 import MediaPlaceholder from "@/components/media-placeholder";
 import { blogPosts } from "@/lib/blog-posts";
+import SplitWords from "@/components/split-words";
 
 export const metadata: Metadata = {
   title: "Blog",
+  alternates: { canonical: "/blog" },
   description:
     "Gedanken zu Führung, Entscheidungsfähigkeit und Zusammenarbeit — Beiträge von Markus Tappolet.",
 };
@@ -14,11 +16,11 @@ export default function BlogPage() {
   return (
     <>
       <section className="border-b border-hairline bg-neutral-tint px-6 py-24 text-center md:px-10 md:py-32">
-        <p className="text-[15px] text-ink-soft">Blog</p>
-        <h1 className="mx-auto mt-3 max-w-2xl font-display text-[2.25rem] leading-[1.1] font-semibold text-ink md:text-[3rem]">
-          Gedanken zu Führung, Entscheidungsfähigkeit und Zusammenarbeit
+        <p className="hero-kicker text-[15px] text-ink-soft">Blog</p>
+        <h1 className="hero-title mx-auto mt-3 max-w-3xl font-display text-[2.5rem] leading-[1.08] font-semibold tracking-tight text-ink md:text-[3.5rem]">
+          <SplitWords text="Gedanken zu Führung, Entscheidungsfähigkeit und Zusammenarbeit" />
         </h1>
-        <p className="mx-auto mt-5 max-w-lg text-[17px] leading-relaxed text-ink-soft">
+        <p className="hero-lede mx-auto mt-5 max-w-lg text-[17px] leading-relaxed text-ink-soft">
           Beiträge aus der Praxis — zu Entscheidungen, Selbstorganisation und
           dem, was Menschen in Unternehmen wirklich bewegt.
         </p>
@@ -30,7 +32,7 @@ export default function BlogPage() {
             {blogPosts.map((post, i) => (
               <Reveal key={post.slug} delay={(i % 3) * 90}>
                 <Link href={`/blog/${post.slug}`} className="group block h-full">
-                  <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-hairline transition-transform duration-300 ease-out hover:-translate-y-1">
+                  <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-hairline bg-paper transition-[transform,box-shadow] duration-500 ease-out group-hover:-translate-y-2 group-hover:shadow-[0_24px_48px_-24px_rgba(31,44,87,0.28)]">
                     <MediaPlaceholder
                       kind="image"
                       label="Bild folgt"
@@ -38,9 +40,6 @@ export default function BlogPage() {
                     />
                     <div className="flex flex-1 flex-col gap-3 p-6">
                       <div className="flex items-center gap-2 text-[13px] text-ink-soft">
-                        <span className="rounded-full bg-neutral-tint px-3 py-1 font-medium text-ink">
-                          Blog
-                        </span>
                         <span>{post.date}</span>
                         <span aria-hidden>·</span>
                         <span>{post.readingTime}</span>

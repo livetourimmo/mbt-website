@@ -84,23 +84,29 @@ export default function RhythmWheel({
           const labelPos = polar(cx, cy, rLabel + (seg.radiusOffset ?? 0), mid);
           const firstDy = -((seg.lines.length - 1) * 0.6);
 
+          // Mit aktivem Schritt: nur dieser ist kräftig, die übrigen ruhig hell.
+          // Ohne: Farbverlauf. Helle Flächen bekommen dunkle Schrift (Kontrast).
+          const interactive = activeIndex !== undefined;
           const isActive = activeIndex === i;
-          const isDimmed = activeIndex !== undefined && !isActive;
+          const fill = interactive ? (isActive ? "#5c3369" : "#ddd3e5") : seg.color;
+          const textFill =
+            (interactive && !isActive) || (!interactive && i >= 3)
+              ? "var(--color-ink)"
+              : "var(--color-paper)";
 
           return (
             <g
               key={seg.lines.join(" ")}
               style={{
-                opacity: isDimmed ? 0.32 : 1,
-                filter: isActive
-                  ? "drop-shadow(0 0 10px rgba(255,255,255,0.5))"
-                  : undefined,
-                transition: "opacity 0.4s ease, filter 0.4s ease",
+                transform: isActive ? "scale(1.04)" : "scale(1)",
+                transformOrigin: `${cx}px ${cy}px`,
+                transition: "transform 0.5s cubic-bezier(0.22,1,0.36,1)",
               }}
             >
               <path
                 d={arcPath(cx, cy, rOuter, rInner, start, end)}
-                fill={seg.color}
+                fill={fill}
+                style={{ transition: "fill 0.4s ease" }}
                 stroke="var(--color-paper)"
                 strokeWidth={3}
               />
@@ -109,7 +115,7 @@ export default function RhythmWheel({
                 y={labelPos.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fill="var(--color-paper)"
+                fill={textFill}
                 fontFamily="var(--font-body)"
                 fontSize={seg.fontSize ?? 11.5}
                 fontWeight={600}
