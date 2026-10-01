@@ -24,17 +24,11 @@ export default function HeroFull({
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
         // Der Auftritt läuft per CSS (globals.css, .hero-*), damit nichts aufblitzt.
-        // Scroll: Bild wandert langsamer (Tiefe), Text hebt sich ab und verblasst
+        // Scroll: Bild wandert etwas langsamer (Tiefe); der Text scrollt normal mit
         gsap.to(".hero-parallax", {
           yPercent: 10,
           ease: "none",
           scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-        });
-        gsap.to(".hero-content", {
-          yPercent: -18,
-          autoAlpha: 0,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top top", end: "70% top", scrub: true },
         });
       });
     },

@@ -14,12 +14,15 @@ export default function FilmClip({
   name,
   label,
   scrollToId,
+  behindHeader = false,
   className = "",
 }: {
   /** Dateiname ohne Endung in /public/videos, z. B. "film-anfang" */
   name: string;
   label: string;
   scrollToId?: string;
+  /** Kopfzeile liegt durchsichtig über dem Film: dann volle Bildschirmhöhe */
+  behindHeader?: boolean;
   className?: string;
 }) {
   const root = useRef<HTMLDivElement>(null);
@@ -78,7 +81,10 @@ export default function FilmClip({
   return (
     <div
       ref={root}
-      className={`flex justify-center md:h-[calc(100svh-var(--header-h,5rem))] ${className}`}
+      data-header-overlay={behindHeader || undefined}
+      className={`flex justify-center ${
+        behindHeader ? "md:h-[100svh]" : "md:h-[calc(100svh-var(--header-h,5rem))]"
+      } ${className}`}
     >
       {/* Filmfläche: Handy im Format 3:2; ab Tablet volle Breite und genau so hoch wie der
           sichtbare Bereich. Zugeschnitten wird vor allem unten, damit Köpfe im Bild bleiben. */}

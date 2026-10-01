@@ -50,15 +50,6 @@ body {
 }
 
 /* ── Hero-Auftritt (CSS, damit vor der Hydration nichts aufblitzt) ── */
-@keyframes word-rise {
-  from {
-    transform: translateY(110%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
 /* Bilder blenden weich ein und setzen sich mit einem kaum merklichen Zoom */
 @keyframes hero-breathe {
   from {
@@ -74,7 +65,7 @@ body {
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -102,9 +93,10 @@ body {
   animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
-.hero-title .word-inner {
-  animation: word-rise 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(var(--i, 0) * 55ms + 350ms + var(--door-delay, 0ms));
+/* Überschrift blendet als Ganzes ein (nicht Wort für Wort) */
+.hero-title {
+  animation: fade-up 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(300ms + var(--door-delay, 0ms));
 }
 
 .hero-lede {

@@ -83,6 +83,7 @@ export default async function LebendigeFuehrungPage() {
           name="film-anfang"
           label="Markus Tappolet geht über eine Wiese, setzt sich unter einen Baum und öffnet ein Buch."
           scrollToId="einordnung"
+          behindHeader
         />
       </section>
 

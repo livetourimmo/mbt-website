@@ -5,7 +5,7 @@ import { gsap, useGSAP, MOTION_OK } from "@/lib/gsap";
 
 /**
  * Vollbreiter Kernsatz auf dunklem Grund. Bricht den Rhythmus der
- * Bild-Text-Abschnitte; die Wörter leuchten beim Scrollen nacheinander auf.
+ * Bild-Text-Abschnitte; das Zitat blendet einmal ruhig ein.
  */
 export default function BigQuote({ text, tone = "ink" }: { text: string; tone?: "ink" | "accent" }) {
   const root = useRef<HTMLElement>(null);
@@ -15,20 +15,11 @@ export default function BigQuote({ text, tone = "ink" }: { text: string; tone?: 
     () => {
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
-        gsap.fromTo(
-          ".bq-word",
-          { opacity: 0.45 },
-          {
-            opacity: 1,
-            stagger: 0.1,
-            ease: "none",
-            scrollTrigger: { trigger: root.current, start: "top 70%", end: "bottom 60%", scrub: true },
-          }
-        );
-        gsap.from(".bq-mark", {
-          scale: 0.8,
+        // Das Zitat blendet einmal als Ganzes ruhig ein
+        gsap.from("figure", {
           autoAlpha: 0,
-          duration: 1,
+          y: 8,
+          duration: 1.4,
           ease: "power2.out",
           scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
         });

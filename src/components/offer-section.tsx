@@ -126,8 +126,8 @@ export default function OfferSection({
             defaults: { ease: "power3.out" },
             scrollTrigger: { trigger: root.current, start: "top 70%", once: true },
           })
-          .from(".of-title .word-inner", { yPercent: 110, duration: 1, stagger: 0.045 })
-          .from(".of-lede", { y: 20, autoAlpha: 0, duration: 0.9 }, "-=0.7")
+          .from(".of-title", { autoAlpha: 0, y: 8, duration: 1.2, ease: "power2.out" })
+          .from(".of-lede", { y: 8, autoAlpha: 0, duration: 1 }, "-=0.8")
           .from(
             ".of-card",
             // clearProps: danach übernimmt wieder der CSS-Hover-Effekt (translate)

@@ -30,8 +30,8 @@ export default function SectionImage({
         // Bild blendet weich ein
         reveal
           .from(".si-frame", { autoAlpha: 0, duration: 1.4, ease: "power1.out" }, 0)
-          .from(".si-title .word-inner", { yPercent: 110, duration: 1, stagger: 0.045 }, 0.3)
-          .from(".si-body > *", { y: 16, autoAlpha: 0, duration: 0.9, stagger: 0.1 }, 0.55);
+          .from(".si-title", { autoAlpha: 0, y: 8, duration: 1.2, ease: "power2.out" }, 0.3)
+          .from(".si-body > *", { y: 8, autoAlpha: 0, duration: 0.9, stagger: 0.1 }, 0.55);
 
         // Tiefe: Bild zoomt beim Durchscrollen ganz leicht heraus
         gsap.fromTo(

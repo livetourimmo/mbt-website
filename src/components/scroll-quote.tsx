@@ -4,8 +4,7 @@ import { useRef, type ReactNode } from "react";
 import { gsap, useGSAP, MOTION_OK } from "@/lib/gsap";
 
 /**
- * Kernsatz, der beim Scrollen Wort für Wort aufleuchtet
- * (von blass zu voller Farbe), mit Akzentlinie links.
+ * Hervorgehobener Kernsatz mit Akzentlinie links; blendet einmal ruhig ein.
  */
 export default function ScrollQuote({
   children,
@@ -22,20 +21,13 @@ export default function ScrollQuote({
       if (!text) return;
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
-        gsap.fromTo(
-          ".q-word",
-          { opacity: 0.5 },
-          {
-            opacity: 1,
-            stagger: 0.08,
-            ease: "none",
-            scrollTrigger: { trigger: ref.current, start: "top 85%", end: "bottom 55%", scrub: true },
-          }
-        );
-        gsap.from(".q-bar", {
-          scaleY: 0,
-          ease: "none",
-          scrollTrigger: { trigger: ref.current, start: "top 85%", end: "bottom 55%", scrub: true },
+        // Der Kernsatz blendet einmal als Ganzes ruhig ein
+        gsap.from(ref.current, {
+          autoAlpha: 0,
+          y: 8,
+          duration: 1.2,
+          ease: "power2.out",
+          scrollTrigger: { trigger: ref.current, start: "top 85%", once: true },
         });
       });
     },
