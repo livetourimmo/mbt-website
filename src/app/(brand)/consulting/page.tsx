@@ -5,7 +5,7 @@ import SectionImage from "@/components/section-image";
 import HeroFull from "@/components/hero-full";
 import OfferSection, { type Angebot } from "@/components/offer-section";
 import ContactForm from "@/components/contact-form";
-import ScrollGif from "@/components/scroll-gif";
+import LoopVideo from "@/components/loop-video";
 import ScrollQuote from "@/components/scroll-quote";
 import BigQuote from "@/components/big-quote";
 import Testimonial from "@/components/testimonial";
@@ -13,6 +13,7 @@ import Testimonial from "@/components/testimonial";
 const consultingAngebote: readonly Angebot[] = [
   {
     titel: "Unternehmensidentität entwickeln",
+    symbol: "quelle",
     beschreibung:
       "Wenn Menschen wissen, wofür ihr Unternehmen steht und wohin es sich entwickeln will, können sie selbstständiger entscheiden und Verantwortung übernehmen.",
     details: [
@@ -34,6 +35,7 @@ const consultingAngebote: readonly Angebot[] = [
   },
   {
     titel: "Persönliche Begleitung",
+    symbol: "fluss",
     beschreibung:
       "Für CEOs, die ihr Unternehmen weiterentwickeln und dabei Klarheit und Überblick bewahren möchten.",
     details: [
@@ -55,6 +57,7 @@ const consultingAngebote: readonly Angebot[] = [
   },
   {
     titel: "Führungskräfteentwicklung",
+    symbol: "delta",
     beschreibung:
       "Für Unternehmen, die ihre Führungskräfte gezielt weiterentwickeln und Verantwortung breiter im Unternehmen verankern möchten.",
     details: [
@@ -109,12 +112,11 @@ export default function ConsultingPage() {
         heading="Der aktuelle Alltag"
         imageSide="left"
         media={
-          <Image
-            src="/images/alltag-consulting.png"
-            alt="Ein voll beschriebenes Whiteboard und ein Besprechungstisch voller Unterlagen — Sinnbild für Entscheidungsstau."
-            width={1338}
-            height={753}
-            className="h-full w-full object-cover"
+          <LoopVideo
+            name="consulting-alltag"
+            alt="Luftaufnahme eines weiten, stillen Stausees mit einer kleinen bewaldeten Insel, dahinter Hügel und in der Ferne die Staumauer, ganz in Dunkelblau getönt."
+            width={1600}
+            height={1000}
           />
         }
       >
@@ -143,9 +145,11 @@ export default function ConsultingPage() {
         imageSide="right"
         tint="var(--color-neutral-tint)"
         media={
-          <ScrollGif
-            src="/gifs/informationskette.gif"
-            alt="Eine hierarchische Befehlskette bricht auseinander, während Informationen in alle Richtungen fluten."
+          <LoopVideo
+            name="consulting-damm"
+            alt="Senkrechte Luftaufnahme einer gekrümmten Staumauer: Links liegt dunkles, gestautes Wasser, rechts trockenes Land, quer über dem Wasser ein Betonturm mit Steg zur Mauerkrone."
+            width={1600}
+            height={1000}
           />
         }
       >
@@ -176,9 +180,11 @@ export default function ConsultingPage() {
         heading="Ein anderes Denken"
         imageSide="left"
         media={
-          <ScrollGif
-            src="/gifs/ein-anderes-denken-consulting.gif"
-            alt="Ein Mensch verlässt eine mechanische, zahnradgetriebene Welt und tritt in ein Licht voller neuer Möglichkeiten."
+          <LoopVideo
+            name="consulting-weg"
+            alt="Ein einzelner dunkler Stein mitten im strömenden Fluss: Das Wasser schäumt an ihm auf und fliesst auf beiden Seiten weiter."
+            width={1600}
+            height={1000}
           />
         }
       >
@@ -207,9 +213,11 @@ export default function ConsultingPage() {
         imageSide="right"
         tint="var(--color-consulting-tint)"
         media={
-          <ScrollGif
-            src="/gifs/lebendige-fuehrung-consulting-coaching.gif"
-            alt="Zwei Hände halten Erde mit einem jungen Setzling, im Hintergrund ein grosser Baum."
+          <LoopVideo
+            name="neue-orientierung-consulting"
+            alt="Zeitraffer vor dunklem Grund: Viele junge Keimlinge drängen gemeinsam aus der Erde und entfalten ihre ersten Blätter."
+            width={1600}
+            height={1000}
           />
         }
       >
@@ -235,7 +243,7 @@ export default function ConsultingPage() {
       </SectionImage>
 
       {/* Angebot */}
-      <OfferSection angebote={consultingAngebote} />
+      <OfferSection angebote={consultingAngebote} tint="var(--color-consulting-tint)" tone="ink" />
 
       {/* Kundenstimme */}
       <Testimonial

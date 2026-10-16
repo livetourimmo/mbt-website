@@ -1,18 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import SectionText from "@/components/section-text";
 import SectionImage from "@/components/section-image";
 import HeroFull from "@/components/hero-full";
 import OfferSection, { type Angebot } from "@/components/offer-section";
 import ContactForm from "@/components/contact-form";
-import ScrollGif from "@/components/scroll-gif";
+import LoopVideo from "@/components/loop-video";
 import ScrollQuote from "@/components/scroll-quote";
 import BigQuote from "@/components/big-quote";
 
 const coachingAngebote: readonly Angebot[] = [
   {
     titel: "Die eigene Führung gestalten",
+    symbol: "samen",
     beschreibung:
       "Für Führungspersönlichkeiten, die ihre Rolle bewusster gestalten und ihre Wirkung im Führungsalltag weiterentwickeln möchten.",
     details: ["Persönlich und vertraulich", "Regelmässige Reflexion der eigenen Führung"],
@@ -31,6 +31,7 @@ const coachingAngebote: readonly Angebot[] = [
   },
   {
     titel: "Klarheit in Führungssituationen",
+    symbol: "keimling",
     beschreibung:
       "Für Führungspersönlichkeiten, die in einer anspruchsvollen Situation Klarheit gewinnen und daraus einen tragfähigen nächsten Schritt entwickeln möchten.",
     details: [
@@ -51,6 +52,7 @@ const coachingAngebote: readonly Angebot[] = [
   },
   {
     titel: "Verantwortung im Team stärken",
+    symbol: "pusteblume",
     beschreibung:
       "Für Führungspersönlichkeiten, die in ihrem Bereich mehr Eigenständigkeit und eine wirksame Zusammenarbeit ermöglichen möchten.",
     details: ["Gemeinsam mit dem eigenen Team", "Drei halbtägige Module"],
@@ -102,12 +104,11 @@ export default function CoachingPage() {
         heading="Der aktuelle Alltag"
         imageSide="left"
         media={
-          <Image
-            src="/images/alltag-coaching.png"
-            alt="Eine Führungsperson sitzt allein am Konferenztisch und blickt aus dem Fenster."
-            width={1672}
-            height={941}
-            className="h-full w-full object-cover"
+          <LoopVideo
+            name="coaching-alltag"
+            alt="Eine volle, kugelrunde Pusteblume vor dunklem Grund, die sich langsam um sich selbst dreht."
+            width={1600}
+            height={1000}
           />
         }
       >
@@ -136,9 +137,11 @@ export default function CoachingPage() {
         imageSide="right"
         tint="var(--color-coaching-tint)"
         media={
-          <ScrollGif
-            src="/gifs/informationszeitalter-coaching.gif"
-            alt="Wissen strömt aus einer alten Bibliothek heraus und verbindet Menschen, die gemeinsam Informationen austauschen."
+          <LoopVideo
+            name="coaching-blume-leer"
+            alt="Nahaufnahme einer Pusteblume in Zeitlupe: Der Wind trägt die Samen davon, bis nur noch wenige am kahlen Blütenboden hängen."
+            width={1600}
+            height={1000}
           />
         }
       >
@@ -166,7 +169,18 @@ export default function CoachingPage() {
       </SectionImage>
 
       {/* Ein anderes Denken */}
-      <SectionText heading="Ein anderes Denken">
+      <SectionImage
+        heading="Ein anderes Denken"
+        imageSide="left"
+        media={
+          <LoopVideo
+            name="coaching-blume-innen"
+            alt="Zeitraffer vor dunklem Grund: Aus dem Blütenboden öffnet sich eine neue, gleichmässige Samenkugel, die von innen heraus hell wird."
+            width={1600}
+            height={1000}
+          />
+        }
+      >
         <p className="text-[19px] leading-snug text-ink">
           Probleme, die aus einer alten Logik entstanden sind, lassen sich
           nicht mit derselben Logik lösen.
@@ -181,7 +195,7 @@ export default function CoachingPage() {
           folgt dem inneren Bild, das wir von Führung in uns tragen. Wer
           dieses Bild klärt, verändert die eigene Führung von innen heraus.
         </p>
-      </SectionText>
+      </SectionImage>
 
       {/* Rhythmusbruch: Kernsatz vollbreit */}
       <BigQuote text="Erst wenn man die Perspektive verändert, wird eine neue Lösung sichtbar." tone="accent" />
@@ -192,9 +206,11 @@ export default function CoachingPage() {
         imageSide="right"
         tint="var(--color-coaching-tint)"
         media={
-          <ScrollGif
-            src="/gifs/lebendige-fuehrung-consulting-coaching.gif"
-            alt="Zwei Hände halten Erde mit einem jungen Setzling, im Hintergrund ein grosser Baum."
+          <LoopVideo
+            name="neue-orientierung-coaching"
+            alt="Zeitraffer vor dunklem Grund: Viele junge Keimlinge drängen gemeinsam aus der Erde und entfalten ihre ersten Blätter."
+            width={1600}
+            height={1000}
           />
         }
       >

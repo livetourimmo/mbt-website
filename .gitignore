@@ -45,3 +45,6 @@ next-env.d.ts
 
 # Bild-Originale in voller Auflösung (nicht deployen)
 /bilder-originale/
+
+# Rohdateien (Original-Fotos, Stock-Videos mit Lizenz) – nur lokal, nie ins Repository
+/assets-roh/

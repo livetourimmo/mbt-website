@@ -162,7 +162,7 @@ body {
   border-radius: inherit;
   background: radial-gradient(
     320px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(92, 51, 105, 0.1),
+    color-mix(in srgb, var(--offer, var(--color-accent)) 10%, transparent),
     transparent 60%
   );
   opacity: 0;
@@ -299,4 +299,9 @@ html:has(dialog[open]) {
    (z. B. «Entscheidungsfähigkeit» auf dem Handy), nie für kurze */
 .hyphens-auto {
   hyphenate-limit-chars: 14 6 6;
+}
+
+/* «Lebendige Linie»: Striche bleiben auf jeder Bildschirmgrösse gleich fein */
+.line-scene :is(path, line, circle, rect, ellipse, polyline) {
+  vector-effect: non-scaling-stroke;
 }

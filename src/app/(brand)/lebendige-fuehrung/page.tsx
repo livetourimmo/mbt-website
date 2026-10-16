@@ -83,6 +83,7 @@ export default async function LebendigeFuehrungPage() {
           name="film-anfang"
           label="Markus Tappolet geht über eine Wiese, setzt sich unter einen Baum und öffnet ein Buch."
           scrollToId="einordnung"
+          zoomOutro
           behindHeader
         />
       </section>
@@ -144,6 +145,8 @@ export default async function LebendigeFuehrungPage() {
             ],
           }))}
           media={<GrowthMedia />}
+          mobileScrub
+          centerMedia
         />
 
         <div className="mx-auto max-w-7xl px-6 pb-20 md:px-10 md:pb-28">
@@ -156,10 +159,8 @@ export default async function LebendigeFuehrungPage() {
       </section>
 
       {/* Vom Organigramm zur lebendigen Struktur — scroll-gekoppelte Morph-Animation */}
-      <section className="border-t border-hairline">
-        <div className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-          <OrganismMorph className="w-full" />
-        </div>
+      <section className="border-t border-hairline bg-neutral-tint">
+        <OrganismMorph />
       </section>
 
       {/* Wie lebendige Führung wachsen kann */}

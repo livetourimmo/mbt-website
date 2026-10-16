@@ -4,11 +4,14 @@ import { useRef, type PointerEvent } from "react";
 import { gsap, useGSAP, MOTION_OK } from "@/lib/gsap";
 import SplitWords from "@/components/split-words";
 import CtaButton from "@/components/cta-button";
+import OfferGlyph, { type GlyphName } from "@/components/offer-glyph";
 
 export type Angebot = {
   titel: string;
   beschreibung: string;
   details: readonly string[];
+  /** Kleines Liniensymbol aus dem Bildthema der Seite */
+  symbol?: GlyphName;
   /** Ausführlicher Text für das Pop-up «Mehr erfahren» */
   mehr: {
     text: readonly string[];
@@ -34,7 +37,7 @@ function OfferDialog({
       <button
         type="button"
         onClick={() => ref.current?.showModal()}
-        className="mt-8 inline-flex items-center gap-2 self-start rounded-full border border-hairline px-5 py-2.5 text-[14px] font-medium text-ink transition-colors duration-300 hover:border-accent hover:text-accent"
+        className="mt-8 inline-flex items-center gap-2 self-start rounded-full border border-hairline px-5 py-2.5 text-[14px] font-medium text-ink transition-colors duration-300 hover:border-(--offer) hover:text-(--offer)"
       >
         Mehr erfahren
         <span aria-hidden>→</span>
@@ -50,7 +53,7 @@ function OfferDialog({
         <div className="p-7 md:px-11 md:py-9">
           <div className="flex items-start justify-between gap-6">
             <div>
-              <span className="font-display text-[15px] font-semibold text-accent">{nummer}</span>
+              <span className="font-display text-[15px] font-semibold text-(--offer)">{nummer}</span>
               <h3 id={titleId} className="mt-2 font-display text-[1.6rem] leading-[1.15] font-semibold md:text-[1.9rem]">
                 {angebot.titel}
               </h3>
@@ -59,7 +62,7 @@ function OfferDialog({
               type="button"
               onClick={() => ref.current?.close()}
               aria-label="Schliessen"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-hairline text-ink-soft transition-colors duration-300 hover:border-accent hover:text-accent"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-hairline text-ink-soft transition-colors duration-300 hover:border-(--offer) hover:text-(--offer)"
             >
               <span aria-hidden>✕</span>
             </button>
@@ -78,7 +81,7 @@ function OfferDialog({
               <ol className="mt-3 space-y-2 border-t border-hairline pt-4 md:border-t-0 md:pt-0">
                 {angebot.mehr.ablauf.map((schritt, k) => (
                   <li key={schritt} className="flex gap-4 text-[15px] leading-relaxed text-ink-soft">
-                    <span aria-hidden className="font-display font-semibold text-accent">
+                    <span aria-hidden className="font-display font-semibold text-(--offer)">
                       {k + 1}
                     </span>
                     <span>{schritt}</span>
@@ -134,7 +137,8 @@ export default function OfferSection({
             { y: 24, autoAlpha: 0, duration: 1.2, stagger: 0.14, clearProps: "transform,translate" },
             "-=0.6"
           )
-          .from(".of-num", { scale: 0.8, autoAlpha: 0, duration: 0.8, stagger: 0.14, ease: "power2.out" }, "<0.3");
+          .from(".of-num", { scale: 0.8, autoAlpha: 0, duration: 0.8, stagger: 0.14, ease: "power2.out" }, "<0.3")
+          .from(".of-glyph-line", { drawSVG: "0%", duration: 1.4, stagger: 0.08, ease: "sine.inOut" }, "<0.2");
       });
     },
     { scope: root }
@@ -144,7 +148,8 @@ export default function OfferSection({
     <section
       ref={root}
       className="relative overflow-hidden border-t border-hairline"
-      style={tint ? { background: tint } : undefined}
+      // Hervorhebungsfarbe der Seite: Consulting blau, Coaching Pflaume
+      style={{ ...(tint ? { background: tint } : {}), ["--offer" as string]: tone === "accent" ? "var(--color-accent)" : "var(--color-consulting-accent)" }}
     >
       <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-32">
         <h2 className="of-title font-display text-[1.75rem] leading-[1.12] font-semibold tracking-tight text-ink md:text-[2.4rem]">
@@ -159,14 +164,22 @@ export default function OfferSection({
             <div
               key={a.titel}
               onPointerMove={trackPointer}
-              className="of-card spotlight group flex h-full flex-col rounded-3xl border border-hairline bg-paper/80 p-8 backdrop-blur-sm transition-[translate,box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-accent/30 hover:shadow-[0_24px_48px_-24px_rgba(31,44,87,0.28)]"
+              className="of-card spotlight group flex h-full flex-col rounded-3xl border border-hairline bg-paper/80 p-8 backdrop-blur-sm transition-[translate,box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-(--offer)/30 hover:shadow-[0_24px_48px_-24px_rgba(31,44,87,0.28)]"
             >
-              <span
-                aria-hidden
-                className="of-num mb-6 flex h-11 w-11 items-center justify-center rounded-full bg-accent/10 font-display text-[15px] font-semibold text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-paper"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
+              <div className="mb-6 flex items-start justify-between">
+                <span
+                  aria-hidden
+                  className="of-num flex h-11 w-11 items-center justify-center rounded-full bg-(--offer)/10 font-display text-[15px] font-semibold text-(--offer) transition-colors duration-500 group-hover:bg-(--offer) group-hover:text-paper"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                {a.symbol && (
+                  <OfferGlyph
+                    name={a.symbol}
+                    className="opacity-70 transition-opacity duration-500 group-hover:opacity-100"
+                  />
+                )}
+              </div>
               <h3 className="font-display min-h-[3.75rem] text-[1.25rem] font-semibold text-ink">
                 {a.titel}
               </h3>
@@ -181,7 +194,7 @@ export default function OfferSection({
                   >
                     <span
                       aria-hidden
-                      className="text-accent transition-transform duration-300 group-hover:translate-x-1"
+                      className="text-(--offer) transition-transform duration-300 group-hover:translate-x-1"
                     >
                       —
                     </span>
