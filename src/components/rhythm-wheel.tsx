@@ -1,54 +1,56 @@
-type Segment = {
-  lines: string[];
-  radiusOffset?: number;
-  fontSize?: number;
-};
+// Der Führungsrhythmus als Kreislauf mit fünf Stationen, im Stil «Lebendige
+// Linie»: ein feiner Ring mit Skalenstrichen, darauf füllt sich der Bogen des
+// aktiven Schritts in accent; durchlaufene Bögen bleiben als feine ink-Linie
+// stehen. Die Begriffe stehen aussen, in der Mitte die MBT-Blüte als Kontur
+// mit Nummer und Begriff in Newsreader kursiv.
 
-// Bei Segmenten, deren Winkelhalbierende nahe der Horizontalen liegt, hat
-// horizontaler Text weniger Breite – radiusOffset/fontSize korrigieren das.
-const RHYTHM: Segment[] = [
-  { lines: ["Ausprobieren"] },
-  { lines: ["Resonanz", "erleben"] },
-  { lines: ["Innehalten"] },
-  { lines: ["Reflektieren"] },
-  { lines: ["Entscheiden"] },
-];
+const RHYTHM = ["Ausprobieren", "Resonanz erleben", "Innehalten", "Reflektieren", "Entscheiden"];
 
-// Schriftgrösse so wählen, dass die Beschriftung mit Abstand in den Ring passt:
-// Ein waagrechter Text ragt je nach Winkel radial unterschiedlich weit hinaus.
-const MAX_FONT = 12;
-const MIN_FONT = 10.5;
-const PAD = 7; // Mindestabstand zum inneren und äusseren Rand
-const CHAR = 0.6; // ungefähre Zeichenbreite im Verhältnis zur Schriftgrösse
-function fitFont(lines: string[], angleDeg: number, halfRing: number) {
-  const a = (angleDeg * Math.PI) / 180;
-  const longest = Math.max(...lines.map((l) => l.length));
-  for (let f = MAX_FONT; f >= MIN_FONT; f -= 0.25) {
-    const w = longest * f * CHAR;
-    const h = lines.length * f * 1.2;
-    const radial = Math.abs((w / 2) * Math.sin(a)) + Math.abs((h / 2) * Math.cos(a));
-    if (radial + PAD <= halfRing) return f;
-  }
-  return MIN_FONT;
+const CX = 220;
+const CY = 206;
+const R = 132; // Ring der Stationen
+const GAP = 7; // Grad Abstand zwischen Bogen und Station
+const STEP = 360 / RHYTHM.length;
+
+function polar(r: number, deg: number) {
+  const a = ((deg - 90) * Math.PI) / 180;
+  return { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) };
 }
 
-// Farben aus den Marken-Tokens abgeleitet (accent auf paper gemischt)
-const TINT = "color-mix(in srgb, var(--color-accent) 16%, var(--color-paper))";
-const PASSED = "color-mix(in srgb, var(--color-accent) 30%, var(--color-paper))";
-const ACTIVE = "var(--color-accent)";
+const f1 = (n: number) => Math.round(n * 10) / 10;
 
-function polar(cx: number, cy: number, r: number, angleDeg: number) {
-  const rad = ((angleDeg - 90) * Math.PI) / 180;
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+function arc(r: number, from: number, to: number) {
+  const a = polar(r, from);
+  const b = polar(r, to);
+  return `M${f1(a.x)} ${f1(a.y)} A${r} ${r} 0 ${to - from > 180 ? 1 : 0} 1 ${f1(b.x)} ${f1(b.y)}`;
 }
 
-function arcPath(cx: number, cy: number, rOuter: number, rInner: number, startDeg: number, endDeg: number) {
-  const p1 = polar(cx, cy, rOuter, startDeg);
-  const p2 = polar(cx, cy, rOuter, endDeg);
-  const p3 = polar(cx, cy, rInner, endDeg);
-  const p4 = polar(cx, cy, rInner, startDeg);
-  const largeArc = endDeg - startDeg > 180 ? 1 : 0;
-  return `M ${p1.x} ${p1.y} A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2.x} ${p2.y} L ${p3.x} ${p3.y} A ${rInner} ${rInner} 0 ${largeArc} 0 ${p4.x} ${p4.y} Z`;
+// Feine Skala: alle 5 Grad ein Strich, an den Stationen ausgespart
+const TICKS = Array.from({ length: 72 }, (_, k) => k * 5)
+  .filter((deg) => RHYTHM.every((_, i) => Math.abs(((deg - i * STEP + 540) % 360) - 180) > 6))
+  .map((deg) => {
+    const a = polar(R - 7, deg);
+    const b = polar(R - (deg % 15 === 0 ? 12 : 10), deg);
+    return `M${f1(a.x)} ${f1(a.y)} L${f1(b.x)} ${f1(b.y)}`;
+  })
+  .join(" ");
+
+// MBT-Blüte wie im Logo: 16 spitze Blätter um eine offene Mitte
+const BLOOM_R = 17;
+const BLOOM = Array.from({ length: 16 }, (_, k) => {
+  const a = (k / 16) * Math.PI * 2 - Math.PI / 2;
+  const half = (Math.PI / 16) * 0.94;
+  const q = (r: number, ang: number) => `${f1(Math.cos(ang) * r * BLOOM_R)} ${f1(Math.sin(ang) * r * BLOOM_R)}`;
+  return `M${q(0.37, a)}L${q(0.64, a - half)}L${q(1, a)}L${q(0.64, a + half)}Z`;
+});
+
+/** Lage der Beschriftung je nach Winkel: oben mittig, rechts linksbündig, links rechtsbündig */
+function labelLayout(deg: number) {
+  const p = polar(R + 20, deg);
+  if (deg === 0) return { x: p.x, y: p.y - 18, anchor: "middle" as const };
+  const right = deg < 180;
+  const lower = deg > 90 && deg < 270;
+  return { x: p.x + (right ? 2 : -2), y: p.y + (lower ? 4 : -10), anchor: right ? ("start" as const) : ("end" as const) };
 }
 
 export default function RhythmWheel({
@@ -59,166 +61,159 @@ export default function RhythmWheel({
 }: {
   className?: string;
   activeIndex?: number;
-  /** 0–1: füllt einen feinen Ring um das Rad (Fortschritt beim Scrollen) */
+  /** 0–1: Fortschritt beim Scrollen, füllt den Bogen des aktiven Schritts */
   progress?: number;
-  /** Klick auf ein Segment springt zu diesem Schritt */
+  /** Klick auf eine Station springt zu diesem Schritt */
   onSelect?: (index: number) => void;
 }) {
-  const cx = 190;
-  const cy = 190;
-  const rRing = 178;
-  const rOuter = 166;
-  const rInner = 74;
-  const rLabel = (rOuter + rInner) / 2;
-  const halfRing = (rOuter - rInner) / 2;
-  const step = 360 / RHYTHM.length;
-  const active = activeIndex !== undefined ? RHYTHM[activeIndex] : undefined;
-  const head = progress !== undefined ? polar(cx, cy, rRing, 360 * progress) : undefined;
+  const n = RHYTHM.length;
+  // Fortschritt innerhalb des aktiven Schritts (ohne Scrub: Bogen voll)
+  const inStep = progress !== undefined && activeIndex !== undefined ? Math.max(0, Math.min(1, progress * n - activeIndex)) : 1;
+  const headDeg = activeIndex !== undefined ? activeIndex * STEP + GAP + (STEP - 2 * GAP) * inStep : undefined;
+  const head = headDeg !== undefined && progress !== undefined ? polar(R, headDeg) : undefined;
 
   return (
     <svg
-      viewBox="0 0 380 380"
+      viewBox="-48 14 536 392"
       className={`mx-auto w-full overflow-visible ${className}`}
       role="img"
       aria-label="Der Führungsrhythmus als Kreis: Ausprobieren, Resonanz erleben, Innehalten, Reflektieren, Entscheiden — und wieder von vorn."
     >
-      <defs>
-        {/* sehr weicher, getönter Schatten – gibt dem Rad Tiefe, ohne schwer zu wirken */}
-        <filter id="rhythm-wheel-shadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="12" stdDeviation="18" floodColor="#331641" floodOpacity="0.14" />
-        </filter>
-      </defs>
-
-      {/* Fortschrittsring: feine Spur, darauf der Bogen in accent mit einem Punkt am Ende */}
-      {progress !== undefined && head && (
-        <g aria-hidden>
-          <circle cx={cx} cy={cy} r={rRing} fill="none" stroke="var(--color-hairline)" strokeWidth={1.5} />
-          <circle
-            cx={cx}
-            cy={cy}
-            r={rRing}
-            fill="none"
-            stroke={ACTIVE}
-            strokeWidth={2.5}
-            strokeLinecap="round"
-            pathLength={1}
-            strokeDasharray="1 1"
-            strokeDashoffset={1 - progress}
-            transform={`rotate(-90 ${cx} ${cy})`}
-            style={{ transition: "stroke-dashoffset 0.2s linear" }}
-          />
-          <circle cx={head.x} cy={head.y} r={4.5} fill={ACTIVE} stroke="var(--color-paper)" strokeWidth={2} />
-        </g>
-      )}
-
-      <g filter="url(#rhythm-wheel-shadow)">
-        {/* Innenfläche */}
-        <circle cx={cx} cy={cy} r={rInner - 2} fill="var(--color-paper)" />
-        {RHYTHM.map((seg, i) => {
-          const start = i * step;
-          const end = start + step;
-          const mid = start + step / 2;
-          const labelPos = polar(cx, cy, rLabel + (seg.radiusOffset ?? 0), mid);
-          const fontSize = seg.fontSize ?? fitFont(seg.lines, mid, halfRing);
-          const firstDy = -((seg.lines.length - 1) * 0.6);
-          const isActive = activeIndex === i;
+      {/* Ring: feine Spur, Skala, durchlaufene und aktive Bögen */}
+      <g className="fill-none" strokeLinecap="round">
+        <circle cx={CX} cy={CY} r={R} className="stroke-hairline" strokeWidth={1.5} />
+        <path d={TICKS} className="stroke-ink" strokeWidth={0.6} opacity={0.22} />
+        <circle cx={CX} cy={CY} r={R - 46} className="stroke-ink" strokeWidth={0.6} opacity={0.14} />
+        {RHYTHM.map((_, i) => {
+          const from = i * STEP + GAP;
+          const to = (i + 1) * STEP - GAP;
           const passed = activeIndex !== undefined && i < activeIndex;
-          const fill = isActive ? ACTIVE : passed ? PASSED : TINT;
-          // aktiver Schritt tritt ein wenig nach aussen
-          const out = polar(0, 0, isActive ? 5 : 0, mid);
-
-          return (
-            <g
-              key={seg.lines.join(" ")}
-              role={onSelect ? "button" : undefined}
-              tabIndex={onSelect ? 0 : undefined}
-              aria-label={onSelect ? `Zu „${seg.lines.join(" ")}“ springen` : undefined}
-              aria-pressed={onSelect ? isActive : undefined}
-              onClick={onSelect ? () => onSelect(i) : undefined}
-              onKeyDown={
-                onSelect
-                  ? (e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        onSelect(i);
-                      }
-                    }
-                  : undefined
-              }
-              className={onSelect ? "group cursor-pointer outline-none" : undefined}
-              style={{
-                transform: `translate(${out.x}px, ${out.y}px)`,
-                transition: "transform 0.7s cubic-bezier(0.22,1,0.36,1)",
-              }}
-            >
-              <path
-                d={arcPath(cx, cy, rOuter, rInner, start, end)}
-                fill={fill}
-                stroke="var(--color-paper)"
-                strokeWidth={4}
-                strokeLinejoin="round"
-                className={onSelect && !isActive ? "transition-[filter] duration-300 group-hover:brightness-[0.97] group-focus-visible:brightness-[0.94]" : undefined}
-                style={{ transition: "fill 0.5s ease" }}
-              />
-              <text
-                x={labelPos.x}
-                y={labelPos.y}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fill={isActive ? "var(--color-paper)" : "var(--color-ink)"}
-                fontFamily="var(--font-body)"
-                fontSize={fontSize}
-                fontWeight={600}
-                letterSpacing="-0.1"
-                style={{ transition: "fill 0.5s ease" }}
-              >
-                {seg.lines.map((line, li) => (
-                  <tspan key={line} x={labelPos.x} dy={li === 0 ? `${firstDy}em` : "1.2em"}>
-                    {line}
-                  </tspan>
-                ))}
-              </text>
-            </g>
-          );
+          const isActive = activeIndex === i;
+          if (passed) return <path key={i} d={arc(R, from, to)} className="stroke-ink" strokeWidth={1.2} opacity={0.6} />;
+          if (isActive && inStep > 0.002)
+            return <path key={i} d={arc(R, from, from + (to - from) * inStep)} className="stroke-accent" strokeWidth={2.2} />;
+          return null;
         })}
       </g>
+      {head && <circle cx={head.x} cy={head.y} r={3.4} className="fill-accent stroke-neutral-tint" strokeWidth={2} aria-hidden />}
 
-      {/* Mitte: aktueller Schritt, sonst «Der Rhythmus» */}
-      {active && activeIndex !== undefined ? (
+      {/* Stationen mit Beschriftung aussen */}
+      {RHYTHM.map((term, i) => {
+        const deg = i * STEP;
+        const dot = polar(R, deg);
+        const l = labelLayout(deg);
+        const isActive = activeIndex === i;
+        const passed = activeIndex !== undefined && i < activeIndex;
+        return (
+          <g
+            key={term}
+            role={onSelect ? "button" : undefined}
+            tabIndex={onSelect ? 0 : undefined}
+            aria-label={onSelect ? `Zu „${term}“ springen` : undefined}
+            aria-pressed={onSelect ? isActive : undefined}
+            onClick={onSelect ? () => onSelect(i) : undefined}
+            onKeyDown={
+              onSelect
+                ? (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onSelect(i);
+                    }
+                  }
+                : undefined
+            }
+            className={onSelect ? "group cursor-pointer outline-none" : undefined}
+          >
+            {/* grosszügige, unsichtbare Klickfläche */}
+            {onSelect && <circle cx={(dot.x + l.x) / 2} cy={(dot.y + l.y) / 2} r={34} fill="transparent" />}
+            {isActive && <circle cx={dot.x} cy={dot.y} r={9} className="fill-none stroke-accent" strokeWidth={0.8} opacity={0.4} />}
+            <circle
+              cx={dot.x}
+              cy={dot.y}
+              r={isActive ? 4.6 : 3.6}
+              className={`${isActive ? "fill-accent stroke-accent" : passed ? "fill-ink stroke-ink" : "fill-neutral-tint stroke-ink"} group-focus-visible:stroke-accent`}
+              strokeWidth={1}
+              style={{ transition: "r 0.5s cubic-bezier(0.22,1,0.36,1), fill 0.5s ease" }}
+            />
+            <text
+              x={l.x}
+              y={l.y}
+              textAnchor={l.anchor}
+              fontFamily="var(--font-display)"
+              fontWeight={600}
+              letterSpacing="0.08em"
+              style={{ fontVariantNumeric: "tabular-nums", transition: "fill 0.5s ease" }}
+              // Handy: das Rad wird stark verkleinert, die Beschriftung bleibt lesbar
+              className={`text-[12.5px] md:text-[10px] ${isActive ? "fill-accent" : "fill-ink-soft"}`}
+              opacity={isActive ? 1 : 0.7}
+            >
+              {String(i + 1).padStart(2, "0")}
+            </text>
+            <text
+              x={l.x}
+              y={l.y + 17}
+              textAnchor={l.anchor}
+              fontFamily="var(--font-body)"
+              fontWeight={500}
+              letterSpacing="0.005em"
+              className={`text-[17px] md:text-[14.5px] ${isActive ? "fill-ink" : "fill-ink-soft"} transition-[fill] duration-500 group-hover:fill-ink`}
+            >
+              {term}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Mitte: Blüte, Nummer und Begriff des aktuellen Schritts, sonst «Der Rhythmus» */}
+      <g transform={`translate(${CX} ${CY - 40})`} aria-hidden>
+        {BLOOM.map((d, k) => (
+          <path key={k} d={d} className="fill-accent stroke-accent" fillOpacity={0.08} strokeWidth={0.9} strokeLinejoin="round" />
+        ))}
+      </g>
+      {activeIndex !== undefined ? (
         <g key={activeIndex} className="rhythm-center" aria-hidden>
           <text
-            x={cx}
-            y={cy - (active.lines.length > 1 ? 26 : 16)}
+            x={CX}
+            y={CY + 2}
             textAnchor="middle"
-            fill="var(--color-accent)"
             fontFamily="var(--font-display)"
-            fontSize="12.5"
+            fontSize={10.5}
             fontWeight={600}
-            letterSpacing="0.12em"
+            letterSpacing="0.1em"
+            className="fill-accent"
+            style={{ fontVariantNumeric: "tabular-nums" }}
           >
-            {String(activeIndex + 1).padStart(2, "0")} / {String(RHYTHM.length).padStart(2, "0")}
+            {String(activeIndex + 1).padStart(2, "0")}
+            <tspan className="fill-ink-soft" opacity={0.6}>
+              {" "}/ {String(n).padStart(2, "0")}
+            </tspan>
           </text>
           <text
-            x={cx}
-            y={cy + (active.lines.length > 1 ? 0 : 10)}
+            x={CX}
+            y={CY + 34}
             textAnchor="middle"
-            fill="var(--color-ink)"
-            fontFamily="var(--font-display)"
-            fontSize="18"
-            fontWeight={600}
+            fontFamily="var(--font-newsreader), Georgia, serif"
+            fontStyle="italic"
+            fontSize={RHYTHM[activeIndex].length > 13 ? 23 : 26}
+            fontWeight={500}
             letterSpacing="-0.01em"
+            className="fill-ink"
           >
-            {active.lines.map((line, li) => (
-              <tspan key={line} x={cx} dy={li === 0 ? 0 : "1.2em"}>
-                {line}
-              </tspan>
-            ))}
+            {RHYTHM[activeIndex]}
           </text>
         </g>
       ) : (
-        <text x={cx} y={cy} textAnchor="middle" fill="var(--color-ink)" fontFamily="var(--font-display)" fontSize="16" fontWeight={600}>
-          <tspan x={cx} dy="-0.35em">Der</tspan>
-          <tspan x={cx} dy="1.25em">Rhythmus</tspan>
+        <text
+          x={CX}
+          y={CY + 28}
+          textAnchor="middle"
+          fontFamily="var(--font-newsreader), Georgia, serif"
+          fontStyle="italic"
+          fontSize={26}
+          fontWeight={500}
+          className="fill-ink"
+        >
+          Der Rhythmus
         </text>
       )}
     </svg>
