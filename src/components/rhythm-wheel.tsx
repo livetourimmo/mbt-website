@@ -30,29 +30,6 @@ function arc(r: number, from: number, to: number) {
 // Feine Skala aussen, wie bei den Kreisen von Topf und Organismus; an den Stationen ausgespart
 const TICKS = ringTicks(CX, CY, R + 5, RHYTHM.map((_, i) => i * STEP), 7);
 
-// Blättchen entlang des Rings, nach innen und in Laufrichtung geneigt
-// (aussen liegt die Skala): Was durchlaufen ist, ist gewachsen.
-function leafAt(deg: number, side: 1 | -1) {
-  const a = ((deg - 90) * Math.PI) / 180;
-  const base = polar(R, deg);
-  const t = [-Math.sin(a), Math.cos(a)]; // Laufrichtung (im Uhrzeigersinn)
-  const n = [Math.cos(a), Math.sin(a)]; // nach aussen
-  const tilt = (34 * Math.PI) / 180;
-  const d = [t[0] * Math.cos(tilt) + n[0] * side * Math.sin(tilt), t[1] * Math.cos(tilt) + n[1] * side * Math.sin(tilt)];
-  const m = [-d[1], d[0]];
-  const L = 11;
-  const W = 3.3;
-  const at = (u: number, w: number) => `${f1(base.x + d[0] * L * u + m[0] * w)} ${f1(base.y + d[1] * L * u + m[1] * w)}`;
-  return `M${f1(base.x)} ${f1(base.y)} Q${at(0.45, W)} ${at(1, 0)} Q${at(0.45, -W)} ${f1(base.x)} ${f1(base.y)} Z`;
-}
-const LEAVES = RHYTHM.map((_, i) => {
-  const out: { deg: number; d: string }[] = [];
-  for (let deg = i * STEP + GAP + 5; deg <= (i + 1) * STEP - GAP - 4; deg += 9) {
-    out.push({ deg, d: leafAt(deg, -1) });
-  }
-  return out;
-});
-
 // MBT-Blüte wie im Logo: 16 spitze Blätter um eine offene Mitte
 const BLOOM_R = 17;
 const BLOOM = Array.from({ length: 16 }, (_, k) => {
@@ -112,25 +89,6 @@ export default function RhythmWheel({
             return <path key={i} d={arc(R, from, from + (to - from) * inStep)} className="stroke-accent" strokeWidth={2.2} />;
           return null;
         })}
-      </g>
-      {/* Blättchen: im aktiven Abschnitt erscheinen sie, sobald der Bogen sie erreicht */}
-      <g aria-hidden strokeLinejoin="round">
-        {LEAVES.map((leaves, i) =>
-          leaves.map(({ deg, d }) => {
-            const passed = activeIndex !== undefined && i < activeIndex;
-            const grown = passed || (activeIndex === i && headDeg !== undefined && deg <= headDeg + 0.5) || (activeIndex === i && progress === undefined);
-            return (
-              <path
-                key={`${i}-${deg}`}
-                d={d}
-                className={activeIndex === i ? "fill-neutral-tint stroke-accent" : "fill-neutral-tint stroke-ink"}
-                strokeWidth={0.7}
-                opacity={grown ? (activeIndex === i ? 0.85 : 0.55) : 0}
-                style={{ transition: "opacity 0.5s ease, stroke 0.5s ease" }}
-              />
-            );
-          })
-        )}
       </g>
       {head && <circle cx={head.x} cy={head.y} r={3.4} className="fill-accent stroke-neutral-tint" strokeWidth={2} aria-hidden />}
 

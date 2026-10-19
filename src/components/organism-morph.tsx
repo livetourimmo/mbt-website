@@ -246,7 +246,6 @@ const BLOOM_CELL = BOX_CELL.slice(4).reduce((a, b) => (CELLS[b].radius > CELLS[a
 // Zeichnen
 
 const f1 = (n: number) => n.toFixed(1);
-const f1n = (n: number) => Math.round(n * 10) / 10;
 const polyPath = (pts: P[]) => `M${pts.map(([x, y]) => `${f1(x)} ${f1(y)}`).join("L")}Z`;
 
 /** Verbindung als drei kubische Segmente: Organigramm = rechtwinklig, später = sanfter Bogen */
@@ -359,29 +358,11 @@ const BLOOM = Array.from({ length: 16 }, (_, k) => {
 const FIELD_TICKS = ringTicks(FIELD.cx, FIELD.cy, FIELD.r + 6);
 
 const WALL = "color-mix(in srgb, var(--color-ink) 72%, var(--color-neutral-tint))";
-/** Zellwand: im Organigramm kräftig wie die Kästchen, im Gewebe fein */
-const wallWidth = (t: number) => lerp(1.1, 0.7, seg(t, 0.3, 0.4));
-const LINK = "color-mix(in srgb, var(--color-ink) 50%, var(--color-neutral-tint))";
-
-// Organigramm wie gesetzt: jede Karte mit zwei feinen Zeilen (Name, Funktion),
-// an den Abzweigungen kleine Knoten. Beides tritt zurück, bevor sich die Karten bewegen.
-const CARD_LINES = BOXES.map((b) => {
-  const l1 = b.w * (b.level === 2 ? 0.46 : 0.5);
-  const l2 = b.w * (b.level === 2 ? 0.3 : 0.32);
-  const y1 = b.c[1] - b.h * 0.14;
-  const y2 = b.c[1] + b.h * 0.2;
-  return `M${f1(b.c[0] - l1 / 2)} ${f1(y1)} H${f1(b.c[0] + l1 / 2)} M${f1(b.c[0] - l2 / 2)} ${f1(y2)} H${f1(b.c[0] + l2 / 2)}`;
-}).join(" ");
-const KNOTS: P[] = (() => {
-  // Knick der rechtwinkligen Linien: auf halber Höhe zwischen den Kartenmitten
-  const pts = new Map<string, P>();
-  BOXES.slice(1).forEach((b) => {
-    const parent = BOXES[b.parent];
-    const mid = f1n((parent.c[1] + b.c[1]) / 2);
-    [parent.c[0], b.c[0]].forEach((x) => pts.set(`${x}|${mid}`, [x, mid]));
-  });
-  return [...pts.values()];
-})();
+/** Zellwand: im Organigramm etwas kräftiger, im Gewebe fein */
+const wallWidth = (t: number) => lerp(0.85, 0.7, seg(t, 0.3, 0.4));
+/** Kästchen decken die Linien ab; im Gewebe werden die Zellen zarter */
+const cellFill = (t: number) => lerp(1, 0.75, seg(t, 0.3, 0.4));
+const LINK = "color-mix(in srgb, var(--color-ink) 42%, var(--color-neutral-tint))";
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 function subscribe(onChange: () => void) {
@@ -414,6 +395,7 @@ export default function OrganismMorph() {
           el.setAttribute("opacity", cellOpacity(ci, t).toFixed(2));
         });
         wallGroup.setAttribute("stroke-width", wallWidth(t).toFixed(2));
+        wallGroup.setAttribute("fill-opacity", cellFill(t).toFixed(2));
         edges.forEach((el, k) => el.setAttribute("d", edgeD(k + 1, t)));
         // Linien treten zurück, sobald die Zellen einander berühren
         linkGroup.setAttribute("opacity", f1(1 - seg(t, 0.46, 0.2)));
@@ -431,8 +413,7 @@ export default function OrganismMorph() {
       tl.to(state, { t: 1, duration: 1, ease: "none", onUpdate: () => render(state.t) }, 0)
         // Das Sichtfeld legt sich um das Organigramm
         .fromTo(q(".o-field"), { drawSVG: "50% 50%" }, { drawSVG: "0% 100%", duration: 0.26 }, 0.1)
-        .fromTo(q(".o-ticks"), { opacity: 0 }, { opacity: 0.22, duration: 0.2 }, 0.2)
-        .fromTo(q(".o-chart"), { opacity: 1 }, { opacity: 0, duration: 0.07 }, 0.05);
+        .fromTo(q(".o-ticks"), { opacity: 0 }, { opacity: 0.22, duration: 0.2 }, 0.2);
 
       // Das Gewebe reift Zelle für Zelle, sobald sie ihre Form gefunden hat
       CELLS.forEach((cell, ci) => {
@@ -476,22 +457,14 @@ export default function OrganismMorph() {
           opacity={0.35}
         />
 
-        <g className="o-links fill-none" stroke={LINK} strokeWidth={0.8} opacity={0}>
+        <g className="o-links fill-none" stroke={LINK} strokeWidth={0.7} opacity={0}>
           {BOXES.slice(1).map((_, k) => (
             <path key={k} className="o-edge" d={edgeD(k + 1, 1)} />
           ))}
         </g>
-        <g className="o-walls" fill="var(--color-paper)" fillOpacity={0.75} stroke={WALL} strokeWidth={wallWidth(1)} strokeLinejoin="round">
+        <g className="o-walls" fill="var(--color-paper)" fillOpacity={cellFill(1)} stroke={WALL} strokeWidth={wallWidth(1)} strokeLinejoin="round">
           {CELLS.map((_, ci) => (
             <path key={ci} className="o-cell" d={cellPath(ci, 1)} />
-          ))}
-        </g>
-
-        {/* Organigramm: Zeilen auf den Karten, Knoten an den Abzweigungen */}
-        <g className="o-chart" opacity={0}>
-          <path d={CARD_LINES} className="fill-none stroke-ink" strokeWidth={1.1} strokeLinecap="round" opacity={0.3} />
-          {KNOTS.map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r={1.5} fill={LINK} />
           ))}
         </g>
 
