@@ -3,6 +3,7 @@
 import { useRef, useSyncExternalStore } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { seeded, r1 } from "@/lib/use-scrub-scene";
+import { ringTicks } from "@/lib/ring-ticks";
 
 // Lebendige Führung · Vom Organigramm zum Organismus (angepinnt, gescrubbt).
 // Bild: Gewebe unter der Lupe. Im Organigramm berühren sich die Kästchen nie –
@@ -27,14 +28,14 @@ const seg = (t: number, start: number, len: number) => 0.5 - Math.cos(Math.PI * 
 // Sichtfeld und Organigramm: 1 – 3 – 9 Kästchen, im Kreis
 
 const FIELD = { cx: 400, cy: 262, r: 192 };
-const ROW_Y = [150, 240, 330];
+const ROW_Y = [165, 255, 345];
 type Box = { c: P; w: number; h: number; level: number; parent: number };
 const BOXES: Box[] = (() => {
   const boxes: Box[] = [{ c: [400, ROW_Y[0]], w: 74, h: 26, level: 0, parent: -1 }];
   const l1X = [282, 400, 518];
   l1X.forEach((x) => boxes.push({ c: [x, ROW_Y[1]], w: 62, h: 23, level: 1, parent: 0 }));
   l1X.forEach((x, i) =>
-    [-38, 0, 38].forEach((off) => boxes.push({ c: [x + off, ROW_Y[2]], w: 32, h: 19, level: 2, parent: 1 + i }))
+    [-36, 0, 36].forEach((off) => boxes.push({ c: [x + off, ROW_Y[2]], w: 30, h: 18, level: 2, parent: 1 + i }))
   );
   return boxes;
 })();
@@ -148,7 +149,13 @@ function rayHit(poly: P[], c: P, ang: number): P {
 /** Kästchen-Umriss relativ zur Mitte: 12 Punkte pro Seite, Ecken exakt */
 function rectOutline(w: number, h: number): P[] {
   const c: P[] = [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]];
-  return c.flatMap((a, i) => Array.from({ length: K / 4 }, (_, k) => lerpP(a, c[(i + 1) % 4], k / (K / 4))));
+  return c.flatMap((a, i) =>
+    Array.from({ length: K / 4 }, (_, k): P => {
+      const p = lerpP(a, c[(i + 1) % 4], k / (K / 4));
+      // Ecke knapp abgeflacht: wirkt bei dieser Grösse sauber gerundet
+      return k === 0 ? [p[0] - Math.sign(p[0]) * 0.8, p[1] - Math.sign(p[1]) * 0.8] : p;
+    })
+  );
 }
 
 type Cell = {
@@ -239,6 +246,7 @@ const BLOOM_CELL = BOX_CELL.slice(4).reduce((a, b) => (CELLS[b].radius > CELLS[a
 // Zeichnen
 
 const f1 = (n: number) => n.toFixed(1);
+const f1n = (n: number) => Math.round(n * 10) / 10;
 const polyPath = (pts: P[]) => `M${pts.map(([x, y]) => `${f1(x)} ${f1(y)}`).join("L")}Z`;
 
 /** Verbindung als drei kubische Segmente: Organigramm = rechtwinklig, später = sanfter Bogen */
@@ -348,10 +356,32 @@ const BLOOM = Array.from({ length: 16 }, (_, k) => {
   };
 });
 
+const FIELD_TICKS = ringTicks(FIELD.cx, FIELD.cy, FIELD.r + 6);
+
 const WALL = "color-mix(in srgb, var(--color-ink) 72%, var(--color-neutral-tint))";
 /** Zellwand: im Organigramm kräftig wie die Kästchen, im Gewebe fein */
 const wallWidth = (t: number) => lerp(1.1, 0.7, seg(t, 0.3, 0.4));
-const LINK = "color-mix(in srgb, var(--color-ink) 55%, var(--color-neutral-tint))";
+const LINK = "color-mix(in srgb, var(--color-ink) 50%, var(--color-neutral-tint))";
+
+// Organigramm wie gesetzt: jede Karte mit zwei feinen Zeilen (Name, Funktion),
+// an den Abzweigungen kleine Knoten. Beides tritt zurück, bevor sich die Karten bewegen.
+const CARD_LINES = BOXES.map((b) => {
+  const l1 = b.w * (b.level === 2 ? 0.46 : 0.5);
+  const l2 = b.w * (b.level === 2 ? 0.3 : 0.32);
+  const y1 = b.c[1] - b.h * 0.14;
+  const y2 = b.c[1] + b.h * 0.2;
+  return `M${f1(b.c[0] - l1 / 2)} ${f1(y1)} H${f1(b.c[0] + l1 / 2)} M${f1(b.c[0] - l2 / 2)} ${f1(y2)} H${f1(b.c[0] + l2 / 2)}`;
+}).join(" ");
+const KNOTS: P[] = (() => {
+  // Knick der rechtwinkligen Linien: auf halber Höhe zwischen den Kartenmitten
+  const pts = new Map<string, P>();
+  BOXES.slice(1).forEach((b) => {
+    const parent = BOXES[b.parent];
+    const mid = f1n((parent.c[1] + b.c[1]) / 2);
+    [parent.c[0], b.c[0]].forEach((x) => pts.set(`${x}|${mid}`, [x, mid]));
+  });
+  return [...pts.values()];
+})();
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 function subscribe(onChange: () => void) {
@@ -400,7 +430,9 @@ export default function OrganismMorph() {
       });
       tl.to(state, { t: 1, duration: 1, ease: "none", onUpdate: () => render(state.t) }, 0)
         // Das Sichtfeld legt sich um das Organigramm
-        .fromTo(q(".o-field"), { drawSVG: "50% 50%" }, { drawSVG: "0% 100%", duration: 0.26 }, 0.1);
+        .fromTo(q(".o-field"), { drawSVG: "50% 50%" }, { drawSVG: "0% 100%", duration: 0.26 }, 0.1)
+        .fromTo(q(".o-ticks"), { opacity: 0 }, { opacity: 0.22, duration: 0.2 }, 0.2)
+        .fromTo(q(".o-chart"), { opacity: 1 }, { opacity: 0, duration: 0.07 }, 0.05);
 
       // Das Gewebe reift Zelle für Zelle, sobald sie ihre Form gefunden hat
       CELLS.forEach((cell, ci) => {
@@ -429,13 +461,14 @@ export default function OrganismMorph() {
   const figure = (
     <figure ref={figureRef} className="mx-auto w-full max-w-5xl">
       <svg
-        viewBox="196 58 408 408"
+        viewBox="188 50 424 424"
         className="mx-auto block aspect-square h-auto max-h-[64svh] w-full overflow-visible"
         role="img"
         aria-label="Linienzeichnung: Ein Organigramm aus Kästchen, die nur über rechtwinklige Linien mit der Spitze verbunden sind, löst sich in einem kreisrunden Sichtfeld auf. Die Kästchen wachsen aufeinander zu und werden zu Zellen, die sich direkt berühren, neue Zellen füllen das Feld. Jede Zelle bekommt einen Zellkern, durch jede gemeinsame Wand führen feine Kanäle zu den Nachbarn. In einer einzelnen Zelle öffnet sich die violette MBT-Blüte."
       >
         {/* Sichtfeld */}
         <circle cx={FIELD.cx} cy={FIELD.cy} r={FIELD.r + 2} className="fill-none stroke-hairline" strokeWidth={1.5} />
+        <path className="o-ticks fill-none stroke-ink" d={FIELD_TICKS} strokeWidth={0.6} opacity={0.22} />
         <path
           className="o-field fill-none stroke-ink"
           d={`M${FIELD.cx} ${FIELD.cy - FIELD.r - 2} A${FIELD.r + 2} ${FIELD.r + 2} 0 1 1 ${FIELD.cx - 0.01} ${FIELD.cy - FIELD.r - 2}`}
@@ -443,7 +476,7 @@ export default function OrganismMorph() {
           opacity={0.35}
         />
 
-        <g className="o-links fill-none" stroke={LINK} strokeWidth={1} opacity={0}>
+        <g className="o-links fill-none" stroke={LINK} strokeWidth={0.8} opacity={0}>
           {BOXES.slice(1).map((_, k) => (
             <path key={k} className="o-edge" d={edgeD(k + 1, 1)} />
           ))}
@@ -451,6 +484,14 @@ export default function OrganismMorph() {
         <g className="o-walls" fill="var(--color-paper)" fillOpacity={0.75} stroke={WALL} strokeWidth={wallWidth(1)} strokeLinejoin="round">
           {CELLS.map((_, ci) => (
             <path key={ci} className="o-cell" d={cellPath(ci, 1)} />
+          ))}
+        </g>
+
+        {/* Organigramm: Zeilen auf den Karten, Knoten an den Abzweigungen */}
+        <g className="o-chart" opacity={0}>
+          <path d={CARD_LINES} className="fill-none stroke-ink" strokeWidth={1.1} strokeLinecap="round" opacity={0.3} />
+          {KNOTS.map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r={1.5} fill={LINK} />
           ))}
         </g>
 

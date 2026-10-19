@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useScrubTrigger } from "@/components/scroll-scrub";
 import { seeded, r1 } from "@/lib/use-scrub-scene";
+import { ringTicks } from "@/lib/ring-ticks";
 
 // «Kreislauf» zu den drei Bedingungen: Ein Pusteblumen-Samen schwebt herab und
 // sinkt in die Erde, Wurzeln greifen, eine Löwenzahn-Rosette treibt aus, der
@@ -86,6 +87,7 @@ const SEED_REST: P = [200, 294];
 // Ring: beginnt oben und läuft im Uhrzeigersinn. Oben steht der wandernde
 // Punkt (01), die Punkte für 02 und 03 liegen bei einem und zwei Dritteln.
 const RING = `M${C.cx} ${C.cy - C.r} A${C.r} ${C.r} 0 1 1 ${C.cx - 0.01} ${C.cy - C.r}`;
+const TICKS = ringTicks(C.cx, C.cy, C.r + 4, [0, 120, 240]);
 const MARKERS: P[] = [30, 150].map((deg) => {
   const a = (deg * Math.PI) / 180;
   return [r1(C.cx + Math.cos(a) * C.r), r1(C.cy + Math.sin(a) * C.r)];
@@ -381,7 +383,7 @@ export default function GrowthMedia() {
   return (
     <div ref={ref} className="mx-auto w-[min(100%,38svh)] md:w-[min(100%,64vh,440px)]">
       <svg
-        viewBox="22 42 356 356"
+        viewBox="16 36 368 368"
         className="block h-auto w-full overflow-visible"
         role="img"
         aria-label="Linienzeichnung in einem Kreis: Ein Pusteblumen-Samen sinkt in die Erde, Wurzeln verzweigen sich, eine Löwenzahn-Rosette treibt aus, ein Schaft mit Knospe wächst und eine violette Blüte in Form des MBT-Logos öffnet sich. Aus ihr steigt ein neuer Samen auf."
@@ -392,8 +394,9 @@ export default function GrowthMedia() {
           </clipPath>
         </defs>
 
-        {/* Ring wie beim Rhythmus-Rad: feine Spur, darauf der Fortschritt */}
+        {/* Ring wie beim Rhythmus-Rad: feine Spur mit Skala, darauf der Fortschritt */}
         <circle cx={C.cx} cy={C.cy} r={C.r} className="fill-none stroke-hairline" strokeWidth={1.5} />
+        <path className="fill-none stroke-ink" d={TICKS} strokeWidth={0.6} opacity={0.22} />
         <path className="c-progress fill-none stroke-ink" d={RING} strokeWidth={1.1} strokeLinecap="round" opacity={0.55} />
 
         {/* Erde: Hauch von ink, feine Striche, ein paar Steine */}
@@ -452,7 +455,7 @@ export default function GrowthMedia() {
               <path key={`u${i}`} className="c-petal-base fill-neutral-tint" d={b.petal} />
             ))}
             {BLOOM.map((b, i) => (
-              <path key={i} className="c-petal fill-accent stroke-accent" d={b.petal} fillOpacity={0.1} strokeWidth={1.1} strokeLinejoin="round" />
+              <path key={i} className="c-petal fill-accent stroke-accent" d={b.petal} fillOpacity={0.1} strokeWidth={1} strokeLinejoin="round" />
             ))}
             {BLOOM.map((b, i) => (
               <path key={`d${i}`} className="c-dart fill-accent" d={b.dart} />
