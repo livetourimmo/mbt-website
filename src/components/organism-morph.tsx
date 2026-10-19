@@ -285,8 +285,12 @@ function cellPath(ci: number, t: number) {
   if (cell.box !== -1) return polyPath(boxState(cell.box, t).pts);
   const g = seg(t, growStart(cell), 0.16);
   if (g <= 0) return "";
-  return polyPath(cell.shape.map(([x, y]): P => [cell.c[0] + x * g, cell.c[1] + y * g]));
+  // ab einem Drittel der Grösse eingeblendet: winzige Anfänge sähen aus wie Staub
+  const k = 0.35 + 0.65 * g;
+  return polyPath(cell.shape.map(([x, y]): P => [cell.c[0] + x * k, cell.c[1] + y * k]));
 }
+
+const cellOpacity = (ci: number, t: number) => (CELLS[ci].box !== -1 ? 1 : seg(t, growStart(CELLS[ci]), 0.12));
 
 const BEND = BOXES.map((_, i) => ((i * 5) % 3) * 0.06 - 0.06);
 
@@ -375,7 +379,10 @@ export default function OrganismMorph() {
       const rule = root.querySelector<HTMLElement>(".o-rule")!;
 
       const render = (t: number) => {
-        cells.forEach((el, ci) => el.setAttribute("d", cellPath(ci, t)));
+        cells.forEach((el, ci) => {
+          el.setAttribute("d", cellPath(ci, t));
+          el.setAttribute("opacity", cellOpacity(ci, t).toFixed(2));
+        });
         wallGroup.setAttribute("stroke-width", wallWidth(t).toFixed(2));
         edges.forEach((el, k) => el.setAttribute("d", edgeD(k + 1, t)));
         // Linien treten zurück, sobald die Zellen einander berühren
