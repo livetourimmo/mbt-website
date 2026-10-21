@@ -5,10 +5,11 @@ import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useScrubTrigger } from "@/components/scroll-scrub";
 import { r1 } from "@/lib/use-scrub-scene";
 
-// Drei Bedingungen als reduzierte Silhouette mit rauer Pinselkante: Ein
+// Drei Bedingungen als reduzierte, glatte Silhouette: Ein
 // Pusteblumen-Samen sinkt in eine flache Schale, ein Keimling treibt aus, ein
-// langes Blatt wächst, dann der Stängel mit Knospe, und zuletzt öffnet sich die
-// MBT-Blüte in accent. Die Stadien gehen beim Scrollen weich ineinander über.
+// langes Blatt wächst, dann der Stängel, und an seiner Spitze öffnet sich direkt
+// die MBT-Blüte in accent. Die Stadien gehen beim Scrollen weich ineinander über;
+// die fertige Pflanze bleibt im letzten Teil des Abschnitts stehen.
 // Das Markup zeigt den Endzustand (gilt bei reduzierter Bewegung).
 
 type P = [number, number];
@@ -94,19 +95,15 @@ const BLADE = {
   c: smooth(BLADE_PTS),
 };
 
-// Stängel mit Knospe und Blüte
-const FLOWER: P = [140, 126];
-const BLOOM_R = 29;
+// Stängel mit Blüte
+const FLOWER: P = [140, 122];
+const BLOOM_R = 37;
 const STEM_PTS: P[] = Array.from({ length: 8 }, (_, i) => {
   const u = i / 7;
   const top = FLOWER[1] + BLOOM_R * 0.37;
   return [SOIL[0] - 10 * Math.pow(u, 1.3) + 3 * Math.sin(u * Math.PI), SOIL[1] - u * (SOIL[1] - top)];
 });
 const STEM = { d: ribbon(STEM_PTS, (u) => 4.4 - 1.8 * u), c: smooth(STEM_PTS) };
-const BUD =
-  `M${pt([FLOWER[0], FLOWER[1] + 12])} C${pt([FLOWER[0] - 10, FLOWER[1] + 9])} ${pt([FLOWER[0] - 9, FLOWER[1] - 6])} ${pt([FLOWER[0] + 1, FLOWER[1] - 13])}` +
-  ` C${pt([FLOWER[0] + 9, FLOWER[1] - 6])} ${pt([FLOWER[0] + 10, FLOWER[1] + 9])} ${pt([FLOWER[0], FLOWER[1] + 12])} Z`;
-
 // MBT-Blüte wie im Logo: 16 spitze Blätter um eine offene Mitte – hier als Fläche
 const PETALS = Array.from({ length: 16 }, (_, i) => {
   const a = (i / 16) * Math.PI * 2 - Math.PI / 2;
@@ -171,19 +168,17 @@ export default function GrowthMedia() {
           .fromTo(q(".g-coty"), { scale: 0, svgOrigin: pt(COTY_AT) }, { scale: 1, duration: 0.2, stagger: 0.04 }, 0.68);
 
         // 02 Boden: das lange Blatt wächst, der Keimling tritt zurück
-        tl.fromTo(q(".g-rv-blade"), hidden, { drawSVG: "0% 100%", duration: 0.6 }, 1.05)
-          .to(q(".g-sprout"), { opacity: 0, duration: 0.3 }, 1.5)
-          .fromTo(q(".g-rv-stem"), hidden, { drawSVG: "0% 22%", duration: 0.35 }, 1.55);
+        tl.fromTo(q(".g-rv-blade"), hidden, { drawSVG: "0% 100%", duration: 0.55 }, 1.02)
+          .to(q(".g-sprout"), { opacity: 0, duration: 0.3 }, 1.45)
+          .fromTo(q(".g-rv-stem"), hidden, { drawSVG: "0% 22%", duration: 0.35 }, 1.5);
 
-        // 03 Pflege: ein paar Tropfen, der Stängel wächst, Knospe, dann die Blüte
-        tl.fromTo(q(".g-drop"), { y: -120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, stagger: 0.09, ease: "power1.in" }, 1.96)
-          .to(q(".g-drop"), { opacity: 0, duration: 0.05, stagger: 0.09 }, 2.22)
-          .to(q(".g-rv-stem"), { drawSVG: "0% 100%", duration: 0.55, ease: "none" }, 2.02)
-          .fromTo(q(".g-bud"), { scale: 0, opacity: 1, svgOrigin: pt([FLOWER[0], FLOWER[1] + 12]) }, { scale: 1, duration: 0.16 }, 2.5)
-          .to(q(".g-bud"), { scale: 0.6, opacity: 0, duration: 0.14 }, 2.66)
-          .fromTo(q(".g-bloom"), { scale: 0.3, rotation: -28, opacity: 0, svgOrigin: "0 0" }, { scale: 1, rotation: 0, opacity: 1, duration: 0.3 }, 2.64)
-          .fromTo(q(".g-petal"), { scale: 0.4, svgOrigin: "0 0" }, { scale: 1, duration: 0.22, stagger: 0.008 }, 2.66)
-          // Zeitachse exakt auf 3 enden lassen, damit sie zu den drei Texten passt
+        // 03 Pflege: ein paar Tropfen, der Stängel wächst, an der Spitze öffnet sich direkt die Blüte
+        tl.fromTo(q(".g-drop"), { y: -120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.24, stagger: 0.07, ease: "power1.in" }, 1.86)
+          .to(q(".g-drop"), { opacity: 0, duration: 0.04, stagger: 0.07 }, 2.08)
+          .to(q(".g-rv-stem"), { drawSVG: "0% 100%", duration: 0.42, ease: "none" }, 1.96)
+          .fromTo(q(".g-bloom"), { scale: 0.2, rotation: -28, opacity: 0, svgOrigin: "0 0" }, { scale: 1, rotation: 0, opacity: 1, duration: 0.26 }, 2.32)
+          .fromTo(q(".g-petal"), { scale: 0.4, svgOrigin: "0 0" }, { scale: 1, duration: 0.2, stagger: 0.008 }, 2.34)
+          // Ab 2.6 steht die fertige Pflanze; die Zeitachse endet exakt auf 3, passend zu den drei Texten
           .set({}, {}, 3);
       });
       ScrollTrigger.create({ trigger, start: "top bottom+=60%", once: true, onEnter: build });
@@ -199,23 +194,12 @@ export default function GrowthMedia() {
         role="img"
         aria-label="Silhouette: Ein Pusteblumen-Samen sinkt in eine flache Schale, ein Keimling treibt aus, ein langes Blatt wächst, dann ein Stängel mit Knospe, und zuletzt öffnet sich eine violette Blüte in Form des MBT-Logos."
       >
-        <defs>
-          {/* Raue Pinselkante: Rand leicht versetzt, dazu feine Aussparungen in der Fläche */}
-          <filter id="g-brush" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="edge" />
-            <feDisplacementMap in="SourceGraphic" in2="edge" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="rough" />
-            <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="11" result="grain" />
-            <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 26 -18.6" result="specks" />
-            <feComposite in="rough" in2="specks" operator="out" />
-          </filter>
-        </defs>
 
-        <g filter="url(#g-brush)">
+        <g>
           <g className="fill-ink">
             {/* Langes Blatt hinter dem Stängel */}
             <Revealed id="g-m-blade" cls="g-rv-blade" d={BLADE.d} c={BLADE.c} width={16} />
             <Revealed id="g-m-stem" cls="g-rv-stem" d={STEM.d} c={STEM.c} width={7} />
-            <path className="g-bud" d={BUD} opacity={0} />
 
             {/* Keimling (nur während der Animation sichtbar) */}
             <g className="g-sprout" opacity={0}>

@@ -5,13 +5,13 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { seeded, r1 } from "@/lib/use-scrub-scene";
 
 // Lebendige Führung · Vom Organigramm zum Organismus (angepinnt, gescrubbt).
-// Silhouette mit rauer Pinselkante, im Stil des Topfs. Im Organigramm berühren
-// sich die Kästchen nie – jede Verbindung läuft über eine Linie nach oben. Beim
-// Scrollen lösen sich die rechten Winkel, die Kästchen wachsen aufeinander zu
-// und werden zu Zellen. Die Linien verschwinden, weil sich Nachbarn jetzt
-// direkt berühren; neue Zellen wachsen zu einer runden Kolonie, nur getrennt
-// durch helle Fugen. In jeder Zelle öffnet sich ein Kern. Zuletzt tritt eine
-// Zelle zurück und an ihrer Stelle öffnet sich die MBT-Blüte in accent.
+// Glatte Silhouette im Stil des Topfs. Ein Organigramm aus Kästchen und
+// rechtwinkligen Linien; ganz unten rechts beginnt eine Stelle zu leben (accent).
+// Die Kästchen werden zu Knoten, die Linien zu weichen
+// Verbindungen, das Ganze ordnet sich strahlenförmig: Die frühere Spitze rückt
+// in die Mitte, aus jedem Knoten wachsen feine Äste mit kleinen Büscheln, ein
+// paar Querverbindungen verbinden Nachbarn. Einzelne Knoten leuchten in accent,
+// in der Mitte öffnet sich die MBT-Blüte.
 
 type P = [number, number];
 
@@ -20,11 +20,13 @@ const lerpP = (a: P, b: P, t: number): P => [lerp(a[0], b[0], t), lerp(a[1], b[1
 const clamp = (t: number) => Math.max(0, Math.min(1, t));
 /** Abschnitt [start, start + len] der Timeline, weich ein- und ausgeleitet */
 const seg = (t: number, start: number, len: number) => 0.5 - Math.cos(Math.PI * clamp((t - start) / len)) / 2;
+const f1 = (n: number) => n.toFixed(1);
+const pt = (p: P) => `${r1(p[0])} ${r1(p[1])}`;
+const polar = (c: P, r: number, deg: number): P => [c[0] + Math.cos((deg * Math.PI) / 180) * r, c[1] + Math.sin((deg * Math.PI) / 180) * r];
 
 // ---------------------------------------------------------------------------
-// Sichtfeld und Organigramm: 1 – 3 – 9 Kästchen, im Kreis
+// Organigramm: 1 – 3 – 9 Kästchen
 
-const FIELD = { cx: 400, cy: 262, r: 192 };
 const ROW_Y = [165, 255, 345];
 type Box = { c: P; w: number; h: number; level: number; parent: number };
 const BOXES: Box[] = (() => {
@@ -37,206 +39,148 @@ const BOXES: Box[] = (() => {
   return boxes;
 })();
 
+// Hier beginnt das Leben: das Kästchen ganz unten rechts
+const SPARK = BOXES.length - 1;
+
 // ---------------------------------------------------------------------------
-// Gewebe: entspannte Zufallspunkte, Zellen leicht in die Breite gezogen
+// Organismus: strahlenförmig um die Mitte
 
-const ANISO = 1.18; // Zellen sind etwas breiter als hoch, wie in einem Blattgewebe
-const GAP = 2.7; // halbe Breite der hellen Fuge zwischen zwei Zellen
-const K = 48; // Punkte pro Umriss (12 pro Kästchenseite)
-const BOUND = { x0: FIELD.cx - FIELD.r - 60, y0: FIELD.cy - FIELD.r - 60, x1: FIELD.cx + FIELD.r + 60, y1: FIELD.cy + FIELD.r + 60 };
+const C: P = [400, 262];
+const NODE_R = [8, 6.5, 5];
+const L1_DEG = [205, 95, 335];
+const ANGLE: number[] = BOXES.map((b, i) => {
+  if (b.level === 0) return 0;
+  if (b.level === 1) return L1_DEG[i - 1];
+  const k = (i - 4) % 3; // links, mitte, rechts unter dem Elternknoten
+  return L1_DEG[b.parent - 1] + (k - 1) * 40;
+});
+const FINAL: P[] = BOXES.map((b, i) => (b.level === 0 ? C : polar(C, b.level === 1 ? 72 : 124 + ((i * 7) % 3) * 6, ANGLE[i])));
 
-/** Halbebene: behält die Punkte p mit (p − m)·n ≤ 0 */
-function clipHalf(poly: P[], m: P, n: P): P[] {
-  const side = (p: P) => (p[0] - m[0]) * n[0] + (p[1] - m[1]) * n[1];
-  const out: P[] = [];
-  poly.forEach((a, i) => {
-    const b = poly[(i + 1) % poly.length];
-    const sa = side(a), sb = side(b);
-    if (sa <= 0) out.push(a);
-    if (sa * sb < 0) out.push(lerpP(a, b, sa / (sa - sb)));
-  });
-  return out;
-}
-
-function area(poly: P[]) {
-  let s = 0;
-  poly.forEach((a, i) => {
-    const b = poly[(i + 1) % poly.length];
-    s += a[0] * b[1] - b[0] * a[1];
-  });
-  return s / 2;
-}
-
-function centroid(poly: P[]): P {
-  let x = 0, y = 0, s = 0;
-  poly.forEach((a, i) => {
-    const b = poly[(i + 1) % poly.length];
-    const k = a[0] * b[1] - b[0] * a[1];
-    s += k;
-    x += (a[0] + b[0]) * k;
-    y += (a[1] + b[1]) * k;
-  });
-  return [x / (3 * s), y / (3 * s)];
-}
-
-/** Voronoi-Zellen im gestauchten Raum (x / ANISO), danach zurück gestreckt */
-function voronoi(sites: P[]): P[][] {
-  const box: P[] = [[BOUND.x0 / ANISO, BOUND.y0], [BOUND.x1 / ANISO, BOUND.y0], [BOUND.x1 / ANISO, BOUND.y1], [BOUND.x0 / ANISO, BOUND.y1]];
-  const iso = sites.map(([x, y]): P => [x / ANISO, y]);
-  return iso.map((s, i) => {
-    let poly = box;
-    iso.forEach((o, j) => {
-      if (i !== j && poly.length) poly = clipHalf(poly, [(s[0] + o[0]) / 2, (s[1] + o[1]) / 2], [o[0] - s[0], o[1] - s[1]]);
-    });
-    return poly.map(([x, y]): P => [x * ANISO, y]);
-  });
-}
-
-/** Auf das Sichtfeld beschneiden (Kreis als Vieleck) */
-function clipToField(poly: P[], inset: number): P[] {
-  let p = poly;
-  const n = 72;
-  for (let k = 0; k < n && p.length; k++) {
-    const a = (k / n) * Math.PI * 2;
-    const d: P = [Math.cos(a), Math.sin(a)];
-    p = clipHalf(p, [FIELD.cx + d[0] * (FIELD.r - inset), FIELD.cy + d[1] * (FIELD.r - inset)], d);
-  }
-  return p;
-}
-
-/** Wand nach innen versetzen (konvexes Polygon), dann Ecken weich runden */
-function cellOutline(poly: P[]): P[] {
-  let p = area(poly) < 0 ? [...poly].reverse() : poly;
-  const src = p;
-  src.forEach((a, i) => {
-    const b = src[(i + 1) % src.length];
-    const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
-    if (len < 1e-6) return;
-    // Aussennormale bei Umlauf im Uhrzeigersinn auf dem Bildschirm (y nach unten)
-    const n: P = [(b[1] - a[1]) / len, -(b[0] - a[0]) / len];
-    p = clipHalf(p, [a[0] - n[0] * GAP, a[1] - n[1] * GAP], n);
-  });
-  // erst nur die Ecken knapp abschneiden, dann glätten: Wände bleiben gerade, Ecken weich
-  [0.16, 0.25, 0.25].forEach((q) => {
-    p = p.flatMap((a, i) => {
-      const b = p[(i + 1) % p.length];
-      return [lerpP(a, b, q), lerpP(a, b, 1 - q)];
-    });
-  });
-  return p;
-}
-
-/** Schnittpunkt eines Strahls ab c mit dem (konvexen) Umriss */
-function rayHit(poly: P[], c: P, ang: number): P {
-  const d: P = [Math.cos(ang), Math.sin(ang)];
-  let best = Infinity;
-  poly.forEach((a, i) => {
-    const b = poly[(i + 1) % poly.length];
-    const e: P = [b[0] - a[0], b[1] - a[1]];
-    const den = d[0] * e[1] - d[1] * e[0];
-    if (Math.abs(den) < 1e-9) return;
-    const w: P = [a[0] - c[0], a[1] - c[1]];
-    const t = (w[0] * e[1] - w[1] * e[0]) / den;
-    const u = (w[0] * d[1] - w[1] * d[0]) / den;
-    if (t > 0 && u >= -1e-6 && u <= 1 + 1e-6) best = Math.min(best, t);
-  });
-  return [d[0] * best, d[1] * best];
-}
-
-/** Kästchen-Umriss relativ zur Mitte: 12 Punkte pro Seite, Ecken exakt */
-function rectOutline(w: number, h: number): P[] {
-  const c: P[] = [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]];
-  return c.flatMap((a, i) =>
-    Array.from({ length: K / 4 }, (_, k): P => {
-      const p = lerpP(a, c[(i + 1) % 4], k / (K / 4));
-      // Ecke knapp abgeflacht: wirkt bei dieser Grösse sauber gerundet
-      return k === 0 ? [p[0] - Math.sign(p[0]) * 0.8, p[1] - Math.sign(p[1]) * 0.8] : p;
-    })
-  );
-}
-
-type Cell = {
-  c: P; // Mitte der fertigen Zelle
-  shape: P[]; // fertiger Umriss relativ zu c, K Punkte
-  box: number; // Index des Kästchens, aus dem die Zelle entsteht (−1 = wächst neu)
-  grow: number; // Startzeit für neue Zellen (0–1)
-  radius: number; // mittlerer Radius
-};
-
-// Das Gewebe ist eine runde Kolonie, etwas kleiner als der Raum des Organigramms
-const TISSUE_R = 152;
-
-const CELLS = (() => {
-  const rnd = seeded(17);
-  const s = 40;
-  // Zufallspunkte, zweimal entspannt: gleichmässig, aber jede Zelle anders
-  let sites: P[] = [];
-  for (let y = BOUND.y0; y < BOUND.y1; y += s * 0.86) {
-    for (let x = BOUND.x0 / ANISO; x < BOUND.x1 / ANISO; x += s) {
-      sites.push([(x + (rnd() - 0.5) * s * 0.9) * ANISO, y + (rnd() - 0.5) * s * 0.9]);
-    }
-  }
-  for (let k = 0; k < 2; k++) sites = voronoi(sites).map((poly, i) => (poly.length > 2 ? centroid(poly) : sites[i]));
-  const raw = voronoi(sites);
-  const clipped = raw.map((poly) => (poly.length > 2 ? clipToField(poly, FIELD.r - TISSUE_R) : []));
-  const full = Math.max(...raw.map((p) => (p.length > 2 ? Math.abs(area(p)) : 0)).filter((a) => a < s * s * 3));
-  // Randzellen, von denen nur ein Teil bleibt, weglassen: der Rand der Kolonie wird bucklig statt rund
-  const keep = clipped.map((p) => p.length > 2 && Math.abs(area(p)) > full * 0.5);
-
-  const cells: Cell[] = [];
-  const outlines: P[][] = [];
-  sites.forEach((_, i) => {
-    if (!keep[i]) return;
-    const outline = cellOutline(clipped[i]);
-    outlines.push(outline);
-    cells.push({ c: centroid(outline), shape: [], box: -1, grow: 0, radius: Math.sqrt(Math.abs(area(outline)) / Math.PI) });
-  });
-
-  // Jedes Kästchen bekommt die Zelle, die seiner Lage am nächsten liegt
-  BOXES.forEach((b, bi) => {
-    const target: P = [FIELD.cx + (b.c[0] - FIELD.cx) * 0.92, FIELD.cy + (b.c[1] - FIELD.cy) * 0.92];
-    let best = -1, bestD = Infinity;
-    cells.forEach((cell, ci) => {
-      if (cell.box !== -1) return;
-      const d = Math.hypot(cell.c[0] - target[0], cell.c[1] - target[1]);
-      if (d < bestD) {
-        best = ci;
-        bestD = d;
-      }
-    });
-    cells[best].box = bi;
-  });
-
-  // Umrisse auf die Winkel der Kästchenpunkte abtasten, damit sich beide Formen punktweise entsprechen
-  const angles = rectOutline(62, 23).map(([x, y]) => Math.atan2(y, x));
-  const seeds = cells.filter((c) => c.box !== -1).map((c) => c.c);
-  let maxD = 0;
-  cells.forEach((cell, ci) => {
-    const own = cell.box === -1 ? angles : rectOutline(BOXES[cell.box].w, BOXES[cell.box].h).map(([x, y]) => Math.atan2(y, x));
-    cell.shape = own.map((a) => rayHit(outlines[ci], cell.c, a));
-    if (cell.box === -1) {
-      cell.grow = Math.min(...seeds.map((q) => Math.hypot(q[0] - cell.c[0], q[1] - cell.c[1])));
-      maxD = Math.max(maxD, cell.grow);
-    }
-  });
-  cells.forEach((cell) => {
-    if (cell.box === -1) cell.grow = cell.grow / maxD;
-  });
-
-  return cells;
+// Reihenfolge des Wandels: vom Funken aus, nahe Kästchen zuerst
+const SPARK_DIST = (() => {
+  const d = BOXES.map((b) => Math.hypot(b.c[0] - BOXES[SPARK].c[0], b.c[1] - BOXES[SPARK].c[1]));
+  const max = Math.max(...d);
+  return d.map((v) => v / max);
 })();
 
-const BOX_CELL = BOXES.map((_, bi) => CELLS.findIndex((c) => c.box === bi));
-// Die Blüte öffnet sich in einer früheren Zelle der untersten Ebene, nicht in der Spitze –
-// in der, die der Mitte der Kolonie am nächsten liegt
-const toCenter = (ci: number) => Math.hypot(CELLS[ci].c[0] - FIELD.cx, CELLS[ci].c[1] - FIELD.cy - 20);
-const BLOOM_CELL = BOX_CELL.slice(4).reduce((a, b) => (toCenter(b) < toCenter(a) ? b : a));
+// Äste: aus jedem Knoten wachsen leicht S-förmig geschwungene Zweige nach aussen,
+// verzweigen sich bis in die dritte Ordnung, tragen feine Härchen und enden in
+// Büscheln aus kleinen Punkten.
+type Twig = { d: string; depth: number };
+type Tuft = { stalks: string; dots: string; at: P };
+const TWIG_W = [1.35, 1, 0.75, 0.55];
+const BRANCHES = BOXES.map((b, i) => {
+  const twigs: Twig[] = [];
+  const tufts: Tuft[] = [];
+  const knots: { at: P; depth: number }[] = [];
+  let hairs = "";
+  if (b.level === 0) return { twigs, tufts, knots, hairs };
+  const rnd = seeded(40 + i);
+  const tuft = (at: P, deg: number, size: number) => {
+    let stalks = "";
+    let dots = "";
+    const n = 3 + Math.floor(rnd() * 3);
+    for (let k = 0; k < n; k++) {
+      const a = deg + (k - (n - 1) / 2) * (110 / n) + (rnd() - 0.5) * 12;
+      const len = (4 + rnd() * 4.5) * size;
+      const end = polar(at, len, a);
+      const c = polar(at, len * 0.55, a + (rnd() - 0.5) * 30);
+      stalks += ` M${pt(at)} Q${pt(c)} ${pt(end)}`;
+      const r = (0.9 + rnd() * 0.8) * size;
+      dots += ` M${r1(end[0] - r)} ${r1(end[1])} a${r1(r)} ${r1(r)} 0 1 0 ${r1(2 * r)} 0 a${r1(r)} ${r1(r)} 0 1 0 ${r1(-2 * r)} 0`;
+    }
+    tufts.push({ stalks: stalks.trim(), dots: dots.trim(), at });
+  };
+  const grow = (from: P, deg: number, len: number, depth: number) => {
+    // S-Schwung: zwei gegenläufige Biegungen
+    const b1 = (rnd() - 0.5) * 30;
+    const b2 = -b1 * 0.6 + (rnd() - 0.5) * 16;
+    const p1 = polar(from, len * 0.35, deg + b1);
+    const p2 = polar(p1, len * 0.35, deg + b2);
+    const end = polar(p2, len * 0.32, deg + b2 * 0.5);
+    twigs.push({ d: `M${pt(from)} C${pt(p1)} ${pt(p2)} ${pt(end)}`, depth });
+    const at = (u: number): P => {
+      const v = 1 - u;
+      return [
+        v * v * v * from[0] + 3 * v * v * u * p1[0] + 3 * v * u * u * p2[0] + u * u * u * end[0],
+        v * v * v * from[1] + 3 * v * v * u * p1[1] + 3 * v * u * u * p2[1] + u * u * u * end[1],
+      ];
+    };
+    // feine Härchen entlang des Zweigs
+    for (let k = 0; k < 3; k++) {
+      const u = 0.25 + k * 0.22 + rnd() * 0.06;
+      const h = at(u);
+      const side = k % 2 === 0 ? 1 : -1;
+      const he = polar(h, (3 + rnd() * 3) * (1 - depth * 0.15), deg + side * (55 + rnd() * 25));
+      hairs += ` M${pt(h)} L${pt(he)}`;
+    }
+    if (depth < 3) {
+      const kids = depth === 0 ? 2 : depth === 1 ? (rnd() > 0.4 ? 2 : 1) : rnd() > 0.55 ? 1 : 0;
+      for (let k = 0; k < kids; k++) {
+        const u = kids === 1 ? 0.55 : 0.4 + k * 0.3;
+        const from2 = at(u);
+        knots.push({ at: from2, depth });
+        const side = (k + depth + i) % 2 === 0 ? 1 : -1;
+        grow(from2, deg + side * (32 + rnd() * 22), len * (0.5 + rnd() * 0.15), depth + 1);
+      }
+    }
+    // Büschel nur an den feinen Enden, die kräftigen Zweige laufen frei aus
+    if (depth >= 1) tuft(end, deg + b2 * 0.5, depth >= 2 ? 0.85 : 1);
+  };
+  const out = ANGLE[i];
+  if (b.level === 1) {
+    grow(FINAL[i], out + 58, 40, 1);
+    grow(FINAL[i], out - 58, 40, 1);
+  } else {
+    const n = 2 + (i % 2);
+    for (let k = 0; k < n; k++) grow(FINAL[i], out + (k - (n - 1) / 2) * 36 + (rnd() - 0.5) * 10, 56 + rnd() * 16, 0);
+  }
+  return { twigs, tufts, knots, hairs: hairs.trim() };
+});
+
+/** Punkt auf der weichen Verbindung zwischen zwei Knoten im Endzustand */
+function edgePoint(a: P, b: P, bend: number, s: number): P {
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const c1: P = [a[0] + dx * 0.33 - dy * bend, a[1] + dy * 0.33 + dx * bend];
+  const c2: P = [a[0] + dx * 0.67 - dy * bend, a[1] + dy * 0.67 + dx * bend];
+  const u = 1 - s;
+  return [
+    u * u * u * a[0] + 3 * u * u * s * c1[0] + 3 * u * s * s * c2[0] + s * s * s * b[0],
+    u * u * u * a[1] + 3 * u * u * s * c1[1] + 3 * u * s * s * c2[1] + s * s * s * b[1],
+  ];
+}
+
+// Querverbindungen zwischen Nachbarn verschiedener Äste: alle sind miteinander verbunden
+// (die äussersten Knoten zweier Äste, die nebeneinander liegen)
+const CROSS = [
+  [6, 10],
+  [4, 9],
+  [7, 12],
+].map(([a, b]) => {
+  const m = lerpP(FINAL[a], FINAL[b], 0.5);
+  const out = polar(m, 12, (Math.atan2(m[1] - C[1], m[0] - C[0]) * 180) / Math.PI);
+  return `M${pt(FINAL[a])} Q${pt(out)} ${pt(FINAL[b])}`;
+});
+
+// Lebendige Knoten (accent): über den ganzen Organismus verteilt, nicht nur an einer Stelle
+const GLOW: P[] = [
+  [7, 0], [10, 1], [5, 2], [2, 0], [8, 3], [4, 1], [11, 2], [3, 1],
+]
+  .map(([n, k]) => BRANCHES[n].knots[k]?.at)
+  .filter((p): p is P => Boolean(p));
+
+// MBT-Blüte in der Mitte: 16 spitze Blätter um eine offene Mitte, als Fläche
+const BLOOM_R = 27;
+const PETALS = Array.from({ length: 16 }, (_, k) => {
+  const a = (k / 16) * Math.PI * 2 - Math.PI / 2;
+  const half = (Math.PI / 16) * 0.9;
+  const q = (r: number, ang: number) => `${f1(Math.cos(ang) * r * BLOOM_R)} ${f1(Math.sin(ang) * r * BLOOM_R)}`;
+  return `M${q(0.38, a)}L${q(0.64, a - half)}L${q(1, a)}L${q(0.64, a + half)}Z`;
+});
 
 // ---------------------------------------------------------------------------
-// Zeichnen
-
-const f1 = (n: number) => n.toFixed(1);
-const polyPath = (pts: P[]) => `M${pts.map(([x, y]) => `${f1(x)} ${f1(y)}`).join("L")}Z`;
+// Zustand zur Zeit t
 
 /** Verbindung als drei kubische Segmente: Organigramm = rechtwinklig, später = sanfter Bogen */
 function edgePath(a: P, b: P, t: number, bend: number) {
@@ -260,63 +204,29 @@ function edgePath(a: P, b: P, t: number, bend: number) {
   return `M${p[0]} C${p[1]} ${p[2]} ${p[3]} C${p[4]} ${p[5]} ${p[6]} ${p[7]} ${p[8]} ${p[9]}`;
 }
 
-/** Zustand eines Kästchens / einer Zelle zur Zeit t */
-function boxState(bi: number, t: number) {
-  const b = BOXES[bi];
-  const cell = CELLS[BOX_CELL[bi]];
-  // die Spitze löst sich zuerst, die unteren Ebenen folgen
-  const delay = b.level * 0.04 + (bi % 3) * 0.008;
-  const move = seg(t, 0.14 + delay, 0.34);
-  const form = seg(t, 0.2 + delay, 0.34);
-  const c = lerpP(b.c, cell.c, move);
-  const rect = rectOutline(b.w, b.h);
-  return { c, pts: rect.map((q, i) => lerpP(q, cell.shape[i], form)).map(([x, y]): P => [x + c[0], y + c[1]]) };
-}
-
-const growStart = (cell: Cell) => 0.38 + cell.grow * 0.2;
-/** Zeitpunkt, an dem eine Zelle ihre endgültige Form hat */
-const cellDone = (cell: Cell) => (cell.box === -1 ? growStart(cell) + 0.16 : 0.2 + BOXES[cell.box].level * 0.04 + (cell.box % 3) * 0.008 + 0.34);
-
-function cellPath(ci: number, t: number) {
-  const cell = CELLS[ci];
-  if (cell.box !== -1) return polyPath(boxState(cell.box, t).pts);
-  const g = seg(t, growStart(cell), 0.16);
-  if (g <= 0) return "";
-  // ab einem Drittel der Grösse eingeblendet: winzige Anfänge sähen aus wie Staub
-  const k = 0.35 + 0.65 * g;
-  return polyPath(cell.shape.map(([x, y]): P => [cell.c[0] + x * k, cell.c[1] + y * k]));
-}
-
-const cellOpacity = (ci: number, t: number) =>
-  (CELLS[ci].box !== -1 ? 1 : seg(t, growStart(CELLS[ci]), 0.12)) * (ci === BLOOM_CELL ? bloomCellFade(t) : 1);
-
-const BEND = BOXES.map((_, i) => ((i * 5) % 3) * 0.06 - 0.06);
-
-function edgeD(i: number, t: number) {
+const formAt = (i: number, t: number) => seg(t, 0.18 + SPARK_DIST[i] * 0.12, 0.2);
+const moveAt = (i: number, t: number) => seg(t, 0.3 + SPARK_DIST[i] * 0.08, 0.3);
+const posAt = (i: number, t: number) => lerpP(BOXES[i].c, FINAL[i], moveAt(i, t));
+/** Kästchen → Knoten: Grösse und Rundung */
+function nodeRect(i: number, t: number) {
   const b = BOXES[i];
-  return edgePath(boxState(b.parent, t).c, boxState(i, t).c, seg(t, 0.04, 0.22), BEND[i]);
+  const f = formAt(i, t);
+  const d = NODE_R[b.level] * 2;
+  const w = lerp(b.w, d, f);
+  const h = lerp(b.h, d, f);
+  const c = posAt(i, t);
+  return { x: c[0] - w / 2, y: c[1] - h / 2, w, h, rx: lerp(1.5, d / 2, f) };
 }
+const BEND = BOXES.map((_, i) => ((i * 5) % 3) * 0.08 - 0.08);
+// Perlen: kleine Knoten auf den Hauptverbindungen (erscheinen, wenn alles seinen Platz hat)
+const BEADS: P[] = BOXES.flatMap((b, i) =>
+  b.level === 0 ? [] : (b.level === 1 ? [0.62] : [0.35, 0.68]).map((s) => edgePoint(FINAL[b.parent], FINAL[i], BEND[i], s))
+);
+const edgeD = (i: number, t: number) => edgePath(posAt(BOXES[i].parent, t), posAt(i, t), seg(t, 0.14, 0.24), BEND[i]);
+/** Wann die Äste eines Knotens wachsen: alle erst nach dem Umordnen, fast gleichzeitig, leicht versetzt */
+const branchStart = (i: number) => 0.52 + ((i * 7) % 5) * 0.015;
 
-// Zellkern: eine kleine Aussparung, etwas aus der Mitte gerückt, wie im Linolschnitt
-const NUCLEI = CELLS.map((cell, ci) => {
-  const rnd = seeded(100 + ci);
-  const h = cell.shape[Math.floor(rnd() * K)];
-  const f = 0.2 + rnd() * 0.18;
-  return { c: [r1(cell.c[0] + h[0] * f), r1(cell.c[1] + h[1] * f)] as P, r: r1(Math.min(3.6, Math.max(2.3, cell.radius * 0.16))) };
-});
-
-/** MBT-Blüte wie im Logo: 16 spitze Blätter um eine offene Mitte, als Fläche */
-const BLOOM_R = Math.min(22, CELLS[BLOOM_CELL].radius * 1.05);
-const PETALS = Array.from({ length: 16 }, (_, k) => {
-  const a = (k / 16) * Math.PI * 2 - Math.PI / 2;
-  const half = (Math.PI / 16) * 0.9;
-  const q = (r: number, ang: number) => `${f1(Math.cos(ang) * r * BLOOM_R)} ${f1(Math.sin(ang) * r * BLOOM_R)}`;
-  return `M${q(0.38, a)}L${q(0.64, a - half)}L${q(1, a)}L${q(0.64, a + half)}Z`;
-});
-
-const LINK = "color-mix(in srgb, var(--color-ink) 70%, var(--color-neutral-tint))";
-/** Die Zelle der Blüte tritt zurück, die Blüte öffnet sich an ihrer Stelle */
-const bloomCellFade = (t: number) => 1 - seg(t, 0.8, 0.07);
+const LINK = "color-mix(in srgb, var(--color-ink) 75%, var(--color-neutral-tint))";
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 function subscribe(onChange: () => void) {
@@ -335,21 +245,30 @@ export default function OrganismMorph() {
       const root = figureRef.current;
       if (reduced || !root || !spacer.current) return;
       const q = gsap.utils.selector(root);
-      const cells = root.querySelectorAll<SVGPathElement>(".o-cell");
+      const nodes = root.querySelectorAll<SVGRectElement>(".o-node");
       const edges = root.querySelectorAll<SVGPathElement>(".o-edge");
-      const linkGroup = root.querySelector<SVGGElement>(".o-links")!;
+      const groups = root.querySelectorAll<SVGGElement>(".o-branches");
       const from = root.querySelector<HTMLElement>(".o-from")!;
       const to = root.querySelector<HTMLElement>(".o-to")!;
       const rule = root.querySelector<HTMLElement>(".o-rule")!;
 
       const render = (t: number) => {
-        cells.forEach((el, ci) => {
-          el.setAttribute("d", cellPath(ci, t));
-          el.setAttribute("opacity", cellOpacity(ci, t).toFixed(2));
+        nodes.forEach((el) => {
+          const i = Number(el.dataset.i);
+          const r = nodeRect(i, t);
+          el.setAttribute("x", f1(r.x));
+          el.setAttribute("y", f1(r.y));
+          el.setAttribute("width", f1(r.w));
+          el.setAttribute("height", f1(r.h));
+          el.setAttribute("rx", f1(r.rx));
         });
         edges.forEach((el, k) => el.setAttribute("d", edgeD(k + 1, t)));
-        // Linien treten zurück, sobald die Zellen einander berühren
-        linkGroup.setAttribute("opacity", f1(1 - seg(t, 0.46, 0.2)));
+        // Äste hängen an ihrem Knoten und wandern mit ihm
+        groups.forEach((el) => {
+          const i = Number(el.dataset.i);
+          const c = posAt(i, t);
+          el.setAttribute("transform", `translate(${f1(c[0] - FINAL[i][0])} ${f1(c[1] - FINAL[i][1])})`);
+        });
         const w = seg(t, 0.2, 0.6);
         from.style.opacity = String(1 - 0.55 * w);
         to.style.opacity = String(0.45 + 0.55 * w);
@@ -361,71 +280,131 @@ export default function OrganismMorph() {
         defaults: { ease: "sine.inOut" },
         scrollTrigger: { trigger: spacer.current, start: "top top", end: "bottom bottom", scrub: 1 },
       });
-      tl.to(state, { t: 1, duration: 1, ease: "none", onUpdate: () => render(state.t) }, 0);
+      tl.to(state, { t: 1, duration: 1, ease: "none", onUpdate: () => render(state.t) }, 0)
+        // Der Funke: ein Kästchen ganz unten rechts wird lebendig
+        .fromTo(q(".o-spark"), { opacity: 0 }, { opacity: 1, duration: 0.06 }, 0.08);
 
-      // In jeder Zelle öffnet sich der Kern, sobald sie ihre Form gefunden hat
-      CELLS.forEach((cell, ci) => {
-        if (ci === BLOOM_CELL) return;
-        const n = NUCLEI[ci];
-        tl.fromTo(q(`.o-nucleus-${ci}`), { scale: 0, svgOrigin: `${n.c[0]} ${n.c[1]}` }, { scale: 1, duration: 0.05 }, Math.min(0.88, cellDone(cell) + 0.02));
+      // Äste wachsen Ordnung für Ordnung, die Büschel öffnen sich an den Enden
+      BRANCHES.forEach((br, i) => {
+        if (!br.twigs.length) return;
+        const s = branchStart(i);
+        [0, 1, 2, 3].forEach((depth) => {
+          const els = q(`.o-twig-${i}-${depth}`);
+          if (els.length) tl.fromTo(els, { drawSVG: "0%" }, { drawSVG: "0% 100%", duration: 0.09, stagger: 0.006 }, s + depth * 0.05);
+        });
+        tl.fromTo(q(`.o-knot-${i}`), { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.04, stagger: 0.006 }, s + 0.06)
+          .fromTo(q(`.o-hairs-${i}`), { opacity: 0 }, { opacity: 0.7, duration: 0.08 }, s + 0.12)
+          .fromTo(q(`.o-tuft-${i}`), { opacity: 0, scale: 0.4, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.06, stagger: 0.004 }, s + 0.14);
       });
 
-      tl.fromTo(q(".o-bloom"), { scale: 0.4, rotation: -26, opacity: 0, svgOrigin: "0 0" }, { scale: 1, rotation: 0, opacity: 1, duration: 0.14 }, 0.81)
-        .fromTo(q(".o-petal"), { scale: 0.4, svgOrigin: "0 0" }, { scale: 1, duration: 0.1, stagger: 0.004 }, 0.82)
+      tl.fromTo(q(".o-bead"), { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.05, stagger: 0.01 }, 0.62)
+        .fromTo(q(".o-cross"), { drawSVG: "0%" }, { drawSVG: "0% 100%", duration: 0.12, stagger: 0.03 }, 0.66)
+        .fromTo(q(".o-glow"), { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.06, stagger: 0.03 }, 0.78)
+        // Die frühere Spitze, jetzt in der Mitte, öffnet sich zur Blüte
+        .fromTo(q(".o-node-top"), { opacity: 1 }, { opacity: 0, duration: 0.04 }, 0.84)
+        .fromTo(q(".o-yard"), { scale: 0, svgOrigin: `${C[0]} ${C[1]}` }, { scale: 1, duration: 0.08 }, 0.82)
+        .fromTo(q(".o-bloom"), { scale: 0.3, rotation: -28, opacity: 0, svgOrigin: "0 0" }, { scale: 1, rotation: 0, opacity: 1, duration: 0.12 }, 0.84)
         .set({}, {}, 1);
       render(0);
     },
     { scope: figureRef, dependencies: [reduced], revertOnUpdate: true }
   );
 
-  const bloomCell = CELLS[BLOOM_CELL];
+  const end = (i: number) => nodeRect(i, 1);
 
   const figure = (
     <figure ref={figureRef} className="mx-auto w-full max-w-5xl">
       <svg
-        viewBox="205 72 390 390"
+        viewBox="168 30 464 464"
         className="mx-auto block aspect-square h-auto max-h-[64svh] w-full overflow-visible"
         role="img"
-        aria-label="Silhouette: Ein Organigramm aus Kästchen, die nur über rechtwinklige Linien mit der Spitze verbunden sind, löst sich auf. Die Kästchen wachsen aufeinander zu und werden zu Zellen, die sich direkt berühren, neue Zellen wachsen zu einer runden Kolonie. An der Stelle einer Zelle öffnet sich die violette MBT-Blüte."
+        aria-label="Silhouette: Ein Organigramm aus Kästchen und rechtwinkligen Linien. Ganz unten rechts wird ein Kästchen lebendig und treibt Äste. Die Kästchen werden zu Knoten, die Linien zu weichen Verbindungen, alles ordnet sich strahlenförmig zu einem verzweigten Organismus mit Querverbindungen. Einzelne Knoten leuchten violett, in der Mitte öffnet sich die MBT-Blüte."
       >
-        <defs>
-          {/* Raue Pinselkante wie beim Topf: Rand leicht versetzt, feine Aussparungen in der Fläche */}
-          <filter id="o-brush" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="edge" />
-            <feDisplacementMap in="SourceGraphic" in2="edge" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="rough" />
-            <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="11" result="grain" />
-            <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 26 -18.6" result="specks" />
-            <feComposite in="rough" in2="specks" operator="out" />
-          </filter>
-        </defs>
+        {/* Äste mit Büscheln, je Knoten in einer Gruppe, die mit dem Knoten wandert */}
+        {BRANCHES.map((br, i) =>
+          br.twigs.length ? (
+            <g key={i} className="o-branches" data-i={i}>
+              <g className="fill-none stroke-ink" strokeLinecap="round">
+                {br.twigs.map((tw, k) => (
+                  <path key={k} className={`o-twig-${i}-${tw.depth}`} d={tw.d} strokeWidth={TWIG_W[tw.depth]} />
+                ))}
+              </g>
+              {br.tufts.map((tf, k) => (
+                <g key={k} className={`o-tuft-${i}`}>
+                  <path d={tf.stalks} className="fill-none stroke-ink" strokeWidth={0.6} strokeLinecap="round" />
+                  <path d={tf.dots} className="fill-ink" />
+                </g>
+              ))}
+              <path className={`o-hairs-${i} fill-none stroke-ink`} d={br.hairs} strokeWidth={0.45} strokeLinecap="round" opacity={0.7} />
+              {br.knots.map((k, n) => (
+                <circle key={n} className={`o-knot-${i} fill-ink`} cx={r1(k.at[0])} cy={r1(k.at[1])} r={[2.9, 2.3, 1.8][k.depth]} />
+              ))}
+            </g>
+          ) : null
+        )}
 
-        <g filter="url(#o-brush)">
-        <g className="o-links fill-none" stroke={LINK} strokeWidth={1.8} strokeLinecap="round" opacity={0}>
+        {/* Querverbindungen */}
+        <g className="fill-none stroke-ink" strokeWidth={0.9} strokeLinecap="round" opacity={0.55}>
+          {CROSS.map((d, k) => (
+            <path key={k} className="o-cross" d={d} />
+          ))}
+        </g>
+
+        {/* Verbindungen des Organigramms, später weiche Bögen */}
+        <g className="fill-none" stroke={LINK} strokeWidth={1.4} strokeLinecap="round">
           {BOXES.slice(1).map((_, k) => (
             <path key={k} className="o-edge" d={edgeD(k + 1, 1)} />
           ))}
         </g>
+
+        {/* Kästchen → Knoten */}
         <g className="fill-ink">
-          {CELLS.map((_, ci) => (
-            <path key={ci} className="o-cell" d={cellPath(ci, 1)} opacity={cellOpacity(ci, 1)} />
+          {BOXES.map((_, i) => {
+            const r = end(i);
+            return (
+              <rect
+                key={i}
+                data-i={i}
+                className={`o-node${i === 0 ? " o-node-top" : ""}`}
+                x={f1(r.x)}
+                y={f1(r.y)}
+                width={f1(r.w)}
+                height={f1(r.h)}
+                rx={f1(r.rx)}
+                opacity={i === 0 ? 0 : 1}
+              />
+            );
+          })}
+        </g>
+        {/* Der Funke liegt deckungsgleich über seinem Knoten */}
+        <g className="o-spark fill-accent">
+          <rect className="o-node" data-i={SPARK} {...(() => { const r = end(SPARK); return { x: f1(r.x), y: f1(r.y), width: f1(r.w), height: f1(r.h), rx: f1(r.rx) }; })()} />
+        </g>
+
+        {/* Perlen auf den Hauptverbindungen */}
+        <g className="fill-ink">
+          {BEADS.map((p, k) => (
+            <circle key={k} className="o-bead" cx={r1(p[0])} cy={r1(p[1])} r={2.3} />
           ))}
         </g>
 
-        {/* Zellkerne als Aussparung */}
-        <g className="fill-neutral-tint">
-          {NUCLEI.map((n, ci) =>
-            ci === BLOOM_CELL ? null : <circle key={ci} className={`o-nucleus-${ci}`} cx={n.c[0]} cy={n.c[1]} r={n.r} />
-          )}
+        {/* Lebendige Knoten */}
+        <g className="fill-accent">
+          {GLOW.map((p, k) => (
+            <circle key={k} className="o-glow" cx={r1(p[0])} cy={r1(p[1])} r={4.2} />
+          ))}
         </g>
 
-        {/* MBT-Blüte – das einzige farbige Element */}
-        <g transform={`translate(${f1(bloomCell.c[0])} ${f1(bloomCell.c[1])})`}>
+        {/* Freier Hof um die Blüte: keine Linie läuft durch das Logo */}
+        <circle className="o-yard fill-neutral-tint" cx={C[0]} cy={C[1]} r={BLOOM_R + 6} />
+
+        {/* MBT-Blüte in der Mitte – dort, wo früher die Spitze war */}
+        <g transform={`translate(${C[0]} ${C[1]})`}>
           <g className="o-bloom fill-accent">
             {PETALS.map((d, k) => (
-              <path key={k} className="o-petal" d={d} />
+              <path key={k} d={d} />
             ))}
           </g>
-        </g>
         </g>
       </svg>
       <figcaption aria-hidden className="mx-auto mt-6 flex max-w-md items-center gap-4 font-display text-[13px] text-ink md:mt-8">

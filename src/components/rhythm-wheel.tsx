@@ -1,7 +1,7 @@
 // Der Führungsrhythmus als Kreislauf mit fünf Stationen: ein feiner Ring, darauf
 // füllt sich der Bogen des aktiven Schritts in accent; durchlaufene Bögen bleiben
-// in ink stehen. Bögen, Punkte und Blüte tragen dieselbe raue Pinselkante wie
-// Topf und Organismus. Die Begriffe stehen aussen, in der Mitte die MBT-Blüte
+// in ink stehen. Bögen, Punkte und Blüte sind glatte Flächen wie bei Topf und
+// Organismus. Die Begriffe stehen aussen, in der Mitte die MBT-Blüte
 // als Fläche mit Nummer und Begriff in Newsreader kursiv.
 
 const RHYTHM = ["Ausprobieren", "Resonanz erleben", "Innehalten", "Reflektieren", "Entscheiden"];
@@ -69,16 +69,6 @@ export default function RhythmWheel({
       role="img"
       aria-label="Der Führungsrhythmus als Kreis: Ausprobieren, Resonanz erleben, Innehalten, Reflektieren, Entscheiden — und wieder von vorn."
     >
-      <defs>
-        {/* Raue Pinselkante wie bei Topf und Organismus */}
-        <filter id="rw-brush" x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="edge" />
-          <feDisplacementMap in="SourceGraphic" in2="edge" scale="2" xChannelSelector="R" yChannelSelector="G" result="rough" />
-          <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="11" result="grain" />
-          <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 26 -18.6" result="specks" />
-          <feComposite in="rough" in2="specks" operator="out" />
-        </filter>
-      </defs>
       {/* Ring: feine Spur, Skala, durchlaufene und aktive Bögen */}
       <g className="fill-none" strokeLinecap="round">
         <circle cx={CX} cy={CY} r={R} className="stroke-hairline" strokeWidth={1.5} />
@@ -88,13 +78,13 @@ export default function RhythmWheel({
           const to = (i + 1) * STEP - GAP;
           const passed = activeIndex !== undefined && i < activeIndex;
           const isActive = activeIndex === i;
-          if (passed) return <path key={i} d={arc(R, from, to)} className="stroke-ink" strokeWidth={2} opacity={0.85} filter="url(#rw-brush)" />;
+          if (passed) return <path key={i} d={arc(R, from, to)} className="stroke-ink" strokeWidth={2} opacity={0.85} />;
           if (isActive && inStep > 0.002)
-            return <path key={i} d={arc(R, from, from + (to - from) * inStep)} className="stroke-accent" strokeWidth={3} filter="url(#rw-brush)" />;
+            return <path key={i} d={arc(R, from, from + (to - from) * inStep)} className="stroke-accent" strokeWidth={3} />;
           return null;
         })}
       </g>
-      {head && <circle cx={head.x} cy={head.y} r={4} className="fill-accent" filter="url(#rw-brush)" aria-hidden />}
+      {head && <circle cx={head.x} cy={head.y} r={4} className="fill-accent" aria-hidden />}
 
       {/* Stationen mit Beschriftung aussen */}
       {RHYTHM.map((term, i) => {
@@ -132,7 +122,7 @@ export default function RhythmWheel({
               r={isActive ? 5.4 : 4.4}
               className={`${isActive ? "fill-accent stroke-accent" : passed ? "fill-ink stroke-ink" : "fill-neutral-tint stroke-ink"} group-focus-visible:stroke-accent`}
               strokeWidth={1.5}
-              filter="url(#rw-brush)"
+             
               style={{ transition: "r 0.5s cubic-bezier(0.22,1,0.36,1), fill 0.5s ease" }}
             />
             <text
@@ -165,7 +155,7 @@ export default function RhythmWheel({
       })}
 
       {/* Mitte: Blüte, Nummer und Begriff des aktuellen Schritts, sonst «Der Rhythmus» */}
-      <g transform={`translate(${CX} ${CY - 40})`} filter="url(#rw-brush)" aria-hidden>
+      <g transform={`translate(${CX} ${CY - 40})`} aria-hidden>
         {BLOOM.map((d, k) => (
           <path key={k} d={d} className="fill-accent" />
         ))}
