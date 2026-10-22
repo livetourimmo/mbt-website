@@ -26,7 +26,8 @@ export default function SectionText({
           })
           .from(".st-line", { scaleX: 0, duration: 1.2, ease: "expo.inOut" }, 0)
           .from(".st-title", { autoAlpha: 0, y: 8, duration: 1.2, ease: "power2.out" }, 0.15)
-          .from(".st-body > *", { y: 8, autoAlpha: 0, duration: 0.9, stagger: 0.1 }, 0.4);
+          // Elemente mit eigener Einblendung (z. B. ScrollQuote) nicht doppelt animieren
+          .from(".st-body > :not([data-own-reveal])", { y: 8, autoAlpha: 0, duration: 0.9, stagger: 0.1 }, 0.4);
       });
     },
     { scope: root }
