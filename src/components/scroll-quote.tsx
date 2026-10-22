@@ -37,6 +37,7 @@ export default function ScrollQuote({
   return (
     <p
       ref={ref}
+      data-own-reveal
       className={`relative pl-5 font-display text-[19px] leading-snug font-medium text-ink md:text-[21px] ${className}`}
     >
       <span aria-hidden className="q-bar absolute top-1 bottom-1 left-0 w-[2px] origin-top rounded-full bg-accent" />
