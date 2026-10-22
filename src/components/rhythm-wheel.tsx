@@ -1,8 +1,7 @@
 // Der Führungsrhythmus als Kreislauf mit fünf Stationen: ein feiner Ring, darauf
 // füllt sich der Bogen des aktiven Schritts in accent; durchlaufene Bögen bleiben
-// in ink stehen. Bögen, Punkte und Blüte sind glatte Flächen wie bei Topf und
-// Organismus. Die Begriffe stehen aussen, in der Mitte die MBT-Blüte
-// als Fläche mit Nummer und Begriff in Newsreader kursiv.
+// in ink stehen. Die Begriffe stehen aussen, in der Mitte Nummer und Begriff
+// des aktiven Schritts in Newsreader kursiv.
 
 const RHYTHM = ["Ausprobieren", "Resonanz erleben", "Innehalten", "Reflektieren", "Entscheiden"];
 
@@ -24,15 +23,6 @@ function arc(r: number, from: number, to: number) {
   const b = polar(r, to);
   return `M${f1(a.x)} ${f1(a.y)} A${r} ${r} 0 ${to - from > 180 ? 1 : 0} 1 ${f1(b.x)} ${f1(b.y)}`;
 }
-
-// MBT-Blüte wie im Logo: 16 spitze Blätter um eine offene Mitte
-const BLOOM_R = 18;
-const BLOOM = Array.from({ length: 16 }, (_, k) => {
-  const a = (k / 16) * Math.PI * 2 - Math.PI / 2;
-  const half = (Math.PI / 16) * 0.9;
-  const q = (r: number, ang: number) => `${f1(Math.cos(ang) * r * BLOOM_R)} ${f1(Math.sin(ang) * r * BLOOM_R)}`;
-  return `M${q(0.37, a)}L${q(0.64, a - half)}L${q(1, a)}L${q(0.64, a + half)}Z`;
-});
 
 /** Lage der Beschriftung je nach Winkel: oben mittig, rechts linksbündig, links rechtsbündig */
 function labelLayout(deg: number) {
@@ -122,7 +112,6 @@ export default function RhythmWheel({
               r={isActive ? 5.4 : 4.4}
               className={`${isActive ? "fill-accent stroke-accent" : passed ? "fill-ink stroke-ink" : "fill-neutral-tint stroke-ink"} group-focus-visible:stroke-accent`}
               strokeWidth={1.5}
-             
               style={{ transition: "r 0.5s cubic-bezier(0.22,1,0.36,1), fill 0.5s ease" }}
             />
             <text
@@ -154,17 +143,12 @@ export default function RhythmWheel({
         );
       })}
 
-      {/* Mitte: Blüte, Nummer und Begriff des aktuellen Schritts, sonst «Der Rhythmus» */}
-      <g transform={`translate(${CX} ${CY - 40})`} aria-hidden>
-        {BLOOM.map((d, k) => (
-          <path key={k} d={d} className="fill-accent" />
-        ))}
-      </g>
+      {/* Mitte: Nummer und Begriff des aktuellen Schritts, sonst «Der Rhythmus» */}
       {activeIndex !== undefined ? (
         <g key={activeIndex} className="rhythm-center" aria-hidden>
           <text
             x={CX}
-            y={CY + 2}
+            y={CY - 12}
             textAnchor="middle"
             fontFamily="var(--font-display)"
             fontSize={10.5}
@@ -180,7 +164,7 @@ export default function RhythmWheel({
           </text>
           <text
             x={CX}
-            y={CY + 34}
+            y={CY + 20}
             textAnchor="middle"
             fontFamily="var(--font-newsreader), Georgia, serif"
             fontStyle="italic"
@@ -195,7 +179,7 @@ export default function RhythmWheel({
       ) : (
         <text
           x={CX}
-          y={CY + 28}
+          y={CY + 9}
           textAnchor="middle"
           fontFamily="var(--font-newsreader), Georgia, serif"
           fontStyle="italic"

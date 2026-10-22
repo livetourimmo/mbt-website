@@ -192,9 +192,8 @@ export default function GrowthMedia() {
         viewBox="40 70 220 300"
         className="block h-auto w-full overflow-visible"
         role="img"
-        aria-label="Silhouette: Ein Pusteblumen-Samen sinkt in eine flache Schale, ein Keimling treibt aus, ein langes Blatt wächst, dann ein Stängel mit Knospe, und zuletzt öffnet sich eine violette Blüte in Form des MBT-Logos."
+        aria-label="Ein Pusteblumen-Samen sinkt in eine flache Schale, ein Keimling treibt aus, ein langes Blatt wächst, dann ein Stängel, und an seiner Spitze öffnet sich eine violette Blüte in Form des MBT-Logos."
       >
-
         <g>
           <g className="fill-ink">
             {/* Langes Blatt hinter dem Stängel */}

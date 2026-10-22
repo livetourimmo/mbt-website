@@ -311,6 +311,7 @@ export default function OrganismMorph() {
   );
 
   const end = (i: number) => nodeRect(i, 1);
+  const spark = end(SPARK);
 
   const figure = (
     <figure ref={figureRef} className="mx-auto w-full max-w-5xl">
@@ -318,7 +319,7 @@ export default function OrganismMorph() {
         viewBox="168 30 464 464"
         className="mx-auto block aspect-square h-auto max-h-[64svh] w-full overflow-visible"
         role="img"
-        aria-label="Silhouette: Ein Organigramm aus Kästchen und rechtwinkligen Linien. Ganz unten rechts wird ein Kästchen lebendig und treibt Äste. Die Kästchen werden zu Knoten, die Linien zu weichen Verbindungen, alles ordnet sich strahlenförmig zu einem verzweigten Organismus mit Querverbindungen. Einzelne Knoten leuchten violett, in der Mitte öffnet sich die MBT-Blüte."
+        aria-label="Ein Organigramm aus Kästchen und rechtwinkligen Linien. Ganz unten rechts wird ein Kästchen lebendig und treibt Äste. Die Kästchen werden zu Knoten, die Linien zu weichen Verbindungen, alles ordnet sich strahlenförmig zu einem verzweigten Organismus mit Querverbindungen. Einzelne Knoten leuchten violett, in der Mitte öffnet sich die MBT-Blüte."
       >
         {/* Äste mit Büscheln, je Knoten in einer Gruppe, die mit dem Knoten wandert */}
         {BRANCHES.map((br, i) =>
@@ -378,7 +379,7 @@ export default function OrganismMorph() {
         </g>
         {/* Der Funke liegt deckungsgleich über seinem Knoten */}
         <g className="o-spark fill-accent">
-          <rect className="o-node" data-i={SPARK} {...(() => { const r = end(SPARK); return { x: f1(r.x), y: f1(r.y), width: f1(r.w), height: f1(r.h), rx: f1(r.rx) }; })()} />
+          <rect className="o-node" data-i={SPARK} x={f1(spark.x)} y={f1(spark.y)} width={f1(spark.w)} height={f1(spark.h)} rx={f1(spark.rx)} />
         </g>
 
         {/* Perlen auf den Hauptverbindungen */}
