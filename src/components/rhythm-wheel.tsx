@@ -8,7 +8,7 @@ const RHYTHM = ["Ausprobieren", "Resonanz erleben", "Innehalten", "Reflektieren"
 const CX = 220;
 const CY = 206;
 const R = 132; // Ring der Stationen
-const GAP = 7; // Grad Abstand zwischen Bogen und Station
+const GAP = 4.5; // Grad Abstand zwischen Bogen und Station (≈ 10 px)
 const STEP = 360 / RHYTHM.length;
 
 function polar(r: number, deg: number) {
@@ -50,7 +50,8 @@ export default function RhythmWheel({
   // Fortschritt innerhalb des aktiven Schritts (ohne Scrub: Bogen voll)
   const inStep = progress !== undefined && activeIndex !== undefined ? Math.max(0, Math.min(1, progress * n - activeIndex)) : 1;
   const headDeg = activeIndex !== undefined ? activeIndex * STEP + GAP + (STEP - 2 * GAP) * inStep : undefined;
-  const head = headDeg !== undefined && progress !== undefined ? polar(R, headDeg) : undefined;
+  // Kopfpunkt nur unterwegs: am Ende des Schritts schliesst der Bogen sauber vor der nächsten Station
+  const head = headDeg !== undefined && progress !== undefined && inStep < 0.97 ? polar(R, headDeg) : undefined;
 
   return (
     <svg
@@ -68,13 +69,13 @@ export default function RhythmWheel({
           const to = (i + 1) * STEP - GAP;
           const passed = activeIndex !== undefined && i < activeIndex;
           const isActive = activeIndex === i;
-          if (passed) return <path key={i} d={arc(R, from, to)} className="stroke-ink" strokeWidth={2} opacity={0.85} />;
+          if (passed) return <path key={i} d={arc(R, from, to)} className="stroke-ink" strokeWidth={2} />;
           if (isActive && inStep > 0.002)
-            return <path key={i} d={arc(R, from, from + (to - from) * inStep)} className="stroke-accent" strokeWidth={3} />;
+            return <path key={i} d={arc(R, from, from + (to - from) * inStep)} className="stroke-accent" strokeWidth={2} />;
           return null;
         })}
       </g>
-      {head && <circle cx={head.x} cy={head.y} r={4} className="fill-accent" aria-hidden />}
+      {head && <circle cx={head.x} cy={head.y} r={3} className="fill-accent" aria-hidden />}
 
       {/* Stationen mit Beschriftung aussen */}
       {RHYTHM.map((term, i) => {
