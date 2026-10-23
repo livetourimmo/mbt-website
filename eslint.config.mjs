@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Rohdaten und Bearbeitungsskripte, nicht Teil der Website
+    "assets-roh/**",
   ]),
 ]);
 

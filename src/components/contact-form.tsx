@@ -120,7 +120,7 @@ export default function ContactForm({
         {status === "sending" ? "Wird gesendet …" : "Nachricht senden"}
       </button>
       {status === "error" && (
-        <p className="text-[14px] text-red-600">{errorMsg}</p>
+        <p role="alert" className="text-[14px] font-medium text-accent-dark">{errorMsg}</p>
       )}
     </form>
   );

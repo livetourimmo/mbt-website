@@ -31,7 +31,7 @@ export default async function KennenlerngespraechPage() {
         <div className="img-reveal relative aspect-[4/5] overflow-hidden rounded-3xl md:aspect-auto md:col-span-5">
           <Image
             src="/images/portrait-polo.jpg"
-            alt="Porträt von Markus Tappolet"
+            alt="Markus Tappolet im Polo-Shirt lächelt offen in die Kamera, hinter ihm verschwimmen Berge unter einem hellen Himmel."
             fill
             sizes="(min-width: 768px) 40vw, 100vw"
             className="object-cover object-[50%_25%]"
