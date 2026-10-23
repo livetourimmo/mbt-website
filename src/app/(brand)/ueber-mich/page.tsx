@@ -44,7 +44,7 @@ export default function UeberMichPage() {
         <div className="img-reveal relative aspect-[4/5] overflow-hidden rounded-3xl md:col-span-7">
           <Image
             src="/images/portrait-anzug.jpg"
-            alt="Porträt von Markus Tappolet"
+            alt="Markus Tappolet im dunkelblauen Sakko und hellblauen Hemd lächelt in die Kamera, hinter ihm Wiesen und Berge unter bewölktem Himmel."
             fill
             sizes="(min-width: 768px) 58vw, 100vw"
             className="object-cover object-top"
@@ -98,7 +98,6 @@ export default function UeberMichPage() {
       <SectionImage
         heading="Aus verschiedenen Perspektiven entstand ein Ganzes"
         imageSide="left"
-        tint="var(--color-neutral-tint)"
         media={
           <Image
             src="/images/portrait-polo-hand.jpg"

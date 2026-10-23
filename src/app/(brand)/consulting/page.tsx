@@ -62,7 +62,7 @@ const consultingAngebote: readonly Angebot[] = [
       "Für Unternehmen, die ihre Führungskräfte gezielt weiterentwickeln und Verantwortung breiter im Unternehmen verankern möchten.",
     details: [
       "Praxisnahe Workshops",
-      "Modular und der Unternehmensidentität ausgerichtet",
+      "Modular und an der Unternehmensidentität ausgerichtet",
     ],
     mehr: {
       text: [
@@ -143,7 +143,6 @@ export default function ConsultingPage() {
       <SectionImage
         heading="Alte Strukturen"
         imageSide="right"
-        tint="var(--color-neutral-tint)"
         media={
           <LoopVideo
             name="consulting-damm"
@@ -211,7 +210,6 @@ export default function ConsultingPage() {
       <SectionImage
         heading="Neue Orientierung"
         imageSide="right"
-        tint="var(--color-consulting-tint)"
         media={
           <LoopVideo
             name="neue-orientierung-consulting"

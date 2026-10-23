@@ -41,15 +41,6 @@ export default function SiteFooter({ segment: initialSegment }: { segment: Segme
     <footer className="bg-ink text-paper">
       {showCta && (
         <div className="relative overflow-hidden border-b border-paper/10">
-          {/* sanfter Farbverlauf im Markenton */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-60"
-            style={{
-              background:
-                "radial-gradient(60% 120% at 85% 0%, rgba(92,51,105,0.55), transparent 70%)",
-            }}
-          />
           <div className="relative mx-auto flex max-w-7xl flex-col gap-8 px-6 py-20 md:flex-row md:items-end md:justify-between md:px-10 md:py-24">
             <div className="max-w-2xl">
               <p className="text-[13px] font-medium tracking-[0.18em] text-paper/60 uppercase">

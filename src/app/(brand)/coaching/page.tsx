@@ -135,7 +135,6 @@ export default function CoachingPage() {
       <SectionImage
         heading="Informationszeitalter"
         imageSide="right"
-        tint="var(--color-coaching-tint)"
         media={
           <LoopVideo
             name="coaching-blume-leer"
@@ -204,7 +203,6 @@ export default function CoachingPage() {
       <SectionImage
         heading="Neue Orientierung"
         imageSide="right"
-        tint="var(--color-coaching-tint)"
         media={
           <LoopVideo
             name="neue-orientierung-coaching"
