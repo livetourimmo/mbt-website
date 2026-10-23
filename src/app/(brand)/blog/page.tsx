@@ -1,7 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Reveal from "@/components/reveal";
-import MediaPlaceholder from "@/components/media-placeholder";
 import { blogPosts } from "@/lib/blog-posts";
 import SplitWords from "@/components/split-words";
 
@@ -33,11 +33,15 @@ export default function BlogPage() {
               <Reveal key={post.slug} delay={(i % 3) * 90}>
                 <Link href={`/blog/${post.slug}`} className="group block h-full">
                   <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-hairline bg-paper transition-[transform,box-shadow] duration-500 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_24px_48px_-24px_rgba(31,44,87,0.28)]">
-                    <MediaPlaceholder
-                      kind="image"
-                      label="Bild folgt"
-                      aspect="aspect-[4/3]"
-                    />
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={`/images/blog/${post.slug}.jpg`}
+                        alt={post.image.alt}
+                        fill
+                        sizes="(min-width: 768px) 30vw, 100vw"
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                      />
+                    </div>
                     <div className="flex flex-1 flex-col gap-3 p-6">
                       <div className="flex items-center gap-2 text-[13px] text-ink-soft">
                         <span>{post.date}</span>

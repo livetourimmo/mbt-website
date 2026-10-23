@@ -1,7 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import MediaPlaceholder from "@/components/media-placeholder";
 import { blogPosts, getPostBySlug } from "@/lib/blog-posts";
 import SplitWords from "@/components/split-words";
 import JsonLd from "@/components/json-ld";
@@ -30,7 +30,7 @@ export async function generateMetadata({
       title: post.title,
       description: post.excerpt,
       authors: ["Markus Tappolet"],
-      images: [{ url: "/images/startseite.jpg" }],
+      images: [{ url: `/images/blog/${post.slug}.jpg`, alt: post.image.alt }],
     },
   };
 }
@@ -54,6 +54,7 @@ export default async function BlogPostPage({
     headline: post.title,
     description: post.excerpt,
     url: `${MAIN_URL}/blog/${post.slug}`,
+    image: `${MAIN_URL}/images/blog/${post.slug}.jpg`,
     mainEntityOfPage: `${MAIN_URL}/blog/${post.slug}`,
     inLanguage: "de-CH",
     author: { "@id": PERSON_ID, "@type": "Person", name: "Markus Tappolet" },
@@ -84,11 +85,17 @@ export default async function BlogPostPage({
 
       <section className="border-b border-hairline">
         <div className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-          <MediaPlaceholder
-            kind="image"
-            label="Bild folgt"
-            aspect="aspect-[21/9]"
-          />
+          <div className="img-reveal relative aspect-[4/3] overflow-hidden rounded-3xl md:aspect-[21/9]">
+            <Image
+              src={`/images/blog/${post.slug}.jpg`}
+              alt={post.image.alt}
+              fill
+              priority
+              sizes="(min-width: 1280px) 1280px, 100vw"
+              className="object-cover"
+              style={{ objectPosition: post.image.position }}
+            />
+          </div>
         </div>
       </section>
 

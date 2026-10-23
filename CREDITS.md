@@ -9,6 +9,22 @@ Herkunft und Lizenz aller Bilder, Videos und Grafiken, die nicht von Markus Tapp
 | `public/images/alltag-coaching.jpg` | nicht mehr verwendet (ersetzt durch `coaching-alltag`), nach Freigabe löschen | Foto von [Brandon Cormier auf Unsplash](https://unsplash.com/photos/Hy4eZgKCcXI), zugeschnitten und farblich angepasst. Original: `assets-roh/alltag/unsplash-Hy4eZgKCcXI-brandon-cormier.jpg` | [Unsplash License](https://unsplash.com/license): kommerzielle Nutzung erlaubt, Namensnennung freiwillig |
 | `public/images/alltag-consulting.jpg` | nicht mehr verwendet (ersetzt durch `consulting-alltag`), nach Freigabe löschen | KI-generiert im Auftrag von MBT (ChatGPT bzw. Gemini), farblich angepasst. Original: `assets-roh/alltag/29018a25-…png` | Eigenes, im Auftrag erstelltes Bild. Nutzungsrechte gemäss den Bedingungen des jeweiligen Anbieters beim Auftraggeber |
 
+### Blog
+
+Alle Blogbilder stammen von Unsplash. Sie wurden zugeschnitten (3:2, 2000×1333) und in den Markenfarben getönt (Consulting-Duoton, bei «lebendigen» Motiven mit einem Anklang von accent; Skript `assets-roh/blog/_grade.mjs`). Originale: `assets-roh/blog/`. Lizenz für alle: [Unsplash License](https://unsplash.com/license), kommerzielle Nutzung erlaubt, Namensnennung freiwillig.
+
+| Datei (`public/images/blog/`) | Motiv | Quelle |
+|---|---|---|
+| `was-menschen-zu-hoechstleistung-bewegt.jpg` | Ruderachter von oben | [Sean Robertson](https://unsplash.com/photos/4SXtQktBKOk) |
+| `so-wird-entscheiden-leichter.jpg` | Trittsteine im Bach, Kyoto | [Anne Laure P](https://unsplash.com/photos/c2Lz0XJ15_s) |
+| `entscheidungsfaehigkeit-staerken.jpg` | Baumwurzeln am Bach | [engin akyurt](https://unsplash.com/photos/wBtlr14RBn0) |
+| `entscheiden-wird-zum-engpass.jpg` | Alcantara-Schlucht, Sizilien | [Wolfgang Hasselmann](https://unsplash.com/photos/lYwlXjD7HS0) |
+| `kann-ki-entscheidungen-treffen.jpg` | Gabelung eines Waldwegs | [Jens Lelie](https://unsplash.com/photos/u0vgcIOQG08) |
+| `wenn-der-koerper-fuehrung-spiegelt.jpg` | Steinturm am Kiesstrand, Madeira | [Diogo Lemos](https://unsplash.com/photos/6wX5c9Gv7pw) |
+| `was-junge-menschen-wirklich-suchen.jpg` | Keimling mit Wassertropfen | [Ksenia Pixelesse](https://unsplash.com/photos/TBjNbj1sdAE) |
+| `die-unbewusste-unternehmensfuehrung.jpg` | Eisberg im dunklen Meer, Antarktis | [Matthew Stephenson](https://unsplash.com/photos/fqYZdYo1NgI) |
+| `selbstorganisation-verstehen.jpg` | Starenschwarm über dem Meer, Brighton | [Rhys Kentish](https://unsplash.com/photos/D2Qg8NO8gUk) |
+
 ## Videos
 
 | Datei | Verwendung | Quelle | Lizenz |

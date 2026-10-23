@@ -10,12 +10,18 @@ export type BlogPost = {
   date: string;
   readingTime: string;
   excerpt: string;
+  /** Getöntes Bild in public/images/blog/<slug>.jpg; position = Ausschnitt im Breitformat */
+  image: { alt: string; position: string };
   body: BlogBlock[];
 };
 
 export const blogPosts: BlogPost[] = [
   {
     slug: "was-menschen-zu-hoechstleistung-bewegt",
+    image: {
+      alt: "Ein Ruderachter von oben: Acht Ruderinnen und Ruderer ziehen im gleichen Takt durchs ruhige Wasser, hinter dem Boot zieht sich eine Spur gleichmässiger Wirbel.",
+      position: "50% 30%",
+    },
     title: "Was Menschen zu Höchstleistung bewegt",
     date: "17. März",
     readingTime: "5 Min. Lesezeit",
@@ -158,6 +164,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "so-wird-entscheiden-leichter",
+    image: {
+      alt: "Runde Trittsteine führen zwischen zwei Bambusgeländern über einen stillen Waldbach.",
+      position: "50% 60%",
+    },
     title: "So wird Entscheiden leichter (3/3)",
     date: "27. Jan.",
     readingTime: "3 Min. Lesezeit",
@@ -314,6 +324,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "entscheidungsfaehigkeit-staerken",
+    image: {
+      alt: "Kräftige, freigespülte Baumwurzeln greifen an einem Bachufer in die Erde, darunter spiegelt sich das klare Wasser.",
+      position: "50% 40%",
+    },
     title: "Entscheidungsfähigkeit stärken (2/3)",
     date: "27. Jan.",
     readingTime: "3 Min. Lesezeit",
@@ -415,6 +429,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "entscheiden-wird-zum-engpass",
+    image: {
+      alt: "Eine enge Schlucht zwischen hohen, dunklen Felswänden, durch die nur ein schmaler Streifen Licht fällt.",
+      position: "50% 50%",
+    },
     title: "Entscheiden wird zum Engpass (1/3)",
     date: "20. Jan.",
     readingTime: "4 Min. Lesezeit",
@@ -547,6 +565,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "kann-ki-entscheidungen-treffen",
+    image: {
+      alt: "Ein Waldweg teilt sich zwischen hohen Bäumen in zwei Pfade.",
+      position: "50% 75%",
+    },
     title: "Kann KI Entscheidungen treffen?",
     date: "12. Jan.",
     readingTime: "4 Min. Lesezeit",
@@ -657,6 +679,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "wenn-der-koerper-fuehrung-spiegelt",
+    image: {
+      alt: "Ein Turm aus sorgfältig aufeinandergeschichteten Steinen steht im Gleichgewicht auf einem Kiesstrand.",
+      position: "50% 50%",
+    },
     title: "Wenn der Körper Führung spiegelt",
     date: "18. Dez. 2025",
     readingTime: "5 Min. Lesezeit",
@@ -771,6 +797,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "was-junge-menschen-wirklich-suchen",
+    image: {
+      alt: "Ein junger Keimling mit drei Blättchen, auf denen Wassertropfen liegen, wächst aus dunkler Erde.",
+      position: "50% 45%",
+    },
     title: "Was junge Menschen wirklich suchen",
     date: "4. Dez. 2025",
     readingTime: "2 Min. Lesezeit",
@@ -844,6 +874,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "die-unbewusste-unternehmensfuehrung",
+    image: {
+      alt: "Ein Eisberg treibt im dunklen Meer, nur seine Spitze ragt aus dem Wasser.",
+      position: "50% 50%",
+    },
     title: "Die unbewusste Unternehmensführung",
     date: "3. Dez. 2025",
     readingTime: "4 Min. Lesezeit",
@@ -974,6 +1008,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "selbstorganisation-verstehen",
+    image: {
+      alt: "Ein grosser Starenschwarm zieht im Abendlicht über das Meer und formt eine gemeinsame Wolke.",
+      position: "50% 40%",
+    },
     title: "Selbstorganisation verstehen",
     date: "14. Nov. 2025",
     readingTime: "3 Min. Lesezeit",
