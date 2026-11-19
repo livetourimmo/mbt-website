@@ -16,6 +16,7 @@ export const orgId = (segment: Segment) => `${SITE_URL[segment]}/#organisation`;
 export const SHARED_PATHS = [
   "/lebendige-fuehrung",
   "/ueber-mich",
+  "/buch",
   "/blog",
   "/kennenlerngespraech",
   "/impressum",

@@ -13,8 +13,9 @@ const sora = Sora({
 const newsreader = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
-  weight: ["500"],
-  style: ["italic"],
+  // 400 aufrecht für den Fliesstext der Leseprobe im Buch-Mockup
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
 });
 
 const workSans = Work_Sans({

@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { href: "/consulting", label: "Consulting" },
   { href: "/coaching", label: "Coaching" },
   { href: "/lebendige-fuehrung", label: "Lebendige Führung" },
+  { href: "/buch", label: "Buch" },
   { href: "/blog", label: "Blog" },
   { href: "/ueber-mich", label: "Über mich" },
 ];

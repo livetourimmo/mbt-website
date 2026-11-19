@@ -36,10 +36,19 @@ export default function DatenschutzPage() {
       <p className="mt-4 text-[16px] leading-relaxed text-ink-soft">
         Diese Website verwendet keine Cookies und keine
         Analyse-/Tracking-Tools. Es werden nur Daten verarbeitet, die Sie mir
-        aktiv über das Kontaktformular senden: Name, E-Mail-Adresse und Ihre
-        Nachricht. Diese Angaben nutze ich ausschliesslich, um Sie zur
+        aktiv über ein Formular senden. Beim Kontaktformular sind das Name,
+        E-Mail-Adresse und Ihre Nachricht. Diese Angaben nutze ich ausschliesslich, um Sie zur
         Vereinbarung eines Kennenlerngesprächs zu kontaktieren, und
         speichere sie nicht darüber hinaus.
+      </p>
+      <p className="mt-4 text-[16px] leading-relaxed text-ink-soft">
+        Über das Feedbackformular auf der Seite zum Buch können Sie mir Ihre
+        Rückmeldung senden, auf Wunsch mit Ihrem Namen. Ich nutze sie, um das
+        Buch und meine Arbeit weiterzuentwickeln. Nur wenn Sie im Formular
+        ausdrücklich zustimmen, veröffentliche ich Ihr Feedback als Rezension
+        auf dieser Website oder in Unterlagen zum Buch, mit Ihrem Namen, falls
+        Sie einen angegeben haben. Diese Zustimmung können Sie jederzeit per
+        E-Mail widerrufen.
       </p>
       <p className="mt-4 text-[16px] leading-relaxed text-ink-soft">
         Für den Versand dieser Nachrichten setze ich den E-Mail-Dienst Resend

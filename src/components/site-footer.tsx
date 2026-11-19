@@ -25,6 +25,7 @@ const NAV = [
     links: [
       { href: "/ueber-mich", label: "Über mich" },
       { href: "/blog", label: "Blog" },
+      { href: "/buch", label: "Buch" },
       { href: "/impressum", label: "Impressum" },
       { href: "/datenschutz", label: "Datenschutz" },
     ],
