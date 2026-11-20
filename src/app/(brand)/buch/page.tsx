@@ -18,13 +18,6 @@ export const metadata: Metadata = {
   },
 };
 
-const gedanken = [
-  "Bergbauern im Wallis",
-  "Die Zünfte",
-  "Ameisen und Bäume",
-  "Hirnforschung",
-  "Wege aus der Praxis",
-];
 
 export default function BuchPage() {
   return (
@@ -119,22 +112,6 @@ export default function BuchPage() {
               den Zünften, zu Ameisen und Bäumen, zur Hirnforschung und zu
               Wegen aus der Praxis.
             </p>
-            {/* Dieselben Themen wie im Satz davor, nur als Bild: für Screenreader ausgeblendet */}
-            <ul aria-hidden className="border-t border-ink/15">
-              {gedanken.map((thema, i) => (
-                <li
-                  key={thema}
-                  className="flex items-baseline gap-6 border-b border-ink/15 py-4"
-                >
-                  <span className="w-6 text-[13px] text-accent tabular-nums">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="font-display text-[19px] text-ink md:text-[21px]">
-                    {thema}
-                  </span>
-                </li>
-              ))}
-            </ul>
             <ScrollQuote>
               So entsteht ein Bild davon, wie Führung den verborgenen Kräften
               eine Richtung geben kann, ruhig, bewusst und aus dem Unternehmen
